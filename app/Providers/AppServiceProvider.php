@@ -28,8 +28,14 @@ class AppServiceProvider extends ServiceProvider
 
         \Illuminate\Support\Facades\View::composer(['dasgboard.layouts.app', 'auth.login'], function ($view) {
             $settings = \App\Models\LandingSection::where('slug', 'site')->value('content') ?? [];
+            $logo = $settings['image'] ?? null;
             $view->with('siteBrandName', $settings['site_name'] ?? \App\Models\LandingSection::defaults('site')['site_name']);
-            $view->with('siteBrandLogo', empty($settings['image']) ? null : route('media.show', ['path' => $settings['image']]));
+            $view->with(
+                'siteBrandLogo',
+                is_string($logo) && \Illuminate\Support\Facades\Storage::disk('public')->exists($logo)
+                    ? route('media.show', ['path' => $logo])
+                    : null,
+            );
         });
     }
 }

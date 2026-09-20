@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 
 class Product extends Model
 {
@@ -21,7 +22,7 @@ class Product extends Model
 
     public function imageUrl(): string
     {
-        return $this->image_path
+        return $this->image_path && Storage::disk('public')->exists($this->image_path)
             ? route('media.show', ['path' => $this->image_path])
             : asset($this->fallback_image ?: 'asset/images/furniture-polish-combo.png');
     }
