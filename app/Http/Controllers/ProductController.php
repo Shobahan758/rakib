@@ -92,6 +92,8 @@ class ProductController extends Controller
     {
         return $request->validate([
             'name' => ['required', 'string', 'max:80'],
+            'package_name' => ['nullable', 'string', 'max:120'],
+            'package_details' => ['nullable', 'string', 'max:255'],
             'price' => ['required', 'integer', 'min:0', 'max:99999999'],
             'regular_price' => ['nullable', 'integer', 'min:0', 'max:99999999', 'gte:price'],
             'badge' => ['nullable', 'string', 'max:100'],

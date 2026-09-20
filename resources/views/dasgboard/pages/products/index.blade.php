@@ -228,7 +228,10 @@
             <img src="{{ $product->imageUrl() }}" alt="{{ $product->name }}" loading="lazy">
         </div>
         <div class="product-body">
-            <h3 class="product-title">{{ $product->name }}</h3>
+            <h3 class="product-title">{{ $modalMode ? $product->name : $product->pickerPackageName() }}</h3>
+            @if(!$modalMode && filled($product->pickerPackageDetails()))
+                <p style="margin:0;color:var(--muted);font-size:.9rem">{{ $product->pickerPackageDetails() }}</p>
+            @endif
 
             <div class="product-meta">
                 <span class="product-price">

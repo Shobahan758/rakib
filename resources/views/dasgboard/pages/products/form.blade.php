@@ -42,8 +42,25 @@
       <div class="field">
         <label for="name">Product Name (পণ্যের নাম) *</label>
         <input id="name" name="name" type="text" value="{{ old('name', $product->name) }}" placeholder="যেমন: ফার্নিচার পলিশ কম্বো" required>
+        <div class="field-help">অর্ডার, রিপোর্ট ও confirmation-এ পণ্যের সম্পূর্ণ নাম হিসেবে ব্যবহৃত হবে।</div>
         @error('name')<small style="color:#dc3545">{{ $message }}</small>@enderror
       </div>
+
+      @unless($modalMode)
+      <div class="field">
+        <label for="package_name">Card Package Title (কার্ডের উপরের প্যাকেজ নাম)</label>
+        <input id="package_name" name="package_name" type="text" value="{{ old('package_name', $product->package_name ?: $product->pickerPackageName()) }}" placeholder="যেমন: 📦 প্রয়োজনীয় প্যাক (300ml)">
+        <div class="field-help">Product card-এর উপরে মাঝখানে দেখাবে।</div>
+        @error('package_name')<small style="color:#dc3545">{{ $message }}</small>@enderror
+      </div>
+
+      <div class="field">
+        <label for="package_details">Card Details (কার্ডের বিস্তারিত লেখা)</label>
+        <input id="package_details" name="package_details" type="text" value="{{ old('package_details', $product->package_name ? $product->package_details : $product->pickerPackageDetails()) }}" placeholder="যেমন: 🪑 ৩–৪টি ফার্নিচারের জন্য">
+        <div class="field-help">ছবি ও quantity-এর পাশে card-এর মূল লাইনে দেখাবে।</div>
+        @error('package_details')<small style="color:#dc3545">{{ $message }}</small>@enderror
+      </div>
+      @endunless
 
       <div class="field">
         <label for="price">Offer Price in ৳ (অফার মূল্য) *</label>

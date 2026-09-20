@@ -18,6 +18,14 @@ class ProductImageUrlTest extends TestCase
         $basic = new Product(['name' => '✨ বেসিক পলিশ প্যাক 500ml (ডেলিভারি চার্জ ফ্রি)']);
         $this->assertSame('✨ বেসিক পলিশ প্যাক 500ml', $basic->pickerPackageName());
         $this->assertSame('(ডেলিভারি চার্জ ফ্রি)', $basic->pickerPackageDetails());
+
+        $editable = new Product([
+            'name' => 'Full order name',
+            'package_name' => 'Backend package title',
+            'package_details' => 'Backend card details',
+        ]);
+        $this->assertSame('Backend package title', $editable->pickerPackageName());
+        $this->assertSame('Backend card details', $editable->pickerPackageDetails());
     }
 
     public function test_product_prices_are_cast_to_integers(): void

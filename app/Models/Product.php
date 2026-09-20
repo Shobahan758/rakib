@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Storage;
 
 class Product extends Model
 {
-    protected $fillable = ['name', 'price', 'regular_price', 'badge', 'image_path', 'fallback_image', 'is_active', 'is_modal_product', 'sort_order'];
+    protected $fillable = ['name', 'package_name', 'package_details', 'price', 'regular_price', 'badge', 'image_path', 'fallback_image', 'is_active', 'is_modal_product', 'sort_order'];
 
     protected function casts(): array
     {
@@ -52,6 +52,10 @@ class Product extends Model
 
     private function pickerNameParts(): array
     {
+        if (filled($this->package_name)) {
+            return [trim($this->package_name), trim((string) $this->package_details)];
+        }
+
         $name = preg_replace('/^📦(?!\s)/u', '📦 ', trim($this->name));
         $parts = preg_split('/\s*🪑\s*/u', $name, 2);
         if (count($parts) === 2) {
