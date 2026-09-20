@@ -91,7 +91,7 @@ class ProductController extends Controller
     private function validated(Request $request): array
     {
         return $request->validate([
-            'name' => ['required', 'string', 'max:80'],
+            'name' => ['required', 'string', 'max:150'],
             'package_name' => ['nullable', 'string', 'max:120'],
             'package_details' => ['nullable', 'string', 'max:255'],
             'price' => ['required', 'integer', 'min:0', 'max:99999999'],
