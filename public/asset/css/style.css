@@ -1292,21 +1292,49 @@ main > [data-section],
 
 .product-price {
   display: flex;
-  flex-direction: column;
   align-items: flex-end;
-  gap: 7px;
+  justify-content: flex-end;
   color: var(--ink);
   font-weight: 700
 }
 
 .product-tag {
-  display: inline-block;
+  position: absolute;
+  z-index: 2;
+  top: 9px;
+  right: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  max-width: calc(100% - 40px);
   padding: 4px 9px;
   border-radius: 6px;
   background: var(--red);
   color: #fff;
   font-size: .72rem;
-  line-height: 1.2
+  line-height: 1.2;
+  text-align: center;
+  white-space: normal
+}
+
+.product-option.has-badge .product-price {
+  padding-top: 16px
+}
+
+@media (max-width: 575.98px) {
+  .product-option.has-badge {
+    padding-top: 38px
+  }
+
+  .product-tag {
+    top: 8px;
+    right: 10px;
+    max-width: calc(100% - 20px)
+  }
+
+  .product-option.has-badge .product-price {
+    padding-top: 0
+  }
 }
 
 .order-shell {

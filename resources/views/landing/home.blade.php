@@ -757,7 +757,14 @@
                     <h3>{{ $content('order', 'products_title') }}</h3>
                     <div class="product-options">
                         @forelse($products as $index => $product)
-                            <label class="product-option{{ $index === 0 ? ' selected' : '' }}">
+                            <label @class([
+                                'product-option',
+                                'selected' => $index === 0,
+                                'has-badge' => filled($product->badge),
+                            ])>
+                                @if ($product->badge)
+                                    <span class="product-tag">{{ $product->badge }}</span>
+                                @endif
                                 <input class="product-radio" type="radio" name="product_choice"
                                     value="{{ $product->id }}" data-price="{{ $product->price }}"
                                     data-name="{{ $product->name }}" data-image="{{ $product->imageUrl() }}"
@@ -774,9 +781,6 @@
                                         aria-label="পরিমাণ বাড়ান">+</button>
                                 </span>
                                 <span class="product-price">
-                                    @if ($product->badge)
-                                        <span class="product-tag">{{ $product->badge }}</span>
-                                    @endif
                                     {{ $content('site', 'currency_symbol') }}{{ number_format($product->price) }}
                                 </span>
                             </label>
