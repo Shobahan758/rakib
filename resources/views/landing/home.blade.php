@@ -522,6 +522,11 @@
                             <div class="care-usage-card reveal"><i class="bi {{ $content('complete_care', "usage_{$i}_icon") }}"></i><span>{{ $content('complete_care', "usage_{$i}") }}</span></div>
                         @endfor
                     </div>
+                    <div class="care-guarantee reveal">
+                        <strong>{{ $content('complete_care', 'guarantee_title') }}</strong>
+                        <span>{{ $content('complete_care', 'guarantee_text') }}</span>
+                        <small>{{ $content('complete_care', 'guarantee_note') }}</small>
+                    </div>
                 </div>
             </div>
         </section>
