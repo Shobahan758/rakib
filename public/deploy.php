@@ -93,6 +93,18 @@ function deployComposerCommand(string $projectRoot): string
     return 'composer';
 }
 
+function deployDependencyFingerprint(string $projectRoot): string
+{
+    $files = [$projectRoot.'/composer.json', $projectRoot.'/composer.lock'];
+    $fingerprints = [];
+
+    foreach ($files as $file) {
+        $fingerprints[] = is_file($file) ? hash_file('sha256', $file) : 'missing';
+    }
+
+    return implode(':', $fingerprints);
+}
+
 if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
     header('Allow: POST');
     deployRespond(405, 'Only POST requests are accepted.');
@@ -198,9 +210,14 @@ $php = escapeshellarg(PHP_BINARY);
 
 try {
     deployWriteLog($logFile, "Starting delivery {$delivery} for ".DEPLOY_GITHUB_REPOSITORY."@{$branch}");
+    $dependencyFingerprint = deployDependencyFingerprint($appPath);
     deployRun("git fetch --prune origin {$escapedBranch}", $appPath, $logFile);
     deployRun('git reset --hard '.escapeshellarg('origin/'.$branch), $appPath, $logFile);
-    deployRun(deployComposerCommand($appPath).' install --no-dev --no-scripts --no-interaction --prefer-dist --optimize-autoloader', $appPath, $logFile);
+    if (! is_file($appPath.'/vendor/autoload.php') || $dependencyFingerprint !== deployDependencyFingerprint($appPath)) {
+        deployRun(deployComposerCommand($appPath).' install --no-dev --no-scripts --no-interaction --prefer-dist --optimize-autoloader', $appPath, $logFile);
+    } else {
+        deployWriteLog($logFile, 'Composer dependencies are unchanged; install skipped.');
+    }
     deployRun("{$php} artisan optimize:clear", $appPath, $logFile);
     deployRun("{$php} artisan package:discover --ansi", $appPath, $logFile);
     deployRun("{$php} artisan migrate --force", $appPath, $logFile);
