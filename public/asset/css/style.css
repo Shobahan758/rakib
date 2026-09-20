@@ -2249,7 +2249,7 @@ footer {
   justify-content: center;
   flex-wrap: wrap;
   gap: 4px 9px;
-  margin: 28px auto 0;
+  margin: 48px auto 0;
   padding: 8px 22px;
   border: 1px solid rgba(232, 93, 4, .2);
   border-radius: 14px;
@@ -2272,7 +2272,7 @@ footer {
 
 @media (max-width: 575.98px) {
   .hero-offer-copy {
-    margin-top: 20px;
+    margin-top: 34px;
     padding: 8px 14px;
     border-radius: 11px;
     font-size: 1rem;
