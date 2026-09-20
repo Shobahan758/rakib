@@ -16,6 +16,17 @@ class ProductImageUrlTest extends TestCase
         $this->assertSame(1350, $product->regular_price);
     }
 
+    public function test_regular_price_uses_saved_value_or_known_package_fallback(): void
+    {
+        $saved = new Product(['price' => 990, 'regular_price' => 1400, 'is_modal_product' => false]);
+        $fallback = new Product(['price' => 1250, 'is_modal_product' => false]);
+        $modal = new Product(['price' => 1250, 'is_modal_product' => true]);
+
+        $this->assertSame(1400, $saved->displayRegularPrice());
+        $this->assertSame(1650, $fallback->displayRegularPrice());
+        $this->assertNull($modal->displayRegularPrice());
+    }
+
     public function test_it_uses_the_fallback_when_the_uploaded_product_image_is_missing(): void
     {
         Storage::fake('public');

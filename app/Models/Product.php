@@ -26,4 +26,17 @@ class Product extends Model
             ? route('media.show', ['path' => $this->image_path])
             : asset($this->fallback_image ?: 'asset/images/furniture-polish-combo.png');
     }
+
+    public function displayRegularPrice(): ?int
+    {
+        if ($this->regular_price && $this->regular_price > $this->price) {
+            return $this->regular_price;
+        }
+
+        if ($this->is_modal_product) {
+            return null;
+        }
+
+        return [990 => 1350, 1250 => 1650, 1450 => 2000, 850 => 1080][$this->price] ?? null;
+    }
 }

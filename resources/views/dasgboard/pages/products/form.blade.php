@@ -53,7 +53,7 @@
 
       <div class="field">
         <label for="regular_price">Regular Price in ৳ (রেগুলার মূল্য)</label>
-        <input id="regular_price" name="regular_price" type="number" min="0" value="{{ old('regular_price', $product->regular_price) }}" placeholder="যেমন: 399">
+        <input id="regular_price" name="regular_price" type="number" min="0" value="{{ old('regular_price', $product->displayRegularPrice()) }}" placeholder="যেমন: 399">
         <div class="field-help">অফার মূল্যের আগে কাটা দাগসহ দেখাবে।</div>
         @error('regular_price')<small style="color:#dc3545">{{ $message }}</small>@enderror
       </div>

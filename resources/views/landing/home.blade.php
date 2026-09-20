@@ -781,8 +781,8 @@
                                         aria-label="পরিমাণ বাড়ান">+</button>
                                 </span>
                                 <span class="product-price">
-                                    @if ($product->regular_price && $product->regular_price > $product->price)
-                                        <span class="product-regular-price">রেগুলার <del>{{ $content('site', 'currency_symbol') }}{{ number_format($product->regular_price) }}</del></span>
+                                    @if ($product->displayRegularPrice())
+                                        <span class="product-regular-price">রেগুলার <del>{{ $content('site', 'currency_symbol') }}{{ number_format($product->displayRegularPrice()) }}</del></span>
                                     @endif
                                     <strong class="product-offer-price">অফার {{ $content('site', 'currency_symbol') }}{{ number_format($product->price) }}</strong>
                                 </span>

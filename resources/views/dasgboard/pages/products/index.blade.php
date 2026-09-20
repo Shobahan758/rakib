@@ -232,8 +232,8 @@
 
             <div class="product-meta">
                 <span class="product-price">
-                    @if($product->regular_price && $product->regular_price > $product->price)
-                        <del style="color:var(--muted);font-size:.8em">৳{{ number_format($product->regular_price) }}</del>
+                    @if($product->displayRegularPrice())
+                        <del style="color:var(--muted);font-size:.8em">৳{{ number_format($product->displayRegularPrice()) }}</del>
                     @endif
                     ৳{{ number_format($product->price) }}
                 </span>
