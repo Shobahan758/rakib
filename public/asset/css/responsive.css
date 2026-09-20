@@ -176,3 +176,19 @@
     transform: translateY(0);
   }
 }
+
+/* Bootstrap's large gutters are wider than the page padding on small phones.
+   Keep every landing-page row inside the viewport without clipping content. */
+@media (max-width:575.98px) {
+  .section-pad .row {
+    --bs-gutter-x: 1rem;
+  }
+
+  .section-pad :is(.col, [class*="col-"]) {
+    min-width: 0;
+  }
+
+  .section-pad :is(img, video, iframe) {
+    max-width: 100%;
+  }
+}
