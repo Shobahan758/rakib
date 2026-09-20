@@ -103,6 +103,7 @@ class LandingSettingsTest extends TestCase
             ->assertDontSee('/media/landing/missing-comparison.jpg', false)
             ->assertDontSee('/media/landing/missing-package.jpg', false)
             ->assertSee(asset('asset/images/hero-bed-comparison.webp'), false)
+            ->assertSee(asset('asset/images/furniture-polish-before-after.webp'), false)
             ->assertSee(asset('asset/images/furniture-polish-combo.webp'), false);
     }
 

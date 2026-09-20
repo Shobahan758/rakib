@@ -30,7 +30,7 @@
             'sku' => $content('seo', 'schema_sku'),
             'category' => $content('seo', 'schema_category'),
             'image' => [
-                $sectionImage('hero', 'asset/images/furniture-polish-combo.webp'),
+                $sectionImage('hero', 'asset/images/furniture-polish-before-after.webp'),
                 $sectionImage('hero', 'asset/images/hero-bed-comparison.webp', 'image_1'),
                 $sectionImage('hero', 'asset/images/furniture-polish-combo.webp', 'image_2'),
             ],
@@ -256,7 +256,7 @@
                 @php
                     $heroContent = $sections->get('hero')?->content ?? [];
                     $heroSlides = [[
-                        'url' => $sectionImage('hero', 'asset/images/furniture-polish-combo.webp'),
+                        'url' => $sectionImage('hero', 'asset/images/furniture-polish-before-after.webp'),
                         'alt' => $content('hero', 'image_alt'),
                     ]];
                     foreach (\App\Models\LandingSection::heroImageKeys($heroContent) as $heroImageKey) {
