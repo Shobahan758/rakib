@@ -98,6 +98,11 @@ class LandingSectionController extends Controller
                 if (filter_var($value, FILTER_VALIDATE_URL) && in_array(strtolower(parse_url($value, PHP_URL_SCHEME) ?? ''), ['http', 'https'], true)) return;
                 $fail('একটি সঠিক https:// লিংক, /path অথবা #section দিন।');
             }];
+            if ($key === 'canonical_url') $rules[$key] = ['nullable', 'url:https', 'max:2048'];
+            if ($key === 'schema_rating_value') $rules[$key] = ['nullable', 'numeric', 'min:0', 'max:5'];
+            if ($key === 'schema_review_count') $rules[$key] = ['nullable', 'integer', 'min:0', 'max:99999999'];
+            if ($key === 'schema_best_rating') $rules[$key] = ['nullable', 'numeric', 'min:1', 'max:5'];
+            if ($key === 'schema_price_currency') $rules[$key] = ['nullable', 'regex:/^[A-Z]{3}$/'];
             if (in_array($key, ['inside_delivery_charge', 'outside_delivery_charge'], true)) $rules[$key] = ['nullable', 'integer', 'min:0', 'max:99999999'];
         }
         if ($definition['video'] ?? false) {

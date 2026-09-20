@@ -1953,7 +1953,7 @@ footer {
 @media (max-width: 575.98px) {
   .hero {
     padding-top: 29px;
-    background-image: linear-gradient(to bottom, #eae9e6 0, rgba(234, 233, 230, .96) 280px, rgba(234, 233, 230, 0) 440px), url('../images/hero-background.png');
+    background-image: linear-gradient(to bottom, #eae9e6 0, rgba(234, 233, 230, .96) 280px, rgba(234, 233, 230, 0) 440px), url('../images/hero-background.webp');
     background-size: 100% 100%, auto 780px;
     background-position: center top, center 350px;
     background-repeat: no-repeat;

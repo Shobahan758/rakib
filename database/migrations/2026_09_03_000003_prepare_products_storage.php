@@ -26,10 +26,10 @@ return new class extends Migration
         if (DB::table('products')->count() === 0) {
             $now = now();
             DB::table('products')->insert([
-                ['name' => 'ক্লাসিক বার্গার', 'price' => 299, 'badge' => '🔥 স্টার্টার', 'fallback_image' => 'asset/images/burger1.png', 'is_active' => true, 'sort_order' => 1, 'created_at' => $now, 'updated_at' => $now],
-                ['name' => 'চিজ বার্গার', 'price' => 349, 'badge' => '🔥 সবচেয়ে জনপ্রিয়', 'fallback_image' => 'asset/images/burger2.png', 'is_active' => true, 'sort_order' => 2, 'created_at' => $now, 'updated_at' => $now],
-                ['name' => 'চিকেন বার্গার', 'price' => 299, 'badge' => 'সেরা মূল্য', 'fallback_image' => 'asset/images/burger3.png', 'is_active' => true, 'sort_order' => 3, 'created_at' => $now, 'updated_at' => $now],
-                ['name' => 'ডাবল বিফ বার্গার', 'price' => 499, 'badge' => '🔥 প্রিমিয়াম', 'fallback_image' => 'asset/images/burger4.png', 'is_active' => true, 'sort_order' => 4, 'created_at' => $now, 'updated_at' => $now],
+                ['name' => 'Furniture Polish Combo', 'price' => 990, 'badge' => '🔥 সবচেয়ে জনপ্রিয়', 'fallback_image' => 'asset/images/furniture-polish-combo.webp', 'is_active' => true, 'sort_order' => 1, 'created_at' => $now, 'updated_at' => $now],
+                ['name' => 'Wood Furniture Polish', 'price' => 1250, 'badge' => '🔥 জনপ্রিয় প্যাক', 'fallback_image' => 'asset/images/furniture-polish-combo.webp', 'is_active' => true, 'sort_order' => 2, 'created_at' => $now, 'updated_at' => $now],
+                ['name' => 'Furniture Polish Family Combo', 'price' => 1450, 'badge' => 'সেরা মূল্য', 'fallback_image' => 'asset/images/furniture-polish-combo.webp', 'is_active' => true, 'sort_order' => 3, 'created_at' => $now, 'updated_at' => $now],
+                ['name' => 'Basic Wood Furniture Polish', 'price' => 850, 'badge' => '🔥 স্টার্টার', 'fallback_image' => 'asset/images/furniture-polish-combo.webp', 'is_active' => true, 'sort_order' => 4, 'created_at' => $now, 'updated_at' => $now],
             ]);
         }
 

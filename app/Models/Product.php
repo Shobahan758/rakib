@@ -24,7 +24,7 @@ class Product extends Model
     {
         return $this->image_path && Storage::disk('public')->exists($this->image_path)
             ? route('media.show', ['path' => $this->image_path])
-            : asset($this->fallback_image ?: 'asset/images/furniture-polish-combo.png');
+            : asset($this->fallback_image ?: 'asset/images/furniture-polish-combo.webp');
     }
 
     public function displayRegularPrice(): ?int

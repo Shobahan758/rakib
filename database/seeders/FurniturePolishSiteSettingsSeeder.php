@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use App\Models\LandingSection;
 use Illuminate\Database\Seeder;
 
-class BurgerSiteSettingsSeeder extends Seeder
+class FurniturePolishSiteSettingsSeeder extends Seeder
 {
     public function run(): void
     {

@@ -1,4 +1,6 @@
-# Gavitral Landing Page
+# Solution Mart Furniture Polish Landing Page
+
+Laravel landing page and order-management dashboard for Solution Mart's Furniture Polish products.
 
 A Laravel 13 product landing page with a database-backed order submission system.
 

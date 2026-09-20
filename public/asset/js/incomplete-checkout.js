@@ -3,7 +3,7 @@
   const token = form?.elements.namedItem('incomplete_token');
   if (!form?.dataset.incompleteAction || !token) return;
 
-  const storageKey = 'burgerIncompleteCheckoutToken';
+  const storageKey = 'furniturePolishIncompleteCheckoutToken';
   const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
   try {
     const saved = sessionStorage.getItem(storageKey);

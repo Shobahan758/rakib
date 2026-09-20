@@ -102,8 +102,21 @@ class LandingSettingsTest extends TestCase
             ->assertDontSee('/media/landing/missing-main.jpg', false)
             ->assertDontSee('/media/landing/missing-comparison.jpg', false)
             ->assertDontSee('/media/landing/missing-package.jpg', false)
-            ->assertSee(asset('asset/images/hero-bed-comparison.png'), false)
-            ->assertSee(asset('asset/images/furniture-polish-combo.png'), false);
+            ->assertSee(asset('asset/images/hero-bed-comparison.webp'), false)
+            ->assertSee(asset('asset/images/furniture-polish-combo.webp'), false);
+    }
+
+    public function test_home_renders_canonical_product_schema_and_only_one_h1(): void
+    {
+        $html = $this->get(route('home'))
+            ->assertOk()
+            ->assertSee('<link rel="canonical" href="https://ss.smarteasyshop.com/">', false)
+            ->assertSee('"@type":"Product"', false)
+            ->assertSee('"priceCurrency":"BDT"', false)
+            ->assertDontSee('"aggregateRating"', false)
+            ->getContent();
+
+        $this->assertSame(1, preg_match_all('/<h1\b/i', $html));
     }
 
     public function test_gallery_accepts_additional_images_and_preserves_them_between_saves(): void

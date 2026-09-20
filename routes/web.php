@@ -42,6 +42,15 @@ Route::get('/', function () {
     return view('landing.home', compact('sections', 'products', 'modalProducts', 'tracking'));
 })->name('home');
 
+Route::get('/sitemap.xml', function () {
+    $xml = '<?xml version="1.0" encoding="UTF-8"?>'
+        .'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+        .'<url><loc>https://ss.smarteasyshop.com/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>'
+        .'</urlset>';
+
+    return response($xml, 200)->header('Content-Type', 'application/xml; charset=UTF-8');
+})->name('sitemap');
+
 Route::post('/orders', [OrderController::class, 'store'])
     ->middleware('throttle:10,1')
     ->name('orders.store');

@@ -87,7 +87,7 @@
         @error('image')<small style="color:#dc3545">{{ $message }}</small>@enderror
 
         <div class="preview-container">
-          <img id="imagePreview" src="{{ $product->exists ? $product->imageUrl() : asset('asset/images/furniture-polish-combo.png') }}" alt="{{ $product->name ?? 'Preview' }}">
+          <img id="imagePreview" src="{{ $product->exists ? $product->imageUrl() : asset('asset/images/furniture-polish-combo.webp') }}" alt="{{ $product->name ?? 'Preview' }}">
         </div>
       </div>
 

@@ -9,7 +9,7 @@
         ));
         natsort($galleryKeys);
         $nextGalleryIndex = max(array_map(fn ($key) => (int) substr($key, 6), $galleryKeys)) + 1;
-        $galleryFallbacks = array_fill(0, 6, 'furniture-polish-combo.png');
+        $galleryFallbacks = array_fill(0, 6, 'furniture-polish-combo.webp');
     @endphp
     <div class="review-upload-grid" id="galleryImageList">
         @foreach($galleryKeys as $imageKey)

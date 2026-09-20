@@ -18,28 +18,45 @@
 
             return $fallback !== '' ? asset($fallback) : '';
         };
+        $configuredCanonical = trim((string) $content('seo', 'canonical_url'));
+        $canonicalUrl = filter_var($configuredCanonical, FILTER_VALIDATE_URL) ? $configuredCanonical : url()->current();
         $schemaData = [
             '@context' => 'https://schema.org',
             '@type' => 'Product',
+            '@id' => $canonicalUrl.'#product',
+            'url' => $canonicalUrl,
             'name' => $content('seo', 'schema_name'),
             'description' => $content('seo', 'schema_description'),
+            'sku' => $content('seo', 'schema_sku'),
+            'category' => $content('seo', 'schema_category'),
             'image' => [
-                $sectionImage('hero', 'asset/images/furniture-polish-combo.png'),
-                $sectionImage('hero', 'asset/images/hero-bed-comparison.png', 'image_1'),
-                $sectionImage('hero', 'asset/images/furniture-polish-combo.png', 'image_2'),
+                $sectionImage('hero', 'asset/images/furniture-polish-combo.webp'),
+                $sectionImage('hero', 'asset/images/hero-bed-comparison.webp', 'image_1'),
+                $sectionImage('hero', 'asset/images/furniture-polish-combo.webp', 'image_2'),
             ],
             'brand' => [
                 '@type' => 'Brand',
-                'name' => $content('seo', 'og_site_name'),
+                'name' => $content('seo', 'schema_brand'),
             ],
             'offers' => [
                 '@type' => 'Offer',
-                'url' => url()->current(),
+                'url' => $canonicalUrl,
                 'price' => $content('seo', 'schema_offer_price'),
-                'priceCurrency' => 'BDT',
-                'availability' => 'https://schema.org/InStock',
+                'priceCurrency' => $content('seo', 'schema_price_currency'),
+                'availability' => $content('seo', 'schema_availability'),
+                'itemCondition' => $content('seo', 'schema_condition'),
             ],
         ];
+        if ((string) $content('seo', 'schema_rating_enabled') === '1'
+            && (float) $content('seo', 'schema_rating_value') > 0
+            && (int) $content('seo', 'schema_review_count') > 0) {
+            $schemaData['aggregateRating'] = [
+                '@type' => 'AggregateRating',
+                'ratingValue' => (float) $content('seo', 'schema_rating_value'),
+                'reviewCount' => (int) $content('seo', 'schema_review_count'),
+                'bestRating' => (float) $content('seo', 'schema_best_rating'),
+            ];
+        }
     @endphp
     <meta charset="utf-8">
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -49,6 +66,8 @@
     <meta name="description" content="{{ $content('seo', 'meta_description') }}">
     <meta name="keywords" content="{{ $content('seo', 'meta_keywords') }}">
     <meta name="author" content="{{ $content('seo', 'meta_author') }}">
+    <meta name="robots" content="{{ $content('seo', 'robots') }}">
+    <link rel="canonical" href="{{ $canonicalUrl }}">
     <meta name="theme-color" content="{{ $content('site', 'primary_color') }}">
     @if (data_get($sections->get('site')?->content, 'favicon'))
         <link rel="icon" href="{{ $sectionImage('site', '', 'favicon') }}">
@@ -58,9 +77,15 @@
     <meta property="og:title" content="{{ $content('seo', 'og_title') }}">
     <meta property="og:description" content="{{ $content('seo', 'og_description') }}">
     <meta property="og:image" content="{{ $sectionImage('seo', 'asset/images/furniture-polish-combo.png') }}">
+    <meta property="og:url" content="{{ $canonicalUrl }}">
     <meta property="og:site_name" content="{{ $content('seo', 'og_site_name') }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $content('seo', 'og_title') }}">
+    <meta name="twitter:description" content="{{ $content('seo', 'og_description') }}">
+    <meta name="twitter:image" content="{{ $sectionImage('seo', 'asset/images/furniture-polish-combo.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap"
         rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -231,15 +256,15 @@
                 @php
                     $heroContent = $sections->get('hero')?->content ?? [];
                     $heroSlides = [[
-                        'url' => $sectionImage('hero', 'asset/images/furniture-polish-combo.png'),
+                        'url' => $sectionImage('hero', 'asset/images/furniture-polish-combo.webp'),
                         'alt' => $content('hero', 'image_alt'),
                     ]];
                     foreach (\App\Models\LandingSection::heroImageKeys($heroContent) as $heroImageKey) {
                         $heroIndex = (int) substr($heroImageKey, 6);
                         $heroPath = data_get($heroContent, $heroImageKey);
                         $fallback = match ($heroIndex) {
-                            1 => 'asset/images/hero-bed-comparison.png',
-                            2 => 'asset/images/furniture-polish-combo.png',
+                            1 => 'asset/images/hero-bed-comparison.webp',
+                            2 => 'asset/images/furniture-polish-combo.webp',
                             default => null,
                         };
                         $heroImageExists = is_string($heroPath)
@@ -261,6 +286,7 @@
                             <div class="hero-slide" @if(!$loop->first) aria-hidden="true" @endif>
                                 <img class="hero-product-image hero-product" src="{{ $heroSlide['url'] }}"
                                     alt="{{ $heroSlide['alt'] }}" loading="{{ $loop->first ? 'eager' : 'lazy' }}"
+                                    width="1358" height="798"
                                     @if($loop->first) fetchpriority="high" @endif>
                             </div>
                         @endforeach
@@ -309,7 +335,7 @@
                                 'url' => route('media.show', ['path' => $videoFile]),
                             ],
                             'title' => $content('video', 'title'),
-                            'poster' => $sectionImage('video', 'asset/images/furniture-polish-combo.png'),
+                            'poster' => $sectionImage('video', 'asset/images/furniture-polish-combo.webp'),
                             'fallbackText' => $content('video', 'video_fallback_text'),
                             'soundLabel' => $content('video', 'sound_button_label'),
                             'soundEnabledLabel' => $content('video', 'sound_enabled_label'),
@@ -317,7 +343,7 @@
                         ])
                     @else
                         <div class="video-placeholder"
-                            style="background-image:linear-gradient(135deg,rgba(20,11,4,.25),rgba(20,11,4,.68)),url('{{ $sectionImage('video', 'asset/images/furniture-polish-combo.png') }}')"
+                            style="background-image:linear-gradient(135deg,rgba(20,11,4,.25),rgba(20,11,4,.68)),url('{{ $sectionImage('video', 'asset/images/furniture-polish-combo.webp') }}')"
                             role="img" aria-label="{{ $content('video', 'poster_alt') }}">
                             <span class="video-play" aria-hidden="true"><i class="bi bi-play-fill"></i></span>
                             <span class="video-placeholder-copy">{{ $content('video', 'placeholder_text') }}</span>
@@ -418,7 +444,7 @@
                 <div class="row align-items-center g-5">
                     <div class="col-lg-6 reveal">
                         <div class="feature-image-wrap"><img class="feature-image"
-                                src="{{ $sectionImage('story', 'asset/images/furniture-polish-combo.png') }}" loading="lazy"
+                                src="{{ $sectionImage('story', 'asset/images/furniture-polish-combo.webp') }}" loading="lazy"
                                 width="520" height="520" alt="{{ $content('story', 'image_alt') }}"></div>
                     </div>
                     <div class="col-lg-6 reveal"><span
@@ -443,7 +469,7 @@
             <div class="container">
                 <div class="package-comparison-grid">
                     <div class="package-comparison-media reveal">
-                        <img src="{{ $sectionImage('package_comparison', 'asset/images/furniture-polish-combo.png') }}"
+                        <img src="{{ $sectionImage('package_comparison', 'asset/images/furniture-polish-combo.webp') }}"
                             alt="{{ $content('package_comparison', 'image_alt') }}" loading="lazy" width="520"
                             height="520">
                     </div>
@@ -549,7 +575,7 @@
                             <div class="menu-image-wrap"><span
                                     class="best-tag">{{ $content('menu', 'popular_tag') }}</span><img
                                     class="menu-image"
-                                    src="{{ $sectionImage('menu', 'asset/images/furniture-polish-combo.png', 'image_1') }}"
+                                    src="{{ $sectionImage('menu', 'asset/images/furniture-polish-combo.webp', 'image_1') }}"
                                     loading="lazy" width="240" height="240"
                                     alt="{{ $content('menu', 'item_1_alt') }}"></div>
                             <h3>{{ $content('menu', 'item_1_name') }}</h3>
@@ -564,7 +590,7 @@
                     <div class="col-sm-6 col-lg-4 reveal">
                         <article class="menu-card">
                             <div class="menu-image-wrap"><img class="menu-image"
-                                    src="{{ $sectionImage('menu', 'asset/images/furniture-polish-combo.png', 'image_2') }}"
+                                    src="{{ $sectionImage('menu', 'asset/images/furniture-polish-combo.webp', 'image_2') }}"
                                     loading="lazy" width="240" height="240"
                                     alt="{{ $content('menu', 'item_2_alt') }}"></div>
                             <h3>{{ $content('menu', 'item_2_name') }}</h3>
@@ -579,7 +605,7 @@
                     <div class="col-sm-6 col-lg-4 reveal">
                         <article class="menu-card">
                             <div class="menu-image-wrap"><img class="menu-image"
-                                    src="{{ $sectionImage('menu', 'asset/images/furniture-polish-combo.png', 'image_3') }}"
+                                    src="{{ $sectionImage('menu', 'asset/images/furniture-polish-combo.webp', 'image_3') }}"
                                     loading="lazy" width="240" height="240"
                                     alt="{{ $content('menu', 'item_3_alt') }}"></div>
                             <h3>{{ $content('menu', 'item_3_name') }}</h3>
@@ -611,12 +637,12 @@
                     <div class="review-track" tabindex="0" aria-label="{{ $content('gallery', 'track_label') }}">
                         @php
                             $galleryFallbacks = [
-                                'furniture-polish-combo.png',
-                                'furniture-polish-combo.png',
-                                'furniture-polish-combo.png',
-                                'furniture-polish-combo.png',
-                                'furniture-polish-combo.png',
-                                'furniture-polish-combo.png',
+                                'furniture-polish-combo.webp',
+                                'furniture-polish-combo.webp',
+                                'furniture-polish-combo.webp',
+                                'furniture-polish-combo.webp',
+                                'furniture-polish-combo.webp',
+                                'furniture-polish-combo.webp',
                             ];
                         @endphp
                         @foreach (\App\Models\LandingSection::galleryImageKeys($sections->get('gallery')?->content ?? []) as $imageKey)
@@ -652,13 +678,15 @@
                             class="section-kicker mb-3">{{ $content('reviews', 'kicker') }}</span>
                         <h2 class="section-title">{{ $content('reviews', 'title') }}</h2>
                     </div>
-                    <div class="col-lg-4 mt-3 mt-lg-0">
-                        <div class="rating-summary d-flex align-items-center justify-content-between">
-                            <div><strong>{{ $content('reviews', 'rating') }}</strong>
-                                <div class="stars">{{ $content('reviews', 'rating_stars') }}</div>
-                            </div><span>{{ $content('reviews', 'rating_count') }}</span>
+                    @if ((string) $content('reviews', 'rating_summary_visible') === '1')
+                        <div class="col-lg-4 mt-3 mt-lg-0">
+                            <div class="rating-summary d-flex align-items-center justify-content-between">
+                                <div><strong>{{ $content('reviews', 'rating') }}</strong>
+                                    <div class="stars">{{ $content('reviews', 'rating_stars') }}</div>
+                                </div><span>{{ $content('reviews', 'rating_count') }}</span>
+                            </div>
                         </div>
-                    </div>
+                    @endif
                 </div>
                 @php
                     $reviewImages = collect(
@@ -666,6 +694,11 @@
                     )->filter(fn (string $imageKey): bool => $storedMediaExists(
                         data_get($sections->get('reviews')?->content, $imageKey),
                     ));
+                    $reviewContent = array_merge(
+                        \App\Models\LandingSection::defaults('reviews'),
+                        $sections->get('reviews')?->content ?? [],
+                    );
+                    $reviewItems = \App\Models\LandingSection::reviewItems($reviewContent);
                 @endphp
                 <div class="review-slider" data-autoplay="{{ $content('reviews', 'slider_autoplay') }}"
                     data-interval="{{ $content('reviews', 'slider_interval') }}"
@@ -681,25 +714,27 @@
                                 </article>
                             @endforeach
                         @else
-                            @for ($i = 1; $i <= 3; $i++)
+                            @forelse ($reviewItems as $review)
                                 <article class="review-slide review-card">
-                                    <div class="stars mb-3">{{ $content('reviews', "review_{$i}_rating") }}</div>
-                                    <p class="review-text">“{{ $content('reviews', "review_{$i}_text") }}”</p>
+                                    <div class="stars mb-3">{{ $review['rating'] }}</div>
+                                    <p class="review-text">“{{ $review['text'] }}”</p>
                                     <div class="d-flex align-items-center gap-3 mt-4">
-                                        @if ($storedMediaExists(data_get($sections->get('reviews')?->content, "image_{$i}")))
+                                        @if (!empty($review['image_key']) && $storedMediaExists(data_get($sections->get('reviews')?->content, $review['image_key'])))
                                             <img class="avatar" style="object-fit:cover"
-                                                src="{{ $sectionImage('reviews', '', "image_{$i}") }}"
-                                                alt="{{ $content('reviews', "review_{$i}_name") }}"
-                                            loading="lazy">@else<div class="avatar">
-                                                {{ $content('reviews', "review_{$i}_avatar") }}</div>
+                                                src="{{ $sectionImage('reviews', '', $review['image_key']) }}"
+                                                alt="{{ $review['name'] }}" loading="lazy">
+                                        @else
+                                            <div class="avatar">{{ $review['avatar'] }}</div>
                                         @endif
-                                        <div><strong>{{ $content('reviews', "review_{$i}_name") }}</strong>
+                                        <div><strong>{{ $review['name'] }}</strong>
                                             <div class="verified"><i class="bi bi-patch-check-fill"></i>
                                                 {{ $content('reviews', 'verified_label') }}</div>
                                         </div>
                                     </div>
                                 </article>
-                            @endfor
+                            @empty
+                                <p class="review-empty-message">{{ $content('reviews', 'no_reviews_text') }}</p>
+                            @endforelse
                         @endif
                     </div>
                     <div class="review-controls" hidden>
@@ -743,7 +778,7 @@
                                 <i class="bi bi-arrow-right ms-2"></i></a>
                         </div>
                         <div class="col-lg-5 d-none d-lg-block"><img
-                                src="{{ $sectionImage('deal', 'asset/images/furniture-polish-combo.png') }}" loading="lazy"
+                                src="{{ $sectionImage('deal', 'asset/images/furniture-polish-combo.webp') }}" loading="lazy"
                                 width="520" height="347" alt="{{ $content('deal', 'image_alt') }}"
                                 style="filter:drop-shadow(0 22px 16px rgba(0,0,0,.35))"></div>
                     </div>
@@ -812,7 +847,7 @@
                                 <p><i class="bi bi-check-circle-fill me-2"></i>{{ $content('order', 'benefit_2') }}
                                 </p><img id="orderInfoImage"
                                     data-custom-image="{{ data_get($sections->get('order')?->content, 'image') ? '1' : '0' }}"
-                                    src="{{ data_get($sections->get('order')?->content, 'image') ? $sectionImage('order', '') : $products->first()?->imageUrl() ?? $sectionImage('order', 'asset/images/furniture-polish-combo.png') }}"
+                                    src="{{ data_get($sections->get('order')?->content, 'image') ? $sectionImage('order', '') : $products->first()?->imageUrl() ?? $sectionImage('order', 'asset/images/furniture-polish-combo.webp') }}"
                                     loading="lazy" width="360" height="360"
                                     alt="{{ data_get($sections->get('order')?->content, 'image') ? $content('order', 'image_alt') : $products->first()?->name ?? $content('order', 'image_alt') }}">
                             </aside>

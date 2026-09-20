@@ -2,8 +2,8 @@
     $heroIndex = is_numeric($i) ? (int) $i : null;
     $heroSlideNumber = $heroIndex === null ? 'নতুন' : $heroIndex + 1;
     $heroFallback = match ($heroIndex) {
-        1 => 'asset/images/hero-bed-comparison.png',
-        2 => 'asset/images/furniture-polish-combo.png',
+        1 => 'asset/images/hero-bed-comparison.webp',
+        2 => 'asset/images/furniture-polish-combo.webp',
         default => null,
     };
 @endphp

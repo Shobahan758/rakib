@@ -58,7 +58,7 @@ return new class extends Migration
 
         DB::table('products')
             ->where('fallback_image', 'like', '%burger%')
-            ->update(['fallback_image' => 'asset/images/furniture-polish-combo.png']);
+            ->update(['fallback_image' => 'asset/images/furniture-polish-combo.webp']);
     }
 
     public function down(): void
