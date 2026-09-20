@@ -270,6 +270,16 @@
                         @endforeach
                     </div>
                 </div>
+                @if(filled($content('hero', 'offer_text')) || filled($content('hero', 'offer_highlight')))
+                    <p class="hero-offer-copy mx-auto">
+                        @if(filled($content('hero', 'offer_text')))
+                            <span class="hero-offer-copy__primary">{{ $content('hero', 'offer_text') }}</span>
+                        @endif
+                        @if(filled($content('hero', 'offer_highlight')))
+                            <span class="hero-offer-copy__accent">{{ $content('hero', 'offer_highlight') }}</span>
+                        @endif
+                    </p>
+                @endif
             </div>
         </section>
 

@@ -23,6 +23,8 @@ class LandingSection extends Model
                 'badge'           => '✓ প্রিমিয়াম মেটাল ক্যান প্যাকেজিং',
                 'title'           => 'পুরনো ফার্নিচার <span class="text-accent">নতুনের মতো ঝকঝকে</span>',
                 'description'     => '১০/২০/৩০ বছরের পুরনো, ফ্যাকাসে, রং জ্বলে যাওয়া ফার্নিচার একদম নতুন করার সহজ ও কার্যকরী সমাধান।',
+                'offer_text'      => 'Solution Mart-এর Furniture Polish Combo—১৩৫০ টাকার প্যাকেজ',
+                'offer_highlight' => 'এখন মাত্র ৯৯০ টাকা। সারা দেশে ক্যাশ অন ডেলিভারি।',
                 'image_alt'       => 'গ্রাহকের বিশ্বাসই আমাদের আসল শক্তি - MBarii Furniture & Home Care',
                 'image_1_alt'     => 'পুরনো ও পলিশ করা ফার্নিচারের তুলনা',
                 'image_2_alt'     => 'MBarii ফার্নিচার কেয়ার প্যাকেজ',
@@ -153,6 +155,8 @@ class LandingSection extends Model
                 'modal_price_label'           => 'Success page-এর মূল্য label',
                 'modal_home_button'           => 'Success page-এর হোম বাটনের লেখা',
                 'modal_addon_success_message' => 'অতিরিক্ত পণ্য সফলভাবে যুক্ত হওয়ার বার্তা',
+                'offer_text'                 => 'Hero ছবির নিচের অফার লেখা',
+                'offer_highlight'            => 'Hero অফারের রঙিন লেখা',
             ];
             if ($slug === 'video_reviews') {
                 $fieldLabels['video_links'] = 'ভিডিও লিংকগুলো — প্রতি লাইনে একটি';
