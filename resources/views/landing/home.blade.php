@@ -524,8 +524,7 @@
                     </div>
                     <div class="care-guarantee reveal">
                         <strong>{{ $content('complete_care', 'guarantee_title') }}</strong>
-                        <span>{{ $content('complete_care', 'guarantee_text') }}</span>
-                        <small>{{ $content('complete_care', 'guarantee_note') }}</small>
+                        <span>{{ $content('complete_care', 'guarantee_text') }} <small>{{ $content('complete_care', 'guarantee_note') }}</small></span>
                     </div>
                 </div>
             </div>
