@@ -2445,6 +2445,7 @@ footer {
 
 .hero-offer-copy {
   position: relative;
+  isolation: isolate;
   overflow: hidden;
   display: grid;
   width: min(calc(100% - 24px), 1084px);
@@ -2460,11 +2461,32 @@ footer {
 }
 
 .hero-offer-copy::before {
-  content: none;
+  content: '';
+  position: absolute;
+  z-index: -2;
+  inset: -160%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0 38%,
+    var(--orange, #ff6b00) 44% 50%,
+    transparent 56% 88%,
+    var(--orange-dark, #d95800) 94% 100%
+  );
+  animation: hero-offer-border-spin 7s linear infinite;
 }
 
 .hero-offer-copy::after {
-  content: none;
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 2px;
+  border-radius: 11px;
+  background: #fff;
+  pointer-events: none;
+}
+
+@keyframes hero-offer-border-spin {
+  to { transform: rotate(1turn); }
 }
 
 .hero-offer-copy__primary {
@@ -2593,6 +2615,10 @@ footer {
 
   .hero-slider-track {
     transition: none;
+  }
+
+  .hero-offer-copy::before {
+    animation: none;
   }
 
 }
