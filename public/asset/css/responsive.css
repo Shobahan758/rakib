@@ -58,15 +58,17 @@
   .product-option img { grid-column:2; grid-row:1; width:56px; height:56px; }
   .product-name { grid-column:3; grid-row:1; align-self:center; font-size:.94rem; line-height:1.45; }
   .product-price {
-    grid-column:2 / 4;
+    grid-column:3;
     grid-row:2;
-    width:100%;
-    align-items:flex-start;
+    width:auto;
+    align-items:flex-end;
     justify-content:flex-start;
+    justify-self:end;
     flex-direction:column;
     flex-wrap:nowrap;
     gap:3px;
     font-size:1rem;
+    text-align:right;
   }
   .product-tag { max-width:100%; }
   .product-quantity {
