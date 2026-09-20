@@ -204,6 +204,25 @@ class LandingSettingsTest extends TestCase
         ])->assertSessionHasErrors('review_image_1');
     }
 
+    public function test_missing_review_screenshots_fall_back_to_text_reviews(): void
+    {
+        Storage::fake('public');
+        LandingSection::updateOrCreate(['slug' => 'reviews'], [
+            'content' => array_merge(LandingSection::defaults('reviews'), [
+                'review_image_1' => 'landing/missing-review-one.jpg',
+                'review_image_2' => 'landing/missing-review-two.jpg',
+                'review_1_text' => 'Fallback customer review',
+            ]),
+            'is_visible' => true,
+        ]);
+
+        $this->get(route('home'))
+            ->assertOk()
+            ->assertSee('Fallback customer review')
+            ->assertDontSee('/media/landing/missing-review-one.jpg', false)
+            ->assertDontSee('/media/landing/missing-review-two.jpg', false);
+    }
+
     public function test_large_review_images_are_allowed_in_existing_and_new_slots(): void
     {
         Storage::fake('public');

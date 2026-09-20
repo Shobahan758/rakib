@@ -6,10 +6,13 @@
         $content = fn(string $section, string $key) => array_key_exists($key, $sections->get($section)?->content ?? [])
             ? data_get($sections->get($section)->content, $key)
             : data_get(\App\Models\LandingSection::defaults($section), $key);
-        $sectionImage = function (string $section, string $fallback, string $key = 'image') use ($sections): string {
+        $storedMediaExists = fn(mixed $path): bool => is_string($path)
+            && $path !== ''
+            && \Illuminate\Support\Facades\Storage::disk('public')->exists($path);
+        $sectionImage = function (string $section, string $fallback, string $key = 'image') use ($sections, $storedMediaExists): string {
             $path = data_get($sections->get($section)?->content, $key);
 
-            if (is_string($path) && $path !== '' && \Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
+            if ($storedMediaExists($path)) {
                 return route('media.show', ['path' => $path]);
             }
 
@@ -654,7 +657,9 @@
                 @php
                     $reviewImages = collect(
                         \App\Models\LandingSection::reviewImageKeys($sections->get('reviews')?->content ?? []),
-                    );
+                    )->filter(fn (string $imageKey): bool => $storedMediaExists(
+                        data_get($sections->get('reviews')?->content, $imageKey),
+                    ));
                 @endphp
                 <div class="review-slider" data-autoplay="{{ $content('reviews', 'slider_autoplay') }}"
                     data-interval="{{ $content('reviews', 'slider_interval') }}"
@@ -675,7 +680,7 @@
                                     <div class="stars mb-3">{{ $content('reviews', "review_{$i}_rating") }}</div>
                                     <p class="review-text">“{{ $content('reviews', "review_{$i}_text") }}”</p>
                                     <div class="d-flex align-items-center gap-3 mt-4">
-                                        @if (data_get($sections->get('reviews')?->content, "image_{$i}"))
+                                        @if ($storedMediaExists(data_get($sections->get('reviews')?->content, "image_{$i}")))
                                             <img class="avatar" style="object-fit:cover"
                                                 src="{{ $sectionImage('reviews', '', "image_{$i}") }}"
                                                 alt="{{ $content('reviews', "review_{$i}_name") }}"
