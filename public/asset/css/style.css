@@ -2585,3 +2585,81 @@ footer {
     margin-top: 18px;
   }
 }
+
+/* Keep every purchase/action button on the same orange brand treatment. */
+.btn-order,
+.btn-hero-order,
+.complete-care-order,
+.btn-light-cta,
+.order-result-actions a,
+.success-dismiss {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  border-color: transparent !important;
+  background: linear-gradient(135deg, var(--orange, #ff6b00), var(--button-end, #ff8b19)) !important;
+  color: #fff !important;
+  box-shadow: 0 10px 25px rgba(255, 107, 0, .25);
+  transition: transform .25s ease, box-shadow .25s ease
+}
+
+.btn-order::before,
+.btn-order::after,
+.btn-hero-order::before,
+.btn-hero-order::after,
+.complete-care-order::before,
+.complete-care-order::after,
+.btn-light-cta::before,
+.btn-light-cta::after,
+.order-result-actions a::before,
+.order-result-actions a::after,
+.success-dismiss::before,
+.success-dismiss::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+  transform: translateX(-150%) skewX(-20deg);
+  animation: order-button-shine 3s ease-in-out infinite;
+  background: linear-gradient(90deg, transparent 25%, rgba(255, 255, 255, .3) 50%, transparent 75%)
+}
+
+.btn-order::after,
+.btn-hero-order::after,
+.complete-care-order::after,
+.btn-light-cta::after,
+.order-result-actions a::after,
+.success-dismiss::after {
+  background: linear-gradient(90deg, transparent 42%, rgba(255, 255, 255, .2) 50%, transparent 58%);
+  animation-delay: .18s
+}
+
+.btn-order:hover,
+.btn-hero-order:hover,
+.complete-care-order:hover,
+.btn-light-cta:hover,
+.order-result-actions a:hover,
+.success-dismiss:hover {
+  color: #fff !important;
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(255, 107, 0, .34)
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-order::before,
+  .btn-order::after,
+  .btn-hero-order::before,
+  .btn-hero-order::after,
+  .complete-care-order::before,
+  .complete-care-order::after,
+  .btn-light-cta::before,
+  .btn-light-cta::after,
+  .order-result-actions a::before,
+  .order-result-actions a::after,
+  .success-dismiss::before,
+  .success-dismiss::after {
+    content: none;
+    animation: none
+  }
+}
