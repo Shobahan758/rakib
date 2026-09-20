@@ -8,11 +8,11 @@ use Illuminate\Support\Facades\Storage;
 
 class Product extends Model
 {
-    protected $fillable = ['name', 'price', 'badge', 'image_path', 'fallback_image', 'is_active', 'is_modal_product', 'sort_order'];
+    protected $fillable = ['name', 'price', 'regular_price', 'badge', 'image_path', 'fallback_image', 'is_active', 'is_modal_product', 'sort_order'];
 
     protected function casts(): array
     {
-        return ['price' => 'integer', 'is_active' => 'boolean', 'is_modal_product' => 'boolean', 'sort_order' => 'integer'];
+        return ['price' => 'integer', 'regular_price' => 'integer', 'is_active' => 'boolean', 'is_modal_product' => 'boolean', 'sort_order' => 'integer'];
     }
 
     public function orders(): HasMany

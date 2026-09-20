@@ -1292,10 +1292,31 @@ main > [data-section],
 
 .product-price {
   display: flex;
+  flex-direction: column;
   align-items: flex-end;
   justify-content: flex-end;
+  gap: 3px;
   color: var(--ink);
   font-weight: 700
+}
+
+.product-regular-price {
+  color: var(--muted);
+  font-size: .78rem;
+  font-weight: 600;
+  white-space: nowrap
+}
+
+.product-regular-price del {
+  text-decoration-color: var(--red);
+  text-decoration-thickness: 2px
+}
+
+.product-offer-price {
+  color: var(--red);
+  font-size: 1rem;
+  font-weight: 800;
+  white-space: nowrap
 }
 
 .product-tag {

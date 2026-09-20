@@ -231,7 +231,12 @@
             <h3 class="product-title">{{ $product->name }}</h3>
 
             <div class="product-meta">
-                <span class="product-price">৳{{ number_format($product->price) }}</span>
+                <span class="product-price">
+                    @if($product->regular_price && $product->regular_price > $product->price)
+                        <del style="color:var(--muted);font-size:.8em">৳{{ number_format($product->regular_price) }}</del>
+                    @endif
+                    ৳{{ number_format($product->price) }}
+                </span>
                 <span class="status-pill {{ $product->is_active ? 'active' : 'inactive' }}">
                     <span class="status-dot"></span>
                     {{ $product->is_active ? 'সক্রিয় (Active)' : 'নিষ্ক্রিয় (Inactive)' }}

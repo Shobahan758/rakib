@@ -8,6 +8,14 @@ use Tests\TestCase;
 
 class ProductImageUrlTest extends TestCase
 {
+    public function test_product_prices_are_cast_to_integers(): void
+    {
+        $product = new Product(['price' => '990', 'regular_price' => '1350']);
+
+        $this->assertSame(990, $product->price);
+        $this->assertSame(1350, $product->regular_price);
+    }
+
     public function test_it_uses_the_fallback_when_the_uploaded_product_image_is_missing(): void
     {
         Storage::fake('public');

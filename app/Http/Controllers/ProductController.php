@@ -93,6 +93,7 @@ class ProductController extends Controller
         return $request->validate([
             'name' => ['required', 'string', 'max:80'],
             'price' => ['required', 'integer', 'min:0', 'max:99999999'],
+            'regular_price' => ['nullable', 'integer', 'min:0', 'max:99999999', 'gte:price'],
             'badge' => ['nullable', 'string', 'max:100'],
             'sort_order' => ['required', 'integer', 'min:0', 'max:9999'],
             'image' => ['nullable', 'image', 'max:10240'],
@@ -100,6 +101,7 @@ class ProductController extends Controller
         ], [
             'name.required' => 'পণ্যের নাম লিখুন।',
             'price.required' => 'পণ্যের মূল্য লিখুন।',
+            'regular_price.gte' => 'রেগুলার মূল্য অফার মূল্যের সমান বা বেশি হতে হবে।',
             'sort_order.required' => 'ডিসপ্লে সিরিয়াল নম্বর দিন।',
             'image.image' => 'একটি সঠিক ছবি (JPG, PNG, WebP) আপলোড করুন।',
             'image.max' => 'ছবির সাইজ সর্বোচ্চ ১০ MB হতে পারবে।',
