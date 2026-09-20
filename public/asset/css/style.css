@@ -1339,6 +1339,25 @@ main > [data-section],
 
 .product-name { font-weight: 700 }
 
+.product-package-title {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 50%;
+  max-width: calc(100% - 230px);
+  padding: 5px 12px;
+  border: 1px solid rgba(255, 107, 0, .24);
+  border-radius: 7px;
+  background: #fff5eb;
+  color: var(--ink);
+  font-size: .82rem;
+  font-weight: 800;
+  line-height: 1.25;
+  text-align: center;
+  transform: translate(-50%, -50%);
+  white-space: nowrap
+}
+
 .product-quantity {
   display: grid;
   grid-template-columns: 38px 48px 38px;
@@ -1395,9 +1414,9 @@ main > [data-section],
 .product-tag {
   position: absolute;
   z-index: 2;
-  top: 0;
-  left: 50%;
-  right: auto;
+  top: 10px;
+  left: auto;
+  right: 14px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1409,7 +1428,7 @@ main > [data-section],
   font-size: .72rem;
   line-height: 1.2;
   text-align: center;
-  transform: translate(-50%, -50%);
+  transform: none;
   white-space: normal
 }
 
@@ -1417,16 +1436,32 @@ main > [data-section],
   padding-top: 24px
 }
 
+.product-option.has-package-title {
+  padding-top: 28px
+}
+
 @media (max-width: 575.98px) {
   .product-option.has-badge {
-    padding-top: 30px
+    padding-top: 42px
   }
 
   .product-tag {
-    top: 0;
-    left: 50%;
-    right: auto;
-    max-width: calc(100% - 20px)
+    top: 8px;
+    left: auto;
+    right: 8px;
+    max-width: 38%
+  }
+
+  .product-package-title {
+    top: 8px;
+    left: 12px;
+    max-width: 56%;
+    padding: 4px 8px;
+    font-size: .75rem;
+    text-align: left;
+    transform: none;
+    overflow: hidden;
+    text-overflow: ellipsis
   }
 }
 

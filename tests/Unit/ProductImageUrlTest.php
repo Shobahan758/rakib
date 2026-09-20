@@ -8,6 +8,18 @@ use Tests\TestCase;
 
 class ProductImageUrlTest extends TestCase
 {
+    public function test_picker_name_separates_the_package_from_its_details(): void
+    {
+        $product = new Product(['name' => '📦 প্রয়োজনীয় প্যাক (300ml) 🪑 ৩–৪টি ফার্নিচারের জন্য']);
+
+        $this->assertSame('📦 প্রয়োজনীয় প্যাক (300ml)', $product->pickerPackageName());
+        $this->assertSame('🪑 ৩–৪টি ফার্নিচারের জন্য', $product->pickerPackageDetails());
+
+        $basic = new Product(['name' => '✨ বেসিক পলিশ প্যাক 500ml (ডেলিভারি চার্জ ফ্রি)']);
+        $this->assertSame('✨ বেসিক পলিশ প্যাক 500ml', $basic->pickerPackageName());
+        $this->assertSame('(ডেলিভারি চার্জ ফ্রি)', $basic->pickerPackageDetails());
+    }
+
     public function test_product_prices_are_cast_to_integers(): void
     {
         $product = new Product(['price' => '990', 'regular_price' => '1350']);

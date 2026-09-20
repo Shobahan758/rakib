@@ -802,7 +802,9 @@
                                 'product-option',
                                 'selected' => $index === 0,
                                 'has-badge' => filled($product->badge),
+                                'has-package-title',
                             ])>
+                                <span class="product-package-title">{{ $product->pickerPackageName() }}</span>
                                 @if ($product->badge)
                                     <span class="product-tag">{{ $product->badge }}</span>
                                 @endif
@@ -812,7 +814,9 @@
                                     {{ $index === 0 ? 'checked' : '' }}>
                                 <img src="{{ $product->imageUrl() }}" width="74" height="74"
                                     alt="{{ $product->name }}">
-                                <span class="product-name">{{ $product->name }}</span>
+                                @if (filled($product->pickerPackageDetails()))
+                                    <span class="product-name">{{ $product->pickerPackageDetails() }}</span>
+                                @endif
                                 <span class="product-quantity" aria-label="{{ $product->name }} — {{ $content('order', 'quantity_prefix') }}">
                                     <button class="product-qty-minus" type="button"
                                         aria-label="{{ $content('order', 'quantity_decrease_label') }}">−</button>

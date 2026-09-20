@@ -39,4 +39,28 @@ class Product extends Model
 
         return [990 => 1350, 1250 => 1650, 1450 => 2000, 850 => 1080][$this->price] ?? null;
     }
+
+    public function pickerPackageName(): string
+    {
+        return $this->pickerNameParts()[0];
+    }
+
+    public function pickerPackageDetails(): string
+    {
+        return $this->pickerNameParts()[1];
+    }
+
+    private function pickerNameParts(): array
+    {
+        $parts = preg_split('/\s*🪑\s*/u', trim($this->name), 2);
+        if (count($parts) === 2) {
+            return [trim($parts[0]), '🪑 '.trim($parts[1])];
+        }
+
+        if (preg_match('/^(.*?\b\d+ml)\s*(\(.+\))$/u', trim($this->name), $matches) === 1) {
+            return [trim($matches[1]), trim($matches[2])];
+        }
+
+        return [trim($this->name), ''];
+    }
 }
