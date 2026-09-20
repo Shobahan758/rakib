@@ -300,12 +300,34 @@
                     </div>
                 </div>
                 @if(filled($content('hero', 'offer_text')) || filled($content('hero', 'offer_highlight')))
+                    @php
+                        $heroProduct = $products->first();
+                        $heroOfferPrice = (float) ($heroProduct?->price ?? 0);
+                        $heroRegularPrice = (float) ($heroProduct?->displayRegularPrice() ?: $heroOfferPrice);
+                        $heroSavings = max(0, $heroRegularPrice - $heroOfferPrice);
+                    @endphp
                     <p class="hero-offer-copy mx-auto">
                         @if(filled($content('hero', 'offer_text')))
                             <span class="hero-offer-copy__primary">{{ $content('hero', 'offer_text') }}</span>
                         @endif
                         @if(filled($content('hero', 'offer_highlight')))
                             <span class="hero-offer-copy__accent">{{ $content('hero', 'offer_highlight') }}</span>
+                        @endif
+                        @if($heroProduct)
+                            <span class="hero-offer-prices" aria-label="{{ $content('hero', 'regular_price_label') }}, {{ $content('hero', 'offer_price_label') }}, {{ $content('hero', 'savings_label') }}">
+                                <span class="hero-price-cell hero-price-cell--regular">
+                                    <small>{{ $content('hero', 'regular_price_label') }}</small>
+                                    <del>{{ $content('site', 'currency_symbol') }}{{ number_format($heroRegularPrice) }}</del>
+                                </span>
+                                <span class="hero-price-cell hero-price-cell--offer">
+                                    <small>{{ $content('hero', 'offer_price_label') }}</small>
+                                    <strong>{{ $content('site', 'currency_symbol') }}{{ number_format($heroOfferPrice) }}</strong>
+                                </span>
+                                <span class="hero-price-cell hero-price-cell--save">
+                                    <small>{{ $content('hero', 'savings_label') }}</small>
+                                    <strong>{{ $content('site', 'currency_symbol') }}{{ number_format($heroSavings) }}</strong>
+                                </span>
+                            </span>
                         @endif
                     </p>
                 @endif

@@ -23,6 +23,9 @@ class LandingCopyTest extends TestCase
 
         $this->assertSame('Solution Mart-এর Furniture Polish Combo—১৩৫০ টাকার প্যাকেজ', $hero['offer_text']);
         $this->assertSame('এখন মাত্র ৯৯০ টাকা। সারা দেশে ক্যাশ অন ডেলিভারি।', $hero['offer_highlight']);
+        $this->assertSame('আগের মূল্য', $hero['regular_price_label']);
+        $this->assertSame('বর্তমান অফার মূল্য', $hero['offer_price_label']);
+        $this->assertSame('সেভ', $hero['savings_label']);
     }
 
     public function test_default_seo_targets_furniture_polish_without_unverified_ratings(): void
