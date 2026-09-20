@@ -4,14 +4,29 @@
     if ($source['type'] === 'embed' && $shouldAutoplay) {
         $playerUrl .= (str_contains($playerUrl, '?') ? '&' : '?').'autoplay=1&mute=1&playsinline=1&enablejsapi=1';
     }
+    $clickToPlayUrl = $source['type'] === 'embed'
+        ? $source['url'].(str_contains($source['url'], '?') ? '&' : '?').'autoplay=1&playsinline=1'
+        : '';
 @endphp
 <div class="autoplay-video" data-autoplay-video data-player-type="{{ $source['type'] }}"
     data-sound-enabled-label="{{ $soundEnabledLabel ?? 'সাউন্ড চালু হয়েছে' }}">
     @if ($source['type'] === 'embed')
-        <iframe src="{{ $playerUrl }}" title="{{ $title }}" loading="{{ $shouldAutoplay ? 'eager' : 'lazy' }}"
-            data-video-player referrerpolicy="strict-origin-when-cross-origin"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowfullscreen></iframe>
+        @if ($shouldAutoplay)
+            <iframe src="{{ $playerUrl }}" title="{{ $title }}" loading="eager"
+                data-video-player referrerpolicy="strict-origin-when-cross-origin"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen></iframe>
+        @else
+            <button class="video-embed-facade" type="button" data-video-facade
+                data-src="{{ $clickToPlayUrl }}" aria-label="{{ $title }} চালু করুন"
+                @if (!empty($poster)) style="background-image:linear-gradient(rgba(18,10,6,.2),rgba(18,10,6,.35)),url('{{ $poster }}')" @endif>
+                <span class="video-play" aria-hidden="true"><i class="bi bi-play-fill"></i></span>
+                <span>ভিডিও চালু করুন</span>
+            </button>
+            <noscript><iframe src="{{ $source['url'] }}" title="{{ $title }}" loading="lazy"
+                referrerpolicy="strict-origin-when-cross-origin" allow="encrypted-media; picture-in-picture; web-share"
+                allowfullscreen></iframe></noscript>
+        @endif
     @else
         <video controls playsinline preload="{{ $shouldAutoplay ? 'auto' : 'metadata' }}" data-video-player
             @if($shouldAutoplay) autoplay muted @endif @if (!empty($poster)) poster="{{ $poster }}" @endif
@@ -30,4 +45,5 @@
 
 @once
     <script src="{{ asset('asset/js/video-sound.js') }}?v={{ filemtime(public_path('asset/js/video-sound.js')) }}" defer></script>
+    <script src="{{ asset('asset/js/video-facade.js') }}?v={{ filemtime(public_path('asset/js/video-facade.js')) }}" defer></script>
 @endonce

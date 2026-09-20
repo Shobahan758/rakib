@@ -339,7 +339,7 @@
                             'fallbackText' => $content('video', 'video_fallback_text'),
                             'soundLabel' => $content('video', 'sound_button_label'),
                             'soundEnabledLabel' => $content('video', 'sound_enabled_label'),
-                            'autoplay' => true,
+                            'autoplay' => false,
                         ])
                     @else
                         <div class="video-placeholder"
