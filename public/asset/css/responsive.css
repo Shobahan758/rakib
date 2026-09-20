@@ -61,11 +61,11 @@
     grid-column:2 / 4;
     grid-row:2;
     width:100%;
-    align-items:center;
-    justify-content:space-between;
-    flex-direction:row;
-    flex-wrap:wrap;
-    gap:7px 12px;
+    align-items:flex-start;
+    justify-content:flex-start;
+    flex-direction:column;
+    flex-wrap:nowrap;
+    gap:3px;
     font-size:1rem;
   }
   .product-tag { max-width:100%; }
