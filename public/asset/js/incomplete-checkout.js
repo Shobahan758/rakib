@@ -25,9 +25,11 @@
   const snapshot = () => {
     const name = form.elements.namedItem('name').value.trim();
     const phone = phoneNumber(form.elements.namedItem('phone').value);
+    const emailValue = form.elements.namedItem('email')?.value.trim() || '';
+    const email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue) ? emailValue : '';
     if (name.length < 2 || !/^01[3-9][0-9]{8}$/.test(phone)) return null;
     return {
-      token: token.value, name, phone,
+      token: token.value, name, phone, email,
       address: form.elements.namedItem('address')?.value || '',
       quantity: Number(form.elements.namedItem('quantity')?.value) || 1,
     };
@@ -71,7 +73,13 @@
   document.getElementById('productPicker')?.addEventListener('click', begin);
   form.addEventListener('focusout', () => { if (!completed) save(); });
   window.addEventListener('pagehide', save);
+  window.addEventListener('pageshow', begin);
+  window.addEventListener('online', save);
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') save(); });
+
+  // Browser autofill does not always dispatch input/change events. A lightweight
+  // poll catches those values; unchanged snapshots never make another request.
+  setInterval(() => document.visibilityState !== 'hidden' ? save() : pending, 2000);
 
   window.incompleteCheckout = {
     begin,
