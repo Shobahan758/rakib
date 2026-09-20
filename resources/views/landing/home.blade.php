@@ -829,7 +829,9 @@
                                     @if ($product->displayRegularPrice())
                                         <span class="product-regular-price">{{ $content('order', 'regular_price_label') }} <del>{{ $content('site', 'currency_symbol') }}{{ number_format($product->displayRegularPrice()) }}</del></span>
                                     @endif
-                                    <strong class="product-offer-price">{{ $content('order', 'offer_price_label') }} {{ $content('site', 'currency_symbol') }}{{ number_format($product->price) }}</strong>
+                                    <strong class="product-offer-price"
+                                        data-offer-label="{{ $content('order', 'offer_price_label') }}"
+                                        data-currency="{{ $content('site', 'currency_symbol') }}">{{ $content('order', 'offer_price_label') }} {{ $content('site', 'currency_symbol') }}{{ number_format($product->price) }}</strong>
                                 </span>
                             </label>
                         @empty

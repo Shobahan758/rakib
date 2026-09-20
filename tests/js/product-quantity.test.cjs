@@ -20,10 +20,12 @@ function setup() {
   radio.dataset = { price: '1450', name: 'Furniture polish', image: '/product.webp' };
   const minus = element();
   const plus = element();
+  const offerPrice = element();
+  offerPrice.dataset = { offerLabel: 'অফার', currency: '৳' };
   const option = {
     classList: { toggle() {} },
     querySelector(selector) {
-      return { '.product-radio': radio, '.product-qty': quantity, '.product-qty-minus': minus, '.product-qty-plus': plus }[selector];
+      return { '.product-radio': radio, '.product-qty': quantity, '.product-qty-minus': minus, '.product-qty-plus': plus, '.product-offer-price': offerPrice }[selector];
     },
   };
   const delivery = element();
@@ -49,7 +51,7 @@ function setup() {
     setTimeout(callback) { handlers.timeout = callback; },
   });
 
-  return { quantity, quantityInput, minus, plus, outputs };
+  return { quantity, quantityInput, minus, plus, offerPrice, outputs };
 }
 
 test('quantity buttons update the selected product price and order total', () => {
@@ -60,12 +62,15 @@ test('quantity buttons update the selected product price and order total', () =>
   assert.equal(state.outputs.selectedProductPrice.textContent, '৳2,900');
   assert.equal(state.outputs.selectedOrderTotal.textContent, '৳2,900');
   assert.equal(state.outputs.selectedProductQuantity.textContent, 'পরিমাণ: ২');
+  assert.equal(state.offerPrice.textContent, 'অফার ৳2,900');
 
   state.minus.handlers.click();
   assert.equal(state.outputs.selectedProductPrice.textContent, '৳1,450');
+  assert.equal(state.offerPrice.textContent, 'অফার ৳1,450');
 
   state.quantity.value = '7';
   state.quantity.handlers.change();
   assert.equal(state.outputs.selectedProductPrice.textContent, '৳10,150');
   assert.equal(state.outputs.selectedOrderTotal.textContent, '৳10,150');
+  assert.equal(state.offerPrice.textContent, 'অফার ৳10,150');
 });

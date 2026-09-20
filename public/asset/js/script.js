@@ -11,6 +11,16 @@ const selectedProductSummary = document.querySelector('.selected-product-summary
 const currencySymbol = selectedProductSummary?.dataset.currency || '৳';
 const quantityPrefix = selectedProductSummary?.dataset.quantityPrefix || 'পরিমাণ';
 const toBanglaNumber = value => String(value).replace(/\d/g, digit => '০১২৩৪৫৬৭৮৯'[Number(digit)]);
+const updateProductOfferPrice = (option) => {
+  const radio = option.querySelector('.product-radio');
+  const quantity = option.querySelector('.product-qty');
+  const offerPrice = option.querySelector('.product-offer-price');
+  if (!offerPrice) return;
+  const total = Number(radio?.dataset.price || 0) * Math.max(1, Number.parseInt(quantity?.value, 10) || 1);
+  const label = offerPrice.dataset.offerLabel || 'অফার';
+  const currency = offerPrice.dataset.currency || currencySymbol;
+  offerPrice.textContent = `${label} ${currency}${total.toLocaleString('en-US')}`;
+};
 const updateOrderTotal = () => {
   const selectedProduct = document.querySelector('.product-radio:checked');
   const productTotal = Number(selectedProduct?.dataset.price || 0) * Number(quantityInput?.value || 1);
@@ -21,6 +31,7 @@ const updateOrderTotal = () => {
 const updateSelectedProduct = (option) => {
   const radio = option.querySelector('.product-radio');
   const quantity = option.querySelector('.product-qty');
+  updateProductOfferPrice(option);
   radio.checked = true;
   productOptions.forEach(item => item.classList.toggle('selected', item === option));
   productIdInput.value = radio.value;
@@ -72,6 +83,7 @@ productOptions.forEach(option => {
     quantity.value = Math.min(9999, Math.max(1, Number.parseInt(quantity.value, 10) || 1));
     updateSelectedProduct(option);
   });
+  updateProductOfferPrice(option);
 });
 deliveryAreaInputs.forEach(input => input.addEventListener('change', () => {
   document.querySelectorAll('.delivery-option').forEach(option => option.classList.toggle('selected', option.contains(input)));
