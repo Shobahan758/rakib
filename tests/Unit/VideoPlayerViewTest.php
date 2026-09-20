@@ -14,8 +14,10 @@ class VideoPlayerViewTest extends TestCase
             'autoplay' => true,
         ])->render();
 
-        $this->assertStringContainsString('autoplay=1&amp;mute=1&amp;playsinline=1', $html);
+        $this->assertStringContainsString('autoplay=1&amp;mute=1&amp;playsinline=1&amp;enablejsapi=1', $html);
         $this->assertStringContainsString('loading="eager"', $html);
+        $this->assertStringContainsString('data-video-sound', $html);
+        $this->assertStringContainsString('সাউন্ড চালু করুন', $html);
     }
 
     public function test_direct_video_autoplay_uses_browser_safe_attributes(): void
@@ -30,6 +32,7 @@ class VideoPlayerViewTest extends TestCase
         $this->assertStringContainsString('autoplay muted', $html);
         $this->assertStringContainsString('playsinline', $html);
         $this->assertStringContainsString('preload="auto"', $html);
+        $this->assertStringContainsString('data-video-sound', $html);
     }
 
     public function test_review_video_does_not_autoplay_by_default(): void
@@ -41,5 +44,6 @@ class VideoPlayerViewTest extends TestCase
 
         $this->assertStringNotContainsString('autoplay=1', $html);
         $this->assertStringContainsString('loading="lazy"', $html);
+        $this->assertStringNotContainsString('data-video-sound', $html);
     }
 }
