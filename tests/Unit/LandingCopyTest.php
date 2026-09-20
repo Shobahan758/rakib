@@ -45,6 +45,7 @@ class LandingCopyTest extends TestCase
         $this->assertStringContainsString('কাঠের ফার্নিচার পলিশ', $hero['title']);
         $this->assertStringContainsString('Furniture Polish', $hero['image_alt']);
         $this->assertStringContainsString('Wood Furniture Polish', $hero['image_2_alt']);
+        $this->assertSame('0', $hero['slider_autoplay']);
     }
 
     public function test_default_reviews_do_not_contain_fabricated_customer_quotes(): void

@@ -43,7 +43,7 @@ class LandingSection extends Model
                 'image_alt'       => 'Solution Mart Furniture Polish Combo package',
                 'image_1_alt'     => 'Furniture Polish ব্যবহারের আগে ও পরে কাঠের ফার্নিচার',
                 'image_2_alt'     => 'Wood Furniture Polish, cleaner, putty ও tools-এর complete combo',
-                'slider_autoplay' => '1',
+                'slider_autoplay' => '0',
                 'slider_interval' => 4,
             ],
             'video'         => ['kicker' => 'See It in Action', 'title' => 'ফার্নিচারের পরিবর্তন নিজেই দেখুন', 'description' => 'ফার্নিচার পলিশ ব্যবহারের পদ্ধতি ও ফলাফল ভিডিওতে দেখুন।', 'video_url' => '', 'placeholder_text' => 'অ্যাডমিন প্যানেল থেকে ভিডিও যোগ করুন', 'video_fallback_text' => 'ভিডিওটি দেখতে এই লিংক খুলুন।', 'poster_alt' => 'ফার্নিচার পলিশ ব্যবহারের ভিডিও'],

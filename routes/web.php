@@ -25,7 +25,9 @@ Route::get('/media/{path}', function (string $path) {
         404,
     );
 
-    return response()->file(Storage::disk('public')->path($path));
+    return response()->file(Storage::disk('public')->path($path), [
+        'Cache-Control' => 'public, max-age=31536000, immutable',
+    ]);
 })->where('path', '.*')->name('media.show');
 
 Route::get('/', function () {
