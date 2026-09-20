@@ -68,6 +68,14 @@ class LandingCopyTest extends TestCase
         $this->assertSame('উজ্জ্বলতার নিশ্চয়তা, লিখিত গ্যারান্টিতে।', $completeCare['guarantee_note']);
     }
 
+    public function test_usage_section_contains_five_steps(): void
+    {
+        $story = LandingSection::defaults('story');
+
+        $this->assertArrayHasKey('list_5', $story);
+        $this->assertArrayNotHasKey('list_6', $story);
+    }
+
     public function test_every_frontend_copy_control_is_exposed_in_the_admin_definitions(): void
     {
         foreach (LandingSection::definitions() as $slug => $definition) {

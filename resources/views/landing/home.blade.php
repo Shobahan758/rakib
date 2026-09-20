@@ -453,7 +453,7 @@
                         <p class="section-copy mb-4">{{ $content('story', 'description') }}
                         </p>
                         <div class="feature-list">
-                            @for ($i = 1; $i <= 6; $i++)
+                            @for ($i = 1; $i <= 5; $i++)
                                 <div class="feature-item"><i
                                         class="bi bi-check2"></i>{{ $content('story', "list_{$i}") }}</div>
                             @endfor
