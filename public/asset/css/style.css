@@ -2249,15 +2249,15 @@ footer {
   justify-content: center;
   flex-wrap: wrap;
   gap: 4px 9px;
-  margin: 18px auto 0;
-  padding: 14px 22px;
+  margin: 28px auto 0;
+  padding: 8px 22px;
   border: 1px solid rgba(232, 93, 4, .2);
   border-radius: 14px;
   background: linear-gradient(135deg, #fff 0%, #fff7ef 100%);
   box-shadow: 0 10px 30px rgba(91, 45, 15, .08);
   font-size: clamp(1.05rem, 1.7vw, 1.45rem);
   font-weight: 800;
-  line-height: 1.55;
+  line-height: 1.35;
   text-align: center;
   text-wrap: balance;
 }
@@ -2272,11 +2272,11 @@ footer {
 
 @media (max-width: 575.98px) {
   .hero-offer-copy {
-    margin-top: 12px;
-    padding: 12px 14px;
+    margin-top: 20px;
+    padding: 8px 14px;
     border-radius: 11px;
     font-size: 1rem;
-    line-height: 1.6;
+    line-height: 1.4;
   }
 }
 
