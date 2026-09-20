@@ -810,6 +810,7 @@
                                 @endif
                                 <input class="product-radio" type="radio" name="product_choice"
                                     value="{{ $product->id }}" data-price="{{ $product->price }}"
+                                    data-regular-price="{{ $product->displayRegularPrice() ?: $product->price }}"
                                     data-name="{{ $product->name }}" data-image="{{ $product->imageUrl() }}"
                                     {{ $index === 0 ? 'checked' : '' }}>
                                 <img src="{{ $product->imageUrl() }}" width="74" height="74"
@@ -843,7 +844,8 @@
                     <div class="row g-0">
                         <div class="col-lg-5">
                             <aside class="order-info text-center text-lg-start"><span
-                                    class="badge bg-white text-danger rounded-pill mb-3">{{ $content('order', 'offer_badge') }}</span>
+                                    class="badge bg-white text-danger rounded-pill mb-3">{{ $content('order', 'regular_price_label') }}
+                                    <del id="selectedRegularPrice">{{ $content('site', 'currency_symbol') }}{{ number_format($products->first()?->displayRegularPrice() ?: $products->first()?->price ?? 0) }}</del></span>
                                 <h3 class="display-6 fw-bold">{{ $content('order', 'price_prefix') }} <span
                                         id="selectedOrderTotal">{{ $content('site', 'currency_symbol') }}{{ ($products->first()?->price ?? 0) + (int) $content('order', 'inside_delivery_charge') }}</span>
                                 </h3>

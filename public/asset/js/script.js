@@ -40,6 +40,7 @@ const updateSelectedProduct = (option) => {
   const summaryName = document.getElementById('selectedProductName');
   const summaryQuantity = document.getElementById('selectedProductQuantity');
   const summaryPrice = document.getElementById('selectedProductPrice');
+  const summaryRegularPrice = document.getElementById('selectedRegularPrice');
   if (summaryImage) { summaryImage.src = radio.dataset.image; summaryImage.alt = radio.dataset.name; }
   const infoImage = document.getElementById('orderInfoImage');
   if (infoImage && infoImage.dataset.customImage !== '1' && radio.dataset.image) {
@@ -53,7 +54,9 @@ const updateSelectedProduct = (option) => {
   if (summaryName) summaryName.textContent = radio.dataset.name;
   if (summaryQuantity) summaryQuantity.textContent = `${quantityPrefix}: ${toBanglaNumber(quantityInput.value)}`;
   const selectedProductTotal = Number(radio.dataset.price || 0) * Number(quantityInput.value || 1);
+  const selectedRegularTotal = Number(radio.dataset.regularPrice || radio.dataset.price || 0) * Number(quantityInput.value || 1);
   if (summaryPrice) summaryPrice.textContent = `${currencySymbol}${selectedProductTotal.toLocaleString('en-US')}`;
+  if (summaryRegularPrice) summaryRegularPrice.textContent = `${currencySymbol}${selectedRegularTotal.toLocaleString('en-US')}`;
   updateOrderTotal();
   window.storeTracking?.productView();
 };

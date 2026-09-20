@@ -17,7 +17,7 @@ function setup() {
   const quantity = element('1');
   const radio = element('9');
   radio.checked = true;
-  radio.dataset = { price: '1450', name: 'Furniture polish', image: '/product.webp' };
+  radio.dataset = { price: '1450', regularPrice: '2000', name: 'Furniture polish', image: '/product.webp' };
   const minus = element();
   const plus = element();
   const offerPrice = element();
@@ -34,7 +34,7 @@ function setup() {
   const summary = { dataset: { currency: '৳', quantityPrefix: 'পরিমাণ' } };
   const outputs = {
     selectedProductImage: {}, selectedProductName: {}, selectedProductQuantity: {},
-    selectedProductPrice: {}, selectedOrderTotal: {},
+    selectedProductPrice: {}, selectedRegularPrice: {}, selectedOrderTotal: {},
   };
 
   vm.runInNewContext(source, {
@@ -60,17 +60,20 @@ test('quantity buttons update the selected product price and order total', () =>
   state.plus.handlers.click();
   assert.equal(state.quantityInput.value, 2);
   assert.equal(state.outputs.selectedProductPrice.textContent, '৳2,900');
+  assert.equal(state.outputs.selectedRegularPrice.textContent, '৳4,000');
   assert.equal(state.outputs.selectedOrderTotal.textContent, '৳2,900');
   assert.equal(state.outputs.selectedProductQuantity.textContent, 'পরিমাণ: ২');
   assert.equal(state.offerPrice.textContent, 'অফার ৳2,900');
 
   state.minus.handlers.click();
   assert.equal(state.outputs.selectedProductPrice.textContent, '৳1,450');
+  assert.equal(state.outputs.selectedRegularPrice.textContent, '৳2,000');
   assert.equal(state.offerPrice.textContent, 'অফার ৳1,450');
 
   state.quantity.value = '7';
   state.quantity.handlers.change();
   assert.equal(state.outputs.selectedProductPrice.textContent, '৳10,150');
+  assert.equal(state.outputs.selectedRegularPrice.textContent, '৳14,000');
   assert.equal(state.outputs.selectedOrderTotal.textContent, '৳10,150');
   assert.equal(state.offerPrice.textContent, 'অফার ৳10,150');
 });
