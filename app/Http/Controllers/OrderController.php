@@ -9,24 +9,32 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\TrackingEvent;
 use App\Services\OrderRiskScorer;
+use App\Services\OrderSubmissionGuard;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Validation\ValidationException;
 
 class OrderController extends Controller
 {
-    public function store(StoreOrderRequest $request, OrderRiskScorer $riskScorer): JsonResponse|RedirectResponse
+    public function store(StoreOrderRequest $request, OrderRiskScorer $riskScorer, OrderSubmissionGuard $submissionGuard): JsonResponse|RedirectResponse
     {
-        $save = fn () => DB::transaction(fn () => $this->saveOrder($request, $riskScorer));
+        $save = fn () => DB::transaction(fn () => $this->saveOrder($request, $riskScorer, $submissionGuard));
+        $phoneLock = 'checkout-phone:'.hash('sha256', (string) $request->validated('phone'));
+        $ipLock = 'checkout-ip:'.hash('sha256', $request->ip() ?? 'unknown');
+        $guardedSave = fn () => Cache::lock($ipLock, 30)->block(
+            10,
+            fn () => Cache::lock($phoneLock, 30)->block(10, $save),
+        );
 
         return $request->filled('incomplete_token')
-            ? Cache::lock('checkout:'.$request->input('incomplete_token'), 30)->block(10, $save)
-            : $save();
+            ? Cache::lock('checkout:'.$request->input('incomplete_token'), 30)->block(10, $guardedSave)
+            : $guardedSave();
     }
 
-    private function saveOrder(StoreOrderRequest $request, OrderRiskScorer $riskScorer): JsonResponse|RedirectResponse
+    private function saveOrder(StoreOrderRequest $request, OrderRiskScorer $riskScorer, OrderSubmissionGuard $submissionGuard): JsonResponse|RedirectResponse
     {
         if ($request->filled('incomplete_token')) {
             $existing = Order::where('incomplete_token', $request->input('incomplete_token'))->first();
@@ -35,6 +43,9 @@ class OrderController extends Controller
             }
         }
         $data = $request->validated();
+        if ($violation = $submissionGuard->violation($data['phone'], $request->ip())) {
+            throw ValidationException::withMessages([$violation['field'] => [$violation['message']]]);
+        }
         $quantity = (int) $data['quantity'];
         $product = Product::query()->where('is_active', true)->findOrFail($data['product_id']);
         $unitPrice = $product->price;
