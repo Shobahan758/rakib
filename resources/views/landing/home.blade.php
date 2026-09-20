@@ -1134,6 +1134,8 @@
     <script
         src="{{ asset('asset/js/script.js') }}?v={{ file_exists(public_path('asset/js/script.js')) ? filemtime(public_path('asset/js/script.js')) : time() }}">
     </script>
+    <script src="{{ asset('asset/js/mobile-checkout-bar.js') }}?v={{ filemtime(public_path('asset/js/mobile-checkout-bar.js')) }}"
+        defer></script>
     <script src="{{ asset('asset/js/hero-slider.js') }}?v={{ filemtime(public_path('asset/js/hero-slider.js')) }}"
         defer></script>
     <script src="{{ asset('asset/js/delivery-area.js') }}?v={{ filemtime(public_path('asset/js/delivery-area.js')) }}">

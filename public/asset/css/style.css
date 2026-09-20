@@ -1739,7 +1739,15 @@ footer {
   gap: 10px;
   background: rgba(255, 255, 255, .95);
   backdrop-filter: blur(10px);
-  border-top: 1px solid var(--line)
+  border-top: 1px solid var(--line);
+  transition: opacity .25s ease, transform .3s ease, visibility .3s ease
+}
+
+.mobile-order-bar.is-checkout-hidden {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(110%)
 }
 
 .mobile-whatsapp-button {
