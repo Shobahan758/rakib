@@ -176,7 +176,7 @@ a {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  background-color: var(--orange-dark, #d95800);
+  background-color: var(--orange, #ff6b00);
   color: #ffffff !important;
   border-radius: 999px;
   padding: 6px 18px;
@@ -2322,7 +2322,7 @@ footer {
 .hero-badge {
   padding: 7px 17px;
   font-size: clamp(.9rem, 1.2vw, 1.1rem);
-  background: linear-gradient(135deg, var(--orange-dark, #d95800), var(--orange, #ff6b00));
+  background: var(--orange, #ff6b00);
   box-shadow: none;
 }
 
