@@ -28,6 +28,34 @@
   sidebar.addEventListener('click', event => { if (event.target.closest('a') && mobile.matches) setOpen(false); });
   mobile.addEventListener('change', () => setOpen(false));
   setOpen(false);
+
+  // Sidebar submenu state: keep one group open, preserve manual choice, and
+  // expose the native <details> state correctly to assistive technology.
+  const navGroups = Array.from(sidebar.querySelectorAll('.nav-group'));
+  const navStorageKey = 'adminSidebarOpenGroup';
+  let savedGroup = null;
+  try { savedGroup = sessionStorage.getItem(navStorageKey); } catch (_) {}
+  const savedGroupIndex = savedGroup !== null && /^\d+$/.test(savedGroup)
+    ? Number(savedGroup)
+    : -1;
+  const activeGroup = navGroups.find(group => group.querySelector('.nav-link.active'));
+  const initialGroup = activeGroup || navGroups.find(group => group.open)
+    || navGroups[savedGroupIndex] || null;
+  navGroups.forEach(group => { group.open = group === initialGroup; });
+  const syncNavGroups = () => navGroups.forEach(group =>
+    group.querySelector('summary')?.setAttribute('aria-expanded', String(group.open)));
+  syncNavGroups();
+  navGroups.forEach((group, index) => group.addEventListener('toggle', () => {
+    if (group.open) {
+      navGroups.forEach(other => { if (other !== group) other.open = false; });
+      try { sessionStorage.setItem(navStorageKey, String(index)); } catch (_) {}
+    } else if (!sidebar.querySelector('.nav-group[open]')) {
+      try { sessionStorage.removeItem(navStorageKey); } catch (_) {}
+    }
+    syncNavGroups();
+  }));
+
+  // Color controls.
   document.querySelectorAll('[data-color-target]').forEach(picker => {
     const input = document.getElementById(picker.dataset.colorTarget);
     picker.addEventListener('input', () => { input.value = picker.value; });
