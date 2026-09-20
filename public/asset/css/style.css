@@ -1485,6 +1485,20 @@ main > [data-section],
   color: #fff
 }
 
+.order-regular-price-badge {
+  padding: .65rem 1rem;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: .01em
+}
+
+.order-regular-price-badge del {
+  margin-left: .2rem;
+  text-decoration-line: line-through;
+  text-decoration-color: currentColor;
+  text-decoration-thickness: 3px
+}
+
 .order-info img {
   max-height: 300px;
   object-fit: contain;

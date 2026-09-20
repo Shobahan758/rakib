@@ -844,7 +844,7 @@
                     <div class="row g-0">
                         <div class="col-lg-5">
                             <aside class="order-info text-center text-lg-start"><span
-                                    class="badge bg-white text-danger rounded-pill mb-3">{{ $content('order', 'regular_price_label') }}
+                                    class="badge bg-white text-danger rounded-pill mb-3 order-regular-price-badge">{{ $content('order', 'regular_price_label') }}
                                     <del id="selectedRegularPrice">{{ $content('site', 'currency_symbol') }}{{ number_format($products->first()?->displayRegularPrice() ?: $products->first()?->price ?? 0) }}</del></span>
                                 <h3 class="display-6 fw-bold">{{ $content('order', 'price_prefix') }} <span
                                         id="selectedOrderTotal">{{ $content('site', 'currency_symbol') }}{{ ($products->first()?->price ?? 0) + (int) $content('order', 'inside_delivery_charge') }}</span>
