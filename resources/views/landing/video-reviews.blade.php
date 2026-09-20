@@ -33,6 +33,7 @@
                                     'source' => $source,
                                     'title' => $content('video_reviews', 'video_label') . ' ' . $loop->iteration,
                                     'poster' => null,
+                                    'playLabel' => $content('video_reviews', 'play_button_label'),
                                     'fallbackText' => $content('video_reviews', 'video_fallback_text'),
                                     'soundLabel' => $content('video_reviews', 'sound_button_label'),
                                     'soundEnabledLabel' => $content('video_reviews', 'sound_enabled_label'),

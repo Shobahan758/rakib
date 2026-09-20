@@ -18,10 +18,10 @@
                 allowfullscreen></iframe>
         @else
             <button class="video-embed-facade" type="button" data-video-facade
-                data-src="{{ $clickToPlayUrl }}" aria-label="{{ $title }} চালু করুন"
+                data-src="{{ $clickToPlayUrl }}" aria-label="{{ $title }} — {{ $playLabel ?? $title }}"
                 @if (!empty($poster)) style="background-image:linear-gradient(rgba(18,10,6,.2),rgba(18,10,6,.35)),url('{{ $poster }}')" @endif>
                 <span class="video-play" aria-hidden="true"><i class="bi bi-play-fill"></i></span>
-                <span>ভিডিও চালু করুন</span>
+                <span>{{ $playLabel ?? $title }}</span>
             </button>
             <noscript><iframe src="{{ $source['url'] }}" title="{{ $title }}" loading="lazy"
                 referrerpolicy="strict-origin-when-cross-origin" allow="encrypted-media; picture-in-picture; web-share"

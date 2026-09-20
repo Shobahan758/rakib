@@ -358,6 +358,7 @@
                             ],
                             'title' => $content('video', 'title'),
                             'poster' => $sectionImage('video', 'asset/images/furniture-polish-combo.webp'),
+                            'playLabel' => $content('video', 'play_button_label'),
                             'fallbackText' => $content('video', 'video_fallback_text'),
                             'soundLabel' => $content('video', 'sound_button_label'),
                             'soundEnabledLabel' => $content('video', 'sound_enabled_label'),

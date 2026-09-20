@@ -118,6 +118,7 @@ class LandingSection extends Model
         ];
         $defaults['video'] += [
             'section_label' => 'ভিডিও',
+            'play_button_label' => 'ভিডিও চালু করুন',
             'sound_button_label' => 'সাউন্ড চালু করুন',
             'sound_enabled_label' => 'সাউন্ড চালু হয়েছে',
         ];
@@ -148,6 +149,7 @@ class LandingSection extends Model
         $defaults['hero']          += ['readable_background_color' => '', 'readable_background_visible' => '1'];
         $defaults['video_reviews'] += [
             'video_link_label' => 'ভিডিও আলাদা করে দেখুন ↗', 'video_label' => 'ভিডিও রিভিউ',
+            'play_button_label' => 'ভিডিও চালু করুন',
             'video_fallback_text' => 'ভিডিওটি দেখতে এই লিংক খুলুন।',
             'carousel_label' => 'ভিডিও রিভিউ', 'track_label' => 'ভিডিও দেখতে পাশে স্ক্রল করুন',
             'item_label' => 'ভিডিও', 'sound_button_label' => 'সাউন্ড চালু করুন',
@@ -227,6 +229,7 @@ class LandingSection extends Model
                 'quantity_increase_label'    => 'পরিমাণ বাড়ানোর button label',
                 'sound_button_label'         => 'ভিডিও sound button-এর লেখা',
                 'sound_enabled_label'        => 'Sound চালু হওয়ার পরের লেখা',
+                'play_button_label'          => 'ভিডিও play button-এর লেখা',
                 'carousel_label'             => 'Slider-এর screen-reader label',
                 'track_label'                => 'Slider ব্যবহারের নির্দেশনা',
                 'review_image_alt'           => 'Review ছবির alt text',
