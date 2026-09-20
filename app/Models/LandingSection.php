@@ -36,7 +36,7 @@ class LandingSection extends Model
             'hero'          => [
                 'top_bar_text'    => '১০০% অরিজিনাল • ০১ বছরের লিখিত গ্যারান্টি • ক্যাশ অন ডেলিভারি',
                 'badge'           => '✓ প্রিমিয়াম মেটাল ক্যান প্যাকেজিং',
-                'title'           => 'Furniture Polish Combo – <span class="text-accent">কাঠের ফার্নিচার পলিশ</span>',
+                'title'           => '<span class="hero-title-main">Furniture Polish Combo –</span> <span class="text-accent">কাঠের ফার্নিচার পলিশ</span>',
                 'description'     => '১০/২০/৩০ বছরের পুরনো, ফ্যাকাসে, রং জ্বলে যাওয়া ফার্নিচার একদম নতুন করার সহজ ও কার্যকরী সমাধান।',
                 'offer_text'      => 'Solution Mart-এর Furniture Polish Combo—১৩৫০ টাকার প্যাকেজ',
                 'offer_highlight' => 'এখন মাত্র ৯৯০ টাকা। সারা দেশে ক্যাশ অন ডেলিভারি।',

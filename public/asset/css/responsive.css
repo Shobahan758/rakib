@@ -110,6 +110,15 @@
 @media(max-width:767px) {
   body { font-size:max(16px, 1rem); line-height:1.75; }
   .hero h1, .section-title { line-height:1.45; letter-spacing:0; word-break:normal; }
+  .hero .hero-title {
+    font-size:clamp(1.5rem, 6.3vw, 1.75rem);
+    line-height:1.35;
+  }
+  .hero-title .hero-title-main,
+  .hero-title .text-accent {
+    display:block;
+    white-space:nowrap;
+  }
   .section-copy, .review-text, .menu-card p, .benefit-card p, .accordion-body {
     font-size:max(16px, 1rem); line-height:1.85;
   }

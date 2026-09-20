@@ -206,6 +206,11 @@ a {
   color: var(--orange, #ff6b00);
 }
 
+.hero-title .hero-title-main,
+.hero h1 .hero-title-main {
+  color: inherit;
+}
+
 .btn-hero-order,
 .hero .btn-order {
   display: inline-flex;
