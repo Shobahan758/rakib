@@ -10,7 +10,7 @@ class ProductImageUrlTest extends TestCase
 {
     public function test_picker_name_separates_the_package_from_its_details(): void
     {
-        $product = new Product(['name' => '📦 প্রয়োজনীয় প্যাক (300ml) 🪑 ৩–৪টি ফার্নিচারের জন্য']);
+        $product = new Product(['name' => '📦প্রয়োজনীয় প্যাক (300ml) 🪑 ৩–৪টি ফার্নিচারের জন্য']);
 
         $this->assertSame('📦 প্রয়োজনীয় প্যাক (300ml)', $product->pickerPackageName());
         $this->assertSame('🪑 ৩–৪টি ফার্নিচারের জন্য', $product->pickerPackageDetails());

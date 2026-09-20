@@ -52,15 +52,16 @@ class Product extends Model
 
     private function pickerNameParts(): array
     {
-        $parts = preg_split('/\s*🪑\s*/u', trim($this->name), 2);
+        $name = preg_replace('/^📦(?!\s)/u', '📦 ', trim($this->name));
+        $parts = preg_split('/\s*🪑\s*/u', $name, 2);
         if (count($parts) === 2) {
             return [trim($parts[0]), '🪑 '.trim($parts[1])];
         }
 
-        if (preg_match('/^(.*?\b\d+ml)\s*(\(.+\))$/u', trim($this->name), $matches) === 1) {
+        if (preg_match('/^(.*?\b\d+ml)\s*(\(.+\))$/u', $name, $matches) === 1) {
             return [trim($matches[1]), trim($matches[2])];
         }
 
-        return [trim($this->name), ''];
+        return [$name, ''];
     }
 }
