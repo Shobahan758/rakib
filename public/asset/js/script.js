@@ -149,7 +149,7 @@ successModal?.querySelectorAll('[data-buy-product]').forEach(button => {
     status.hidden = false;
     status.className = 'alert alert-info';
     if (!successModal.dataset.addonUrl) {
-      status.textContent = 'আগে মূল অর্ডারটি সম্পন্ন করুন।';
+      status.textContent = successModal.dataset.orderRequiredMessage || 'আগে মূল অর্ডারটি সম্পন্ন করুন।';
       return;
     }
     const label = button.innerHTML;
@@ -164,11 +164,11 @@ successModal?.querySelectorAll('[data-buy-product]').forEach(button => {
         body: JSON.stringify({ product_id: button.dataset.buyProduct, quantity: Number(quantity.value) }),
       });
       const result = await response.json().catch(() => ({}));
-      if (response.status === 419) throw new Error('সেশন শেষ হয়েছে। পেজ রিফ্রেশ করে আবার চেষ্টা করুন।');
-      if (response.status === 403) throw new Error('পণ্য যোগ করার সময়সীমা শেষ হয়েছে। মূল অর্ডারটি আবার দেবেন না; আমাদের সাথে যোগাযোগ করুন।');
-      if (response.status === 429) throw new Error('অনেকবার চেষ্টা হয়েছে। এক মিনিট পরে আবার চেষ্টা করুন।');
-      if (response.status >= 500) throw new Error('সার্ভারে সমস্যা হয়েছে। মূল অর্ডারটি আবার দেবেন না; আমাদের সাথে যোগাযোগ করুন।');
-      if (response.status !== 201 || !result.order_id) throw new Error(result.message || 'পণ্য যোগ করা যায়নি। আবার চেষ্টা করুন।');
+      if (response.status === 419) throw new Error(successModal.dataset.sessionExpiredMessage || 'সেশন শেষ হয়েছে। পেজ রিফ্রেশ করে আবার চেষ্টা করুন।');
+      if (response.status === 403) throw new Error(successModal.dataset.addonExpiredMessage || 'পণ্য যোগ করার সময়সীমা শেষ হয়েছে।');
+      if (response.status === 429) throw new Error(successModal.dataset.rateLimitMessage || 'অনেকবার চেষ্টা হয়েছে। এক মিনিট পরে আবার চেষ্টা করুন।');
+      if (response.status >= 500) throw new Error(successModal.dataset.addonServerErrorMessage || 'সার্ভারে সমস্যা হয়েছে।');
+      if (response.status !== 201 || !result.order_id) throw new Error(result.message || successModal.dataset.addonErrorMessage || 'পণ্য যোগ করা যায়নি। আবার চেষ্টা করুন।');
       button.textContent = successModal.dataset.addedLabel || '✓ অর্ডারে যুক্ত হয়েছে';
       quantity.disabled = true;
       status.className = 'modal-order-confirmation';
@@ -228,9 +228,9 @@ form?.addEventListener('submit', async (event) => {
       result = await response.json();
     } catch (_) {}
 
-    if (response.status === 419) throw new Error('সেশন শেষ হয়েছে। পেজ রিফ্রেশ করে আবার অর্ডার দিন।');
-    if (response.status === 429) throw new Error('অনেকবার চেষ্টা হয়েছে। এক মিনিট পরে আবার চেষ্টা করুন।');
-    if (response.status >= 500) throw new Error('সার্ভারে সমস্যা হওয়ায় অর্ডার নিশ্চিত করা যায়নি। আমাদের সাথে যোগাযোগ করুন।');
+    if (response.status === 419) throw new Error(form.dataset.sessionExpiredMessage || 'সেশন শেষ হয়েছে। পেজ রিফ্রেশ করে আবার অর্ডার দিন।');
+    if (response.status === 429) throw new Error(form.dataset.rateLimitMessage || 'অনেকবার চেষ্টা হয়েছে। এক মিনিট পরে আবার চেষ্টা করুন।');
+    if (response.status >= 500) throw new Error(form.dataset.serverErrorMessage || 'সার্ভারে সমস্যা হওয়ায় অর্ডার নিশ্চিত করা যায়নি।');
     if (!response.ok) {
       let errMsg = result.message || form.dataset.errorMessage || 'অর্ডার পাঠানো যায়নি। আবার চেষ্টা করুন।';
       if (result.errors) {
@@ -241,7 +241,7 @@ form?.addEventListener('submit', async (event) => {
     }
 
     if (response.status !== 201 || !Number.isSafeInteger(result.order_id) || result.order_id < 1) {
-      throw new Error('অর্ডার নিশ্চিত করা যায়নি। অনুগ্রহ করে আমাদের সাথে যোগাযোগ করুন।');
+      throw new Error(form.dataset.confirmationErrorMessage || 'অর্ডার নিশ্চিত করা যায়নি। অনুগ্রহ করে আমাদের সাথে যোগাযোগ করুন।');
     }
 
     status.textContent = form.dataset.successMessage || result.message || 'ধন্যবাদ! আপনার অর্ডারটি সফলভাবে গ্রহণ করা হয়েছে।';

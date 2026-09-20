@@ -12,7 +12,7 @@ class LandingSectionController extends Controller
 {
     public function index(): View
     {
-        $definitions = array_diff_key(LandingSection::definitions(), array_flip(['site', 'social', 'seo']));
+        $definitions = LandingSection::definitions();
         $sections = LandingSection::whereIn('slug', array_keys($definitions))->get()->keyBy('slug');
 
         return view('dasgboard.pages.site-sections', compact('definitions', 'sections'));

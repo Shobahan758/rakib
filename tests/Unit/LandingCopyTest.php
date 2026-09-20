@@ -33,4 +33,21 @@ class LandingCopyTest extends TestCase
         $this->assertSame('১ বছরের মধ্যে উজ্জ্বলতা নষ্ট হলে—পাবেন আরও ১ বোতল পলিশ সম্পূর্ণ ফ্রি! 🎁', $completeCare['guarantee_text']);
         $this->assertSame('উজ্জ্বলতার নিশ্চয়তা, লিখিত গ্যারান্টিতে।', $completeCare['guarantee_note']);
     }
+
+    public function test_every_frontend_copy_control_is_exposed_in_the_admin_definitions(): void
+    {
+        foreach (LandingSection::definitions() as $slug => $definition) {
+            foreach (LandingSection::defaults($slug) as $key => $value) {
+                if (is_array($value)) {
+                    continue;
+                }
+
+                $this->assertArrayHasKey($key, $definition['fields'], "{$slug}.{$key} is not editable");
+            }
+        }
+
+        $this->assertArrayHasKey('card_1_icon', LandingSection::definitions()['features']['fields']);
+        $this->assertArrayHasKey('regular_price_label', LandingSection::definitions()['order']['fields']);
+        $this->assertArrayHasKey('sound_enabled_label', LandingSection::definitions()['video']['fields']);
+    }
 }

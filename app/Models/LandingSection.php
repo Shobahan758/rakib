@@ -94,6 +94,27 @@ class LandingSection extends Model
             'footer_visible'          => '1', 'mobile_order_visible'     => '1',
         ];
         $defaults['social']['whatsapp_visible']  = '1';
+        $defaults['hero'] += [
+            'slider_group_label' => 'Hero ছবিগুলো',
+            'slider_item_label' => 'Hero ছবি',
+        ];
+        $defaults['video'] += [
+            'section_label' => 'ভিডিও',
+            'sound_button_label' => 'সাউন্ড চালু করুন',
+            'sound_enabled_label' => 'সাউন্ড চালু হয়েছে',
+        ];
+        $defaults['features'] += [
+            'card_1_icon' => 'bi-check2-circle', 'card_2_icon' => 'bi-clock-history',
+            'card_3_icon' => 'bi-award', 'card_4_icon' => 'bi-shield-check',
+            'card_5_icon' => 'bi-scooter', 'card_6_icon' => 'bi-wallet2',
+        ];
+        $defaults['package_comparison'] += ['yes_label' => 'হ্যাঁ', 'no_label' => 'না'];
+        $defaults['gallery'] += ['track_label' => 'ছবি দেখতে পাশে স্ক্রল করুন'];
+        $defaults['reviews'] += [
+            'carousel_label' => 'Customer reviews',
+            'track_label' => 'রিভিউ দেখতে পাশে স্ক্রল করুন',
+            'review_image_alt' => 'ক্রেতার রিভিউ',
+        ];
         foreach (['hero', 'deal', 'cta', 'menu', 'complete_care'] as $slug) {
             $defaults[$slug]['button_link'] = '#Order';
         }
@@ -107,7 +128,13 @@ class LandingSection extends Model
         }
         $defaults['gallery']        = array_replace($defaults['gallery'], ['slider_prev_label' => 'আগের ছবি', 'slider_next_label' => 'পরের ছবি']);
         $defaults['hero']          += ['readable_background_color' => '', 'readable_background_visible' => '1'];
-        $defaults['video_reviews'] += ['video_link_label' => 'ভিডিও আলাদা করে দেখুন ↗', 'video_label' => 'ভিডিও রিভিউ', 'video_fallback_text' => 'ভিডিওটি দেখতে এই লিংক খুলুন।'];
+        $defaults['video_reviews'] += [
+            'video_link_label' => 'ভিডিও আলাদা করে দেখুন ↗', 'video_label' => 'ভিডিও রিভিউ',
+            'video_fallback_text' => 'ভিডিওটি দেখতে এই লিংক খুলুন।',
+            'carousel_label' => 'ভিডিও রিভিউ', 'track_label' => 'ভিডিও দেখতে পাশে স্ক্রল করুন',
+            'item_label' => 'ভিডিও', 'sound_button_label' => 'সাউন্ড চালু করুন',
+            'sound_enabled_label' => 'সাউন্ড চালু হয়েছে',
+        ];
         $defaults['order']         += [
             'modal_quantity_label' => 'পরিমাণ', 'modal_added_label'              => '✓ অর্ডারে যুক্ত হয়েছে',
             'modal_adding_label'   => 'যোগ করা হচ্ছে...', 'modal_adding_message' => 'আপনার অর্ডারের সঙ্গে পণ্যটি যুক্ত করা হচ্ছে...',
@@ -116,6 +143,18 @@ class LandingSection extends Model
             'modal_price_label'             => 'মূল্য',
             'modal_home_button'             => 'হোম পেজে ফিরে যান',
             'modal_addon_success_message'   => 'পণ্যটি আপনার আগের অর্ডারের সঙ্গে যুক্ত হয়েছে। একই ডেলিভারিতে পাবেন—অতিরিক্ত ডেলিভারি চার্জ নেই।',
+            'regular_price_label'            => 'রেগুলার',
+            'offer_price_label'              => 'অফার',
+            'quantity_decrease_label'        => 'পরিমাণ কমান',
+            'quantity_increase_label'        => 'পরিমাণ বাড়ান',
+            'order_required_message'         => 'আগে মূল অর্ডারটি সম্পন্ন করুন।',
+            'session_expired_message'        => 'সেশন শেষ হয়েছে। পেজ রিফ্রেশ করে আবার অর্ডার দিন।',
+            'rate_limit_message'             => 'অনেকবার চেষ্টা হয়েছে। এক মিনিট পরে আবার চেষ্টা করুন।',
+            'server_error_message'           => 'সার্ভারে সমস্যা হওয়ায় অর্ডার নিশ্চিত করা যায়নি। আমাদের সাথে যোগাযোগ করুন।',
+            'confirmation_error_message'     => 'অর্ডার নিশ্চিত করা যায়নি। অনুগ্রহ করে আমাদের সাথে যোগাযোগ করুন।',
+            'addon_expired_message'          => 'পণ্য যোগ করার সময়সীমা শেষ হয়েছে। মূল অর্ডারটি আবার দেবেন না; আমাদের সাথে যোগাযোগ করুন।',
+            'addon_server_error_message'     => 'সার্ভারে সমস্যা হয়েছে। মূল অর্ডারটি আবার দেবেন না; আমাদের সাথে যোগাযোগ করুন।',
+            'addon_error_message'            => 'পণ্য যোগ করা যায়নি। আবার চেষ্টা করুন।',
         ];
         unset($defaults['order']['price']);
         return $defaults;
@@ -163,6 +202,15 @@ class LandingSection extends Model
                 'modal_addon_success_message' => 'অতিরিক্ত পণ্য সফলভাবে যুক্ত হওয়ার বার্তা',
                 'offer_text'                 => 'Hero ছবির নিচের অফার লেখা',
                 'offer_highlight'            => 'Hero অফারের রঙিন লেখা',
+                'regular_price_label'        => 'রেগুলার মূল্যের label',
+                'offer_price_label'          => 'অফার মূল্যের label',
+                'quantity_decrease_label'    => 'পরিমাণ কমানোর button label',
+                'quantity_increase_label'    => 'পরিমাণ বাড়ানোর button label',
+                'sound_button_label'         => 'ভিডিও sound button-এর লেখা',
+                'sound_enabled_label'        => 'Sound চালু হওয়ার পরের লেখা',
+                'carousel_label'             => 'Slider-এর screen-reader label',
+                'track_label'                => 'Slider ব্যবহারের নির্দেশনা',
+                'review_image_alt'           => 'Review ছবির alt text',
             ];
             if ($slug === 'video_reviews') {
                 $fieldLabels['video_links'] = 'ভিডিও লিংকগুলো — প্রতি লাইনে একটি';

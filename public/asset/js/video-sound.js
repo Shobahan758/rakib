@@ -20,8 +20,9 @@
       player.play().catch(() => {});
     }
 
-    button.innerHTML = '<span aria-hidden="true">🔊</span> সাউন্ড চালু হয়েছে';
-    button.setAttribute('aria-label', 'ভিডিওর সাউন্ড চালু হয়েছে');
+    const enabledLabel = container.dataset.soundEnabledLabel || 'সাউন্ড চালু হয়েছে';
+    button.innerHTML = `<span aria-hidden="true">🔊</span> ${enabledLabel}`;
+    button.setAttribute('aria-label', enabledLabel);
     button.classList.add('sound-enabled');
   };
 

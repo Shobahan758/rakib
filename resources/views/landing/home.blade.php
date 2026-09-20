@@ -265,10 +265,10 @@
                             </div>
                         @endforeach
                     </div>
-                    <div class="hero-slider-dots" aria-label="Hero ছবিগুলো">
+                    <div class="hero-slider-dots" aria-label="{{ $content('hero', 'slider_group_label') }}">
                         @foreach ($heroSlides as $heroSlide)
                             <button type="button" @class(['active' => $loop->first])
-                                aria-label="Hero ছবি {{ $loop->iteration }}"
+                                aria-label="{{ $content('hero', 'slider_item_label') }} {{ $loop->iteration }}"
                                 @if($loop->first) aria-current="true" @endif></button>
                         @endforeach
                     </div>
@@ -294,7 +294,7 @@
             $isShortVideo = (bool) preg_match('~(?:youtube\.com|youtu\.be)/(?:shorts/)?~i', $videoUrl)
                 && str_contains((string) parse_url($videoUrl, PHP_URL_PATH), '/shorts/');
         @endphp
-        <section class="video-section section-pad" data-section="video" aria-label="Video">
+        <section class="video-section section-pad" data-section="video" aria-label="{{ $content('video', 'section_label') }}">
             <div class="container">
                 <div class="text-center mb-5"><span
                         class="section-kicker mb-3">{{ $content('video', 'kicker') }}</span>
@@ -311,6 +311,8 @@
                             'title' => $content('video', 'title'),
                             'poster' => $sectionImage('video', 'asset/images/furniture-polish-combo.png'),
                             'fallbackText' => $content('video', 'video_fallback_text'),
+                            'soundLabel' => $content('video', 'sound_button_label'),
+                            'soundEnabledLabel' => $content('video', 'sound_enabled_label'),
                             'autoplay' => true,
                         ])
                     @else
@@ -336,7 +338,7 @@
                 <div class="row g-3 g-md-4">
                     <div class="col-6 col-lg-4 reveal">
                         <article class="benefit-card">
-                            <div class="icon-box"><i class="bi bi-check2-circle"></i></div>
+                            <div class="icon-box"><i class="bi {{ $content('features', 'card_1_icon') }}"></i></div>
                             @if (data_get($sections->get('features')?->content, 'image_1'))
                                 <img src="{{ $sectionImage('features', '', 'image_1') }}"
                                     alt="{{ $content('features', 'card_1_title') }}" class="img-fluid rounded mb-3"
@@ -348,7 +350,7 @@
                     </div>
                     <div class="col-6 col-lg-4 reveal">
                         <article class="benefit-card">
-                            <div class="icon-box"><i class="bi bi-clock-history"></i></div>
+                            <div class="icon-box"><i class="bi {{ $content('features', 'card_2_icon') }}"></i></div>
                             @if (data_get($sections->get('features')?->content, 'image_2'))
                                 <img src="{{ $sectionImage('features', '', 'image_2') }}"
                                     alt="{{ $content('features', 'card_2_title') }}" class="img-fluid rounded mb-3"
@@ -360,7 +362,7 @@
                     </div>
                     <div class="col-6 col-lg-4 reveal">
                         <article class="benefit-card">
-                            <div class="icon-box"><i class="bi bi-award"></i></div>
+                            <div class="icon-box"><i class="bi {{ $content('features', 'card_3_icon') }}"></i></div>
                             @if (data_get($sections->get('features')?->content, 'image_3'))
                                 <img src="{{ $sectionImage('features', '', 'image_3') }}"
                                     alt="{{ $content('features', 'card_3_title') }}" class="img-fluid rounded mb-3"
@@ -372,7 +374,7 @@
                     </div>
                     <div class="col-6 col-lg-4 reveal">
                         <article class="benefit-card">
-                            <div class="icon-box"><i class="bi bi-shield-check"></i></div>
+                            <div class="icon-box"><i class="bi {{ $content('features', 'card_4_icon') }}"></i></div>
                             @if (data_get($sections->get('features')?->content, 'image_4'))
                                 <img src="{{ $sectionImage('features', '', 'image_4') }}"
                                     alt="{{ $content('features', 'card_4_title') }}" class="img-fluid rounded mb-3"
@@ -384,7 +386,7 @@
                     </div>
                     <div class="col-6 col-lg-4 reveal">
                         <article class="benefit-card">
-                            <div class="icon-box"><i class="bi bi-scooter"></i></div>
+                            <div class="icon-box"><i class="bi {{ $content('features', 'card_5_icon') }}"></i></div>
                             @if (data_get($sections->get('features')?->content, 'image_5'))
                                 <img src="{{ $sectionImage('features', '', 'image_5') }}"
                                     alt="{{ $content('features', 'card_5_title') }}" class="img-fluid rounded mb-3"
@@ -396,7 +398,7 @@
                     </div>
                     <div class="col-6 col-lg-4 reveal">
                         <article class="benefit-card">
-                            <div class="icon-box"><i class="bi bi-wallet2"></i></div>
+                            <div class="icon-box"><i class="bi {{ $content('features', 'card_6_icon') }}"></i></div>
                             @if (data_get($sections->get('features')?->content, 'image_6'))
                                 <img src="{{ $sectionImage('features', '', 'image_6') }}"
                                     alt="{{ $content('features', 'card_6_title') }}" class="img-fluid rounded mb-3"
@@ -466,8 +468,8 @@
                                     @for ($i = 1; $i <= 4; $i++)
                                         <tr>
                                             <td>{{ $content('package_comparison', "feature_{$i}") }}</td>
-                                            <td><span class="comparison-yes" aria-label="হ্যাঁ">{{ $content('package_comparison', 'yes_mark') }}</span></td>
-                                            <td><span class="comparison-no" aria-label="না">{{ $content('package_comparison', 'no_mark') }}</span></td>
+                                            <td><span class="comparison-yes" aria-label="{{ $content('package_comparison', 'yes_label') }}">{{ $content('package_comparison', 'yes_mark') }}</span></td>
+                                            <td><span class="comparison-no" aria-label="{{ $content('package_comparison', 'no_label') }}">{{ $content('package_comparison', 'no_mark') }}</span></td>
                                         </tr>
                                     @endfor
                                 </tbody>
@@ -606,7 +608,7 @@
                     data-pause-label="{{ $content('gallery', 'slider_pause_label') }}"
                     data-resume-label="{{ $content('gallery', 'slider_resume_label') }}"
                     aria-label="{{ $content('gallery', 'title') }}">
-                    <div class="review-track" tabindex="0" aria-label="দেখতে পাশে স্ক্রল করুন">
+                    <div class="review-track" tabindex="0" aria-label="{{ $content('gallery', 'track_label') }}">
                         @php
                             $galleryFallbacks = [
                                 'furniture-polish-combo.png',
@@ -669,13 +671,13 @@
                     data-interval="{{ $content('reviews', 'slider_interval') }}"
                     data-pause-label="{{ $content('reviews', 'slider_pause_label') }}"
                     data-resume-label="{{ $content('reviews', 'slider_resume_label') }}"
-                    aria-label="Customer reviews">
-                    <div class="review-track" tabindex="0" aria-label="রিভিউ দেখতে পাশে স্ক্রল করুন">
+                    aria-label="{{ $content('reviews', 'carousel_label') }}">
+                    <div class="review-track" tabindex="0" aria-label="{{ $content('reviews', 'track_label') }}">
                         @if ($reviewImages->isNotEmpty())
                             @foreach ($reviewImages as $imageKey)
                                 <article class="review-slide review-image-card">
                                     <img src="{{ $sectionImage('reviews', '', $imageKey) }}"
-                                        alt="ক্রেতার রিভিউ {{ $loop->iteration }}" loading="lazy">
+                                        alt="{{ $content('reviews', 'review_image_alt') }} {{ $loop->iteration }}" loading="lazy">
                                 </article>
                             @endforeach
                         @else
@@ -776,19 +778,19 @@
                                 <img src="{{ $product->imageUrl() }}" width="74" height="74"
                                     alt="{{ $product->name }}">
                                 <span class="product-name">{{ $product->name }}</span>
-                                <span class="product-quantity" aria-label="{{ $product->name }}-এর পরিমাণ">
+                                <span class="product-quantity" aria-label="{{ $product->name }} — {{ $content('order', 'quantity_prefix') }}">
                                     <button class="product-qty-minus" type="button"
-                                        aria-label="পরিমাণ কমান">−</button>
+                                        aria-label="{{ $content('order', 'quantity_decrease_label') }}">−</button>
                                     <input class="product-qty" type="number" value="1" min="1"
-                                        max="9999" inputmode="numeric" aria-label="পরিমাণ">
+                                        max="9999" inputmode="numeric" aria-label="{{ $content('order', 'quantity_prefix') }}">
                                     <button class="product-qty-plus" type="button"
-                                        aria-label="পরিমাণ বাড়ান">+</button>
+                                        aria-label="{{ $content('order', 'quantity_increase_label') }}">+</button>
                                 </span>
                                 <span class="product-price">
                                     @if ($product->displayRegularPrice())
-                                        <span class="product-regular-price">রেগুলার <del>{{ $content('site', 'currency_symbol') }}{{ number_format($product->displayRegularPrice()) }}</del></span>
+                                        <span class="product-regular-price">{{ $content('order', 'regular_price_label') }} <del>{{ $content('site', 'currency_symbol') }}{{ number_format($product->displayRegularPrice()) }}</del></span>
                                     @endif
-                                    <strong class="product-offer-price">অফার {{ $content('site', 'currency_symbol') }}{{ number_format($product->price) }}</strong>
+                                    <strong class="product-offer-price">{{ $content('order', 'offer_price_label') }} {{ $content('site', 'currency_symbol') }}{{ number_format($product->price) }}</strong>
                                 </span>
                             </label>
                         @empty
@@ -821,7 +823,11 @@
                                 action="{{ route('orders.store', [], false) }}" method="POST"
                                 data-sending-message="{{ $content('order', 'sending_message') }}"
                                 data-success-message="{{ $content('order', 'success_message') }}"
-                                data-error-message="{{ $content('order', 'error_message') }}" novalidate>
+                                data-error-message="{{ $content('order', 'error_message') }}"
+                                data-session-expired-message="{{ $content('order', 'session_expired_message') }}"
+                                data-rate-limit-message="{{ $content('order', 'rate_limit_message') }}"
+                                data-server-error-message="{{ $content('order', 'server_error_message') }}"
+                                data-confirmation-error-message="{{ $content('order', 'confirmation_error_message') }}" novalidate>
                                 @csrf
                                 <input id="incompleteToken" name="incomplete_token" type="hidden"
                                     value="{{ (string) \Illuminate\Support\Str::uuid() }}">
@@ -975,7 +981,13 @@
         data-adding-message="{{ $content('order', 'modal_adding_message') }}"
         data-confirm-title="{{ $content('order', 'modal_title') }}"
         data-confirm-description="{{ $content('order', 'modal_description') }}"
-        data-total-label="{{ $content('order', 'modal_total_label') }}" aria-labelledby="orderSuccessTitle"
+        data-total-label="{{ $content('order', 'modal_total_label') }}"
+        data-order-required-message="{{ $content('order', 'order_required_message') }}"
+        data-session-expired-message="{{ $content('order', 'session_expired_message') }}"
+        data-rate-limit-message="{{ $content('order', 'rate_limit_message') }}"
+        data-addon-expired-message="{{ $content('order', 'addon_expired_message') }}"
+        data-addon-server-error-message="{{ $content('order', 'addon_server_error_message') }}"
+        data-addon-error-message="{{ $content('order', 'addon_error_message') }}" aria-labelledby="orderSuccessTitle"
         aria-describedby="orderSuccessMessage"
         data-open-on-load="{{ session('order_success') ? 'true' : 'false' }}">
         <button type="button" class="success-close" aria-label="{{ $content('order', 'modal_close_button') }}"
@@ -1016,10 +1028,10 @@
                             <label class="modal-quantity-wrap">
                                 <span>{{ $content('order', 'modal_quantity_label') }}</span>
                                 <span class="modal-quantity-control">
-                                    <button class="modal-qty-minus" type="button" aria-label="পরিমাণ কমান">−</button>
+                                    <button class="modal-qty-minus" type="button" aria-label="{{ $content('order', 'quantity_decrease_label') }}">−</button>
                                     <input class="modal-product-quantity" type="number" min="1" max="9999"
-                                        value="1" inputmode="numeric" aria-label="{{ $product->name }}-এর পরিমাণ">
-                                    <button class="modal-qty-plus" type="button" aria-label="পরিমাণ বাড়ান">+</button>
+                                        value="1" inputmode="numeric" aria-label="{{ $product->name }} — {{ $content('order', 'quantity_prefix') }}">
+                                    <button class="modal-qty-plus" type="button" aria-label="{{ $content('order', 'quantity_increase_label') }}">+</button>
                                 </span>
                             </label>
                             <button type="button" class="btn btn-order w-100"

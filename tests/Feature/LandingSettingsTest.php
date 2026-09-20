@@ -243,7 +243,36 @@ class LandingSettingsTest extends TestCase
         foreach (LandingSection::definitions() as $slug => $definition) {
             $this->get(route('admin.landing.edit', $slug))->assertOk()->assertSee($definition['label']);
         }
-        $this->get(route('admin.landing.index'))->assertOk()->assertSee('Edit content');
+        $this->get(route('admin.landing.index'))->assertOk()
+            ->assertSee('All Site Content & Sections')
+            ->assertSee('General Settings')
+            ->assertSee('Social Media')
+            ->assertSee('SEO Settings')
+            ->assertSee('Edit all content');
+    }
+
+    public function test_previously_hardcoded_frontend_copy_and_icons_are_editable(): void
+    {
+        $this->put(route('admin.landing.update', 'features'), [
+            'is_visible' => 1,
+            'card_1_icon' => 'bi-stars',
+        ])->assertSessionHasNoErrors();
+        $this->put(route('admin.landing.update', 'order'), [
+            'is_visible' => 1,
+            'regular_price_label' => 'আগের দাম',
+            'offer_price_label' => 'এখনকার দাম',
+            'quantity_decrease_label' => 'একটি কমান',
+            'quantity_increase_label' => 'একটি বাড়ান',
+            'server_error_message' => 'Custom server error',
+        ])->assertSessionHasNoErrors();
+
+        $this->get(route('home'))->assertOk()
+            ->assertSee('bi bi-stars', false)
+            ->assertSee('আগের দাম')
+            ->assertSee('এখনকার দাম')
+            ->assertSee('aria-label="একটি কমান"', false)
+            ->assertSee('aria-label="একটি বাড়ান"', false)
+            ->assertSee('data-server-error-message="Custom server error"', false);
     }
 
     public function test_saved_text_images_and_responsive_dimensions_render_on_frontend(): void

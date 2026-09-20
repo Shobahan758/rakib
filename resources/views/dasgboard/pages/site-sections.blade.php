@@ -1,6 +1,6 @@
 @extends('dasgboard.layouts.app')
 
-@section('title', 'Enable/Disable All Sections')
+@section('title', 'All Site Content & Sections')
 
 @push('styles')
 <style>
@@ -9,19 +9,23 @@
 @endpush
 
 @section('content')
-<div class="page-heading"><div><h1>Enable/Disable All Sections</h1><p>Enable or disable website sections from one place.</p></div></div>
+<div class="page-heading"><div><h1>All Site Content & Sections</h1><p>সাইটের সব লেখা, ছবি, ভিডিও, বাটন, রং ও section settings এখান থেকে পরিবর্তন করুন।</p></div></div>
 @if(session('success'))<div class="alert">{{ session('success') }}</div>@endif
 @include('dasgboard.pages.products.settings-links')
 <form method="POST" action="{{ route('admin.landing.visibility') }}">
     @csrf @method('PUT')
     <section class="panel">
-        <div class="toolbar"><strong>{{ count($definitions) }} sections total</strong><div class="bulk-buttons"><button id="enableAll" type="button">Enable All</button><button id="disableAll" type="button">Disable All</button></div></div>
+        <div class="toolbar"><strong>{{ count($definitions) }} settings & sections total</strong><div class="bulk-buttons"><button id="enableAll" type="button">Enable All Sections</button><button id="disableAll" type="button">Disable All Sections</button></div></div>
         <div class="section-list">
             @foreach($definitions as $slug => $definition)
+                @php($canToggle = !in_array($slug, ['site', 'social', 'seo'], true))
                 @php($isVisible = $sections->get($slug)?->is_visible ?? true)
                 <div class="section-toggle">
-                    <span class="section-copy"><strong>{{ $definition['label'] }}</strong><small class="status-text">{{ $isVisible ? 'Enabled' : 'Disabled' }}</small></span>
-                    <a href="{{ route('admin.landing.edit', $slug) }}" style="color:var(--primary);white-space:nowrap">Edit content</a><label class="switch"><input aria-label="{{ $definition['label'] }} visibility" class="section-checkbox" type="checkbox" name="active_sections[]" value="{{ $slug }}" @checked($isVisible)><span class="slider"></span></label>
+                    <span class="section-copy"><strong>{{ $definition['label'] }}</strong><small class="status-text">{{ $canToggle ? ($isVisible ? 'Enabled' : 'Disabled') : 'Always active settings' }}</small></span>
+                    <a href="{{ route('admin.landing.edit', $slug) }}" style="color:var(--primary);white-space:nowrap">Edit all content</a>
+                    @if($canToggle)
+                        <label class="switch"><input aria-label="{{ $definition['label'] }} visibility" class="section-checkbox" type="checkbox" name="active_sections[]" value="{{ $slug }}" @checked($isVisible)><span class="slider"></span></label>
+                    @endif
                 </div>
             @endforeach
         </div>
@@ -35,7 +39,7 @@
     const sectionCheckboxes = document.querySelectorAll('.section-checkbox');
     const updateStatusText = item => item.closest('.section-toggle').querySelector('.status-text').textContent = item.checked ? 'Enabled' : 'Disabled';
     sectionCheckboxes.forEach(item => item.addEventListener('change', () => updateStatusText(item)));
-    document.getElementById('enableAll').addEventListener('click', () => sectionCheckboxes.forEach(item => { item.checked = true; updateStatusText(item); }));
-    document.getElementById('disableAll').addEventListener('click', () => sectionCheckboxes.forEach(item => { item.checked = false; updateStatusText(item); }));
+    document.getElementById('enableAll')?.addEventListener('click', () => sectionCheckboxes.forEach(item => { item.checked = true; updateStatusText(item); }));
+    document.getElementById('disableAll')?.addEventListener('click', () => sectionCheckboxes.forEach(item => { item.checked = false; updateStatusText(item); }));
 </script>
 @endpush

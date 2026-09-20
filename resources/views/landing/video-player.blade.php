@@ -5,7 +5,8 @@
         $playerUrl .= (str_contains($playerUrl, '?') ? '&' : '?').'autoplay=1&mute=1&playsinline=1&enablejsapi=1';
     }
 @endphp
-<div class="autoplay-video" data-autoplay-video data-player-type="{{ $source['type'] }}">
+<div class="autoplay-video" data-autoplay-video data-player-type="{{ $source['type'] }}"
+    data-sound-enabled-label="{{ $soundEnabledLabel ?? 'সাউন্ড চালু হয়েছে' }}">
     @if ($source['type'] === 'embed')
         <iframe src="{{ $playerUrl }}" title="{{ $title }}" loading="{{ $shouldAutoplay ? 'eager' : 'lazy' }}"
             data-video-player referrerpolicy="strict-origin-when-cross-origin"
@@ -21,8 +22,8 @@
     @endif
 
     @if ($shouldAutoplay)
-        <button class="video-sound-toggle" type="button" data-video-sound aria-label="ভিডিওর সাউন্ড চালু করুন">
-            <span aria-hidden="true">🔊</span> সাউন্ড চালু করুন
+        <button class="video-sound-toggle" type="button" data-video-sound aria-label="{{ $soundLabel ?? 'সাউন্ড চালু করুন' }}">
+            <span aria-hidden="true">🔊</span> {{ $soundLabel ?? 'সাউন্ড চালু করুন' }}
         </button>
     @endif
 </div>

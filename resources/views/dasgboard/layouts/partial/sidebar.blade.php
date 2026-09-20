@@ -57,7 +57,7 @@
         <details class="nav-group" {{ request()->routeIs('admin.landing.*', 'admin.products.*') ? 'open' : '' }}>
             <summary class="nav-link {{ request()->routeIs('admin.landing.*', 'admin.products.*') ? 'active' : '' }}"><i class="fa-solid fa-sliders"></i><span>Site Settings</span><i class="fa-solid fa-chevron-down submenu-arrow"></i></summary>
             <div class="submenu">
-                <a class="submenu-link {{ request()->routeIs('admin.landing.index') ? 'active' : '' }}" href="{{ route('admin.landing.index') }}"><i class="fa-solid fa-toggle-on"></i> Enable/Disable All Sections</a>
+                <a class="submenu-link {{ request()->routeIs('admin.landing.index') ? 'active' : '' }}" href="{{ route('admin.landing.index') }}"><i class="fa-solid fa-pen-to-square"></i> All Site Content & Sections</a>
                 <a class="submenu-link {{ request()->routeIs('admin.products.index', 'admin.products.edit') ? 'active' : '' }}" href="{{ route('admin.products.index') }}"><i class="fa-solid fa-box"></i> আপনার পণ্যসমূহ</a>
                 <a class="submenu-link {{ request()->routeIs('admin.products.create') ? 'active' : '' }}" href="{{ route('admin.products.create') }}"><i class="fa-solid fa-plus"></i> নতুন পণ্য যোগ করুন</a>
                 @foreach(\App\Models\LandingSection::definitions() as $slug => $item)

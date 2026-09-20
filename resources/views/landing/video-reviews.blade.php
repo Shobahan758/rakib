@@ -22,18 +22,20 @@
                 data-interval="{{ $content('video_reviews', 'slider_interval') }}"
                 data-pause-label="{{ $content('video_reviews', 'slider_pause_label') }}"
                 data-resume-label="{{ $content('video_reviews', 'slider_resume_label') }}" role="region"
-                aria-roledescription="carousel" aria-label="ভিডিও রিভিউ">
+                aria-roledescription="carousel" aria-label="{{ $content('video_reviews', 'carousel_label') }}">
                 <div class="video-review-track" data-video-count="{{ $videoReviews->count() }}" tabindex="0"
-                    aria-label="ভিডিও দেখতে পাশে স্ক্রল করুন">
+                    aria-label="{{ $content('video_reviews', 'track_label') }}">
                     @foreach ($videoReviews as $source)
                         <article class="video-review-card" role="group" aria-roledescription="slide"
-                            aria-label="ভিডিও {{ $loop->iteration }} / {{ $loop->count }}">
+                            aria-label="{{ $content('video_reviews', 'item_label') }} {{ $loop->iteration }} / {{ $loop->count }}">
                             <div class="video-review-player">
                                 @include('landing.video-player', [
                                     'source' => $source,
                                     'title' => $content('video_reviews', 'video_label') . ' ' . $loop->iteration,
                                     'poster' => null,
                                     'fallbackText' => $content('video_reviews', 'video_fallback_text'),
+                                    'soundLabel' => $content('video_reviews', 'sound_button_label'),
+                                    'soundEnabledLabel' => $content('video_reviews', 'sound_enabled_label'),
                                 ])
                             </div>
                             <a class="video-review-link" href="{{ $source['original_url'] }}" target="_blank"
