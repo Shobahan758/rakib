@@ -84,6 +84,28 @@ class LandingSettingsTest extends TestCase
         $this->get(route('home'))->assertOk()->assertSee('Restored first hero slide');
     }
 
+    public function test_missing_hero_uploads_use_bundled_fallback_images(): void
+    {
+        Storage::fake('public');
+        LandingSection::updateOrCreate(['slug' => 'hero'], [
+            'content' => array_merge(LandingSection::defaults('hero'), [
+                'image' => 'landing/missing-main.jpg',
+                'image_1' => 'landing/missing-comparison.jpg',
+                'image_2' => 'landing/missing-package.jpg',
+            ]),
+            'is_visible' => true,
+        ]);
+
+        $response = $this->get(route('home'))->assertOk();
+
+        $response
+            ->assertDontSee('/media/landing/missing-main.jpg', false)
+            ->assertDontSee('/media/landing/missing-comparison.jpg', false)
+            ->assertDontSee('/media/landing/missing-package.jpg', false)
+            ->assertSee(asset('asset/images/hero-bed-comparison.png'), false)
+            ->assertSee(asset('asset/images/furniture-polish-combo.png'), false);
+    }
+
     public function test_gallery_accepts_additional_images_and_preserves_them_between_saves(): void
     {
         Storage::fake('public');

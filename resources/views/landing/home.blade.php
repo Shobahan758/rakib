@@ -6,12 +6,15 @@
         $content = fn(string $section, string $key) => array_key_exists($key, $sections->get($section)?->content ?? [])
             ? data_get($sections->get($section)->content, $key)
             : data_get(\App\Models\LandingSection::defaults($section), $key);
-        $sectionImage = fn(string $section, string $fallback, string $key = 'image') => data_get(
-            $sections->get($section)?->content,
-            $key,
-        )
-            ? route('media.show', ['path' => data_get($sections->get($section)->content, $key)])
-            : asset($fallback);
+        $sectionImage = function (string $section, string $fallback, string $key = 'image'): string {
+            $path = data_get($sections->get($section)?->content, $key);
+
+            if (is_string($path) && $path !== '' && \Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
+                return route('media.show', ['path' => $path]);
+            }
+
+            return $fallback !== '' ? asset($fallback) : '';
+        };
         $schemaData = [
             '@context' => 'https://schema.org',
             '@type' => 'Product',
@@ -236,9 +239,12 @@
                             2 => 'asset/images/furniture-polish-combo.png',
                             default => null,
                         };
-                        if (!$heroPath && !$fallback) continue;
+                        $heroImageExists = is_string($heroPath)
+                            && $heroPath !== ''
+                            && \Illuminate\Support\Facades\Storage::disk('public')->exists($heroPath);
+                        if (!$heroImageExists && !$fallback) continue;
                         $heroSlides[] = [
-                            'url' => $heroPath ? route('media.show', ['path' => $heroPath]) : asset($fallback),
+                            'url' => $heroImageExists ? route('media.show', ['path' => $heroPath]) : asset($fallback),
                             'alt' => data_get($heroContent, $heroImageKey.'_alt') ?: $content('hero', $heroImageKey.'_alt') ?: 'Hero slider image '.($heroIndex + 1),
                         ];
                     }
