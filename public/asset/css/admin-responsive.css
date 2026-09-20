@@ -1,0 +1,50 @@
+/* Shared sizing for every admin page, including page-specific forms. */
+.admin-main,.content,.panel,.page-heading>*,.user-row>*,.edit-grid>*,.product-form>*,.tracking-grid>*,.stat-card>*,.visitor-card>*{min-width:0}
+.sidebar{width:min(var(--sidebar),calc(100vw - 48px));height:100dvh;overscroll-behavior:contain;padding-bottom:calc(24px + env(safe-area-inset-bottom))}
+.brand-icon,.stat-icon,.visitor-icon,.provider-icon,.avatar{flex-shrink:0}
+.nav-link span,.submenu-link,.page-heading h1,.field label,.product-title,.profile-copy,.tracking-note{overflow-wrap:anywhere}
+.profile-copy{max-width:200px}
+.top-actions{margin-left:auto;min-width:0}
+.page-heading,.panel-head,.report-head,.toolbar{flex-wrap:wrap}
+.page-heading>div:last-child{flex-wrap:wrap}
+.panel{max-width:100%}
+.table-wrap{max-width:100%;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
+.table-wrap:focus-visible{outline:2px solid var(--primary);outline-offset:3px}
+.table-wrap td small{white-space:normal;min-width:140px;max-width:280px;overflow-wrap:anywhere}
+input:not([type=checkbox]):not([type=radio]),select,textarea{max-width:100%;min-width:0}
+textarea{resize:vertical}
+input[type=file]{width:100%}
+.preview{max-width:100%;max-height:300px;object-fit:contain}
+.product-grid{grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr))}
+.stat-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+.order-fields-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.modal-shell{padding:16px;overscroll-behavior:contain}
+.modal-card{max-height:calc(100dvh - 32px);min-width:0}
+body:has(.modal-shell.show),body.admin-menu-open{overflow:hidden}
+.access-grid,.user-access .access-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr))}
+.access-item{min-width:0;overflow-wrap:anywhere}
+.access-item input{flex-shrink:0}
+.pagination-wrap nav{max-width:100%;overflow-x:auto}
+@media(max-width:1280px){.stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.edit-grid,.product-form,.tracking-grid{grid-template-columns:minmax(0,1fr)}.user-row{grid-template-columns:repeat(2,minmax(0,1fr))}.user-actions{flex-wrap:wrap}.page-heading{align-items:flex-start}}
+@media(max-width:1024px){.sidebar{transform:translateX(-100%);transition:transform .2s;z-index:40}.sidebar.open{transform:translateX(0)}.admin-main{margin-left:0}.menu-toggle{display:grid;place-items:center;width:44px;height:44px}.overlay.show{display:block;position:fixed;inset:0;background:#0007;z-index:35}.topbar{padding:10px 16px;min-height:64px;height:auto;gap:12px}.content{padding:24px 20px 36px}.profile-copy{display:none}.top-actions{gap:10px}.site-link{min-height:44px;display:inline-flex;align-items:center;gap:6px}.admin-footer{padding:20px}.section-list{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:600px){.content{padding:20px 12px 28px}.panel{padding:16px;border-radius:12px}.page-heading{gap:12px;margin-bottom:18px}.page-heading h1{font-size:25px}.page-heading p{font-size:15px}.page-heading>div:last-child{max-width:100%}.stat-grid,.visitor-grid,.event-grid,.provider-cards,.user-row{grid-template-columns:minmax(0,1fr)}.stat-card,.visitor-card{padding:18px}.form-heading{align-items:flex-start}.form-heading h2{font-size:20px}.modal-card{padding:20px 16px}.field input:not([type=checkbox]),.field select,.field textarea,input,select,textarea{font-size:16px}.btn-save,.btn-add,.save,.save-status,.delete,.access-toggle,.role-tab,.bulk-buttons button{min-height:44px}.role-tabs{gap:4px}.user-card{padding:12px}.section-toggle{padding:14px 12px;gap:10px;flex-wrap:wrap}.section-copy{flex:1 1 140px}.section-toggle .switch{margin-left:auto}.toolbar,.report-head{align-items:flex-start}.bulk-buttons{flex-wrap:wrap}.access-note{display:block;margin:6px 0}.user-actions{padding:0}.table-wrap table{min-width:640px}#reportRefreshStatus{overflow-wrap:anywhere}form:has(#activityPeriod){flex-wrap:wrap}.topbar .site-link span{display:none}.topbar .site-link{width:44px;justify-content:center}.modal-head{gap:12px}.modal-close{flex-shrink:0}.product-actions{flex-wrap:wrap}}
+@media(max-width:420px){.order-fields-grid{grid-template-columns:minmax(0,1fr)}.modal-shell{padding:10px}.modal-card{max-height:calc(100dvh - 20px)}.user-actions{flex-direction:column;align-items:stretch}.user-actions button{width:100%}}
+@media(prefers-reduced-motion:reduce){.sidebar,.role-tab,.provider-card{transition:none}}
+
+.admin-brand-logo{flex:0 0 auto;width:42px;height:42px;object-fit:contain;border-radius:10px;background:#fff}
+.brand>span:last-child{min-width:0;overflow-wrap:anywhere}
+.field small,.alert,.panel p,.stat-card strong,.visitor-card strong,.section-copy,.admin-footer{overflow-wrap:anywhere}
+.field input,.field select,.field textarea{min-width:0}
+.content button,.content input[type=submit]{min-height:44px}
+.content :focus-visible{outline:2px solid var(--primary);outline-offset:3px}
+@media(max-width:600px){.content .panel-head{gap:12px}.content h2{overflow-wrap:anywhere}.section-toggle a{min-height:44px;display:inline-flex;align-items:center}.pagination-wrap{max-width:100%}}
+
+.color-control{display:grid;grid-template-columns:52px minmax(0,1fr);gap:10px;align-items:center}.field .color-control input[type=color]{width:52px;height:48px;padding:4px;cursor:pointer}
+
+/* Keep upload guidance and previews readable in settings forms. */
+.image-upload-help{display:block;margin:8px 0 12px;color:var(--muted);font-size:12px;line-height:1.7;overflow-wrap:anywhere}
+.image-upload-help strong{color:var(--ink)}
+.edit-grid{align-items:start}
+.edit-grid .preview{display:block;width:100%;height:auto;max-height:240px;object-fit:contain;margin-top:12px}
+.edit-grid .preview[hidden]{display:none}
+@media(min-width:851px) and (max-width:1150px){.edit-grid,.product-form{grid-template-columns:minmax(0,1fr)}}

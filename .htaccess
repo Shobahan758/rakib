@@ -1,0 +1,40 @@
+# LiteSpeed / OpenLiteSpeed PHP 8.3 handler used by the live server.
+<IfModule LiteSpeed>
+    <FilesMatch "\.(?:php|phtml)$">
+        SetHandler application/x-lsphp83
+    </FilesMatch>
+</IfModule>
+
+# cPanel EasyApache fallback when the server is Apache.
+<IfModule !LiteSpeed>
+    <IfModule mime_module>
+        AddHandler application/x-httpd-ea-php83 .php .phtml
+    </IfModule>
+</IfModule>
+
+Options -Indexes
+DirectoryIndex public/index.php
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Never expose Laravel source, configuration, logs or development files when
+    # the domain document root points at the project directory.
+    RewriteRule (^|/)\.(?!well-known(?:/|$)) - [R=404,L,NC]
+    RewriteRule ^(?:app|bootstrap|config|database|resources|routes|storage|tests|vendor)(?:/|$) - [R=404,L,NC]
+    RewriteRule ^(?:\.env(?:\..*)?|artisan|composer\.(?:json|lock)|package(?:-lock)?\.json|phpunit\.xml|vite\.config\.js|README\.md)$ - [R=404,L,NC]
+
+    # GitHub's signed webhook endpoint lives at the project root.
+    RewriteRule ^deploy\.php$ - [L,NC]
+
+    # Requests already prefixed with public are handled by public/.htaccess.
+    RewriteRule ^public/ - [L]
+
+    # Serve real CSS, JavaScript, images and other files from public/.
+    RewriteCond %{DOCUMENT_ROOT}/public/$1 -f [OR]
+    RewriteCond %{DOCUMENT_ROOT}/public/$1 -d
+    RewriteRule ^(.+)$ public/$1 [L]
+
+    # Send every application route to Laravel's front controller.
+    RewriteRule ^ public/index.php [L]
+</IfModule>
