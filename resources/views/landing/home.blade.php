@@ -6,7 +6,7 @@
         $content = fn(string $section, string $key) => array_key_exists($key, $sections->get($section)?->content ?? [])
             ? data_get($sections->get($section)->content, $key)
             : data_get(\App\Models\LandingSection::defaults($section), $key);
-        $sectionImage = function (string $section, string $fallback, string $key = 'image'): string {
+        $sectionImage = function (string $section, string $fallback, string $key = 'image') use ($sections): string {
             $path = data_get($sections->get($section)?->content, $key);
 
             if (is_string($path) && $path !== '' && \Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
