@@ -2,173 +2,214 @@
 
 declare(strict_types=1);
 
-const DEPLOY_URL_TOKEN_HASH = '7c1f2f1fe2bff55b1f9e94b25895af79dd3096b80703dff0a77e25f6a2224ad4';
-const DEPLOY_GITHUB_REPOSITORY = 'Shobahan758/bargur';
-
-/*
- * GitHub webhook deployment endpoint.
- *
- * Server environment variables:
- *   DEPLOY_WEBHOOK_SECRET  Optional alternative to URL-token authentication.
- *   DEPLOY_APP_PATH        Optional. Defaults to the Laravel project root.
- *   DEPLOY_BRANCH          Optional. Defaults to "master".
- *   DEPLOY_COMPOSER        Optional. Defaults to "composer".
- */
+const DEPLOY_GITHUB_REPOSITORY = 'Shobahan758/rakib';
+const DEPLOY_DEFAULT_BRANCH = 'master';
+const DEPLOY_MAX_PAYLOAD_BYTES = 2 * 1024 * 1024;
 
 header('Content-Type: application/json; charset=utf-8');
 header('X-Content-Type-Options: nosniff');
 header('Cache-Control: no-store');
 
-$defaultAppPath = dirname(__DIR__);
-$autoloadFile = $defaultAppPath.'/vendor/autoload.php';
-
-if (is_file($autoloadFile)) {
-    require_once $autoloadFile;
-
-    if (class_exists(Dotenv\Dotenv::class)) {
-        Dotenv\Dotenv::createImmutable($defaultAppPath)->safeLoad();
-    }
-}
-
-function respond(int $status, string $message): never
+function deployRespond(int $status, string $message): never
 {
     http_response_code($status);
-    echo json_encode(['message' => $message], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+    echo json_encode(
+        ['ok' => $status < 400, 'message' => $message],
+        JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
+    );
     exit;
 }
 
-function environment(string $name, ?string $default = null): ?string
+function deployEnvironment(string $name, ?string $default = null): ?string
 {
     $value = $_SERVER[$name] ?? $_ENV[$name] ?? getenv($name);
 
-    return $value === false || $value === '' ? $default : $value;
+    return is_string($value) && $value !== '' ? $value : $default;
 }
 
-function runCommand(string $command, string $directory, string $logFile): void
+function deploySecret(string $projectRoot): ?string
+{
+    $secret = deployEnvironment('DEPLOY_WEBHOOK_SECRET');
+
+    if ($secret !== null) {
+        return $secret;
+    }
+
+    $secretFile = $projectRoot.'/.deploy-secret';
+    if (! is_readable($secretFile)) {
+        return null;
+    }
+
+    $secret = trim((string) file_get_contents($secretFile));
+
+    return $secret !== '' ? $secret : null;
+}
+
+function deployWriteLog(string $logFile, string $message): void
+{
+    file_put_contents(
+        $logFile,
+        sprintf("[%s] %s\n", gmdate('Y-m-d\TH:i:s\Z'), $message),
+        FILE_APPEND | LOCK_EX,
+    );
+}
+
+function deployRun(string $command, string $directory, string $logFile): void
 {
     $output = [];
     $exitCode = 0;
     $fullCommand = 'cd '.escapeshellarg($directory).' && '.$command.' 2>&1';
 
     exec($fullCommand, $output, $exitCode);
+    deployWriteLog($logFile, '$ '.$command);
 
-    $entry = sprintf(
-        "[%s] $ %s\n%s\nExit code: %d\n\n",
-        date(DATE_ATOM),
-        $command,
-        implode("\n", $output),
-        $exitCode,
-    );
-    file_put_contents($logFile, $entry, FILE_APPEND | LOCK_EX);
+    if ($output !== []) {
+        deployWriteLog($logFile, implode("\n", $output));
+    }
 
     if ($exitCode !== 0) {
-        throw new RuntimeException('Deployment command failed. Check storage/logs/deploy.log.');
+        throw new RuntimeException("Command exited with status {$exitCode}: {$command}");
     }
+}
+
+function deployComposerCommand(string $projectRoot): string
+{
+    $configured = deployEnvironment('DEPLOY_COMPOSER');
+    if ($configured !== null) {
+        return escapeshellarg($configured);
+    }
+
+    $localComposer = $projectRoot.'/composer.phar';
+    if (is_file($localComposer)) {
+        return escapeshellarg(PHP_BINARY).' '.escapeshellarg($localComposer);
+    }
+
+    foreach (['/opt/cpanel/composer/bin/composer', '/usr/local/bin/composer', '/usr/bin/composer'] as $composer) {
+        if (is_executable($composer)) {
+            return escapeshellarg($composer);
+        }
+    }
+
+    return 'composer';
 }
 
 if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
     header('Allow: POST');
-    respond(405, 'Only POST requests are accepted.');
+    deployRespond(405, 'Only POST requests are accepted.');
 }
 
-$contentLength = (int) ($_SERVER['CONTENT_LENGTH'] ?? 0);
+if (! function_exists('exec')) {
+    deployRespond(500, 'PHP exec is disabled on this server.');
+}
 
-if ($contentLength > 2 * 1024 * 1024) {
-    respond(413, 'Payload is too large.');
+if ((int) ($_SERVER['CONTENT_LENGTH'] ?? 0) > DEPLOY_MAX_PAYLOAD_BYTES) {
+    deployRespond(413, 'Payload is too large.');
+}
+
+$projectRoot = dirname(__DIR__);
+$secret = deploySecret($projectRoot);
+
+if ($secret === null) {
+    deployRespond(500, 'Webhook secret is not configured.');
 }
 
 $payload = file_get_contents('php://input');
 $signature = $_SERVER['HTTP_X_HUB_SIGNATURE_256'] ?? '';
 
-if ($payload === false) {
-    respond(400, 'Missing webhook payload.');
+if (! is_string($payload) || $payload === '' || ! is_string($signature)) {
+    deployRespond(400, 'Missing webhook payload or signature.');
 }
 
-$secret = environment('DEPLOY_WEBHOOK_SECRET');
-$urlToken = is_string($_GET['token'] ?? null) ? $_GET['token'] : '';
-$validUrlToken = $urlToken !== '' && hash_equals(DEPLOY_URL_TOKEN_HASH, hash('sha256', $urlToken));
-$validSignature = false;
-
-if ($secret !== null && $signature !== '') {
-    $validSignature = hash_equals('sha256='.hash_hmac('sha256', $payload, $secret), $signature);
-}
-
-if (! $validUrlToken && ! $validSignature) {
-    respond(401, 'Invalid webhook authentication.');
-}
-
-$event = $_SERVER['HTTP_X_GITHUB_EVENT'] ?? '';
-
-if ($event === 'ping') {
-    respond(200, 'GitHub webhook is configured correctly.');
-}
-
-if ($event !== 'push') {
-    respond(202, 'Event ignored.');
-}
-
-$data = json_decode($payload, true);
-
-if (! is_array($data)) {
-    respond(400, 'Invalid JSON payload.');
-}
-
-if (($data['repository']['full_name'] ?? '') !== DEPLOY_GITHUB_REPOSITORY) {
-    respond(403, 'Repository is not allowed to deploy.');
-}
-
-$branch = environment('DEPLOY_BRANCH', 'master');
-
-if (($data['ref'] ?? '') !== 'refs/heads/'.$branch) {
-    respond(202, 'Push was for a different branch.');
-}
-
-$appPath = rtrim(environment('DEPLOY_APP_PATH', dirname(__DIR__)), DIRECTORY_SEPARATOR);
-$composer = environment('DEPLOY_COMPOSER', 'composer');
-$logDirectory = $appPath.DIRECTORY_SEPARATOR.'storage'.DIRECTORY_SEPARATOR.'logs';
-$logFile = $logDirectory.DIRECTORY_SEPARATOR.'deploy.log';
-$lockFile = $appPath.DIRECTORY_SEPARATOR.'storage'.DIRECTORY_SEPARATOR.'framework'.DIRECTORY_SEPARATOR.'deploy.lock';
-
-if (! is_dir($appPath) || ! is_dir($logDirectory)) {
-    respond(500, 'Deployment path is not configured correctly.');
-}
-
-$lock = fopen($lockFile, 'c');
-
-if ($lock === false || ! flock($lock, LOCK_EX | LOCK_NB)) {
-    respond(409, 'Another deployment is already running.');
+$expectedSignature = 'sha256='.hash_hmac('sha256', $payload, $secret);
+if (! hash_equals($expectedSignature, $signature)) {
+    deployRespond(401, 'Invalid webhook signature.');
 }
 
 try {
-    set_time_limit(300);
+    $data = json_decode($payload, true, 512, JSON_THROW_ON_ERROR);
+} catch (JsonException) {
+    deployRespond(400, 'Invalid JSON payload.');
+}
 
-    runCommand('git pull --ff-only origin '.escapeshellarg($branch), $appPath, $logFile);
-    // Install the new code's dependencies before booting Artisan. Run package
-    // discovery explicitly after stale configuration has been cleared.
-    runCommand(escapeshellcmd($composer).' install --no-dev --no-scripts --no-interaction --prefer-dist --optimize-autoloader', $appPath, $logFile);
-    // Clear stale route/view/config caches before the new application code boots.
-    runCommand('php artisan optimize:clear', $appPath, $logFile);
-    runCommand('php artisan package:discover --ansi', $appPath, $logFile);
-    runCommand('php artisan migrate --force', $appPath, $logFile);
-    runCommand('php artisan storage:link', $appPath, $logFile);
-    runCommand('php artisan optimize', $appPath, $logFile);
-    runCommand('php artisan app:production-check', $appPath, $logFile);
+if (! is_array($data)) {
+    deployRespond(400, 'Webhook payload must be a JSON object.');
+}
 
-    file_put_contents(
-        $logFile,
-        sprintf("[%s] Deployment completed for commit %s.\n\n", date(DATE_ATOM), $data['after'] ?? 'unknown'),
-        FILE_APPEND | LOCK_EX,
-    );
+$event = $_SERVER['HTTP_X_GITHUB_EVENT'] ?? '';
+if ($event === 'ping') {
+    deployRespond(200, 'GitHub webhook is configured correctly.');
+}
 
-    respond(200, 'Deployment completed successfully.');
+if ($event !== 'push') {
+    deployRespond(202, 'Event ignored.');
+}
+
+if (($data['repository']['full_name'] ?? '') !== DEPLOY_GITHUB_REPOSITORY) {
+    deployRespond(403, 'Repository is not allowed to deploy.');
+}
+
+$branch = deployEnvironment('DEPLOY_BRANCH', DEPLOY_DEFAULT_BRANCH);
+if (($data['ref'] ?? '') !== 'refs/heads/'.$branch) {
+    deployRespond(202, 'Push was for a different branch.');
+}
+
+$appPath = rtrim(deployEnvironment('DEPLOY_APP_PATH', $projectRoot), DIRECTORY_SEPARATOR);
+$logDirectory = $appPath.'/storage/logs';
+$lockDirectory = $appPath.'/storage/framework';
+$logFile = $logDirectory.'/deploy.log';
+$lockFile = $lockDirectory.'/deploy.lock';
+
+if (! is_dir($appPath) || ! is_dir($logDirectory) || ! is_dir($lockDirectory)) {
+    deployRespond(500, 'Deployment path is not configured correctly.');
+}
+
+$lock = fopen($lockFile, 'c');
+if ($lock === false || ! flock($lock, LOCK_EX | LOCK_NB)) {
+    if (is_resource($lock)) {
+        fclose($lock);
+    }
+    deployRespond(409, 'Another deployment is already running.');
+}
+
+ignore_user_abort(true);
+set_time_limit(0);
+
+$response = json_encode(
+    ['ok' => true, 'message' => 'Deployment accepted.'],
+    JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR,
+);
+http_response_code(202);
+header('Content-Length: '.strlen($response));
+header('Connection: close');
+echo $response;
+
+if (function_exists('fastcgi_finish_request')) {
+    fastcgi_finish_request();
+} else {
+    while (ob_get_level() > 0) {
+        ob_end_flush();
+    }
+    flush();
+}
+
+$delivery = preg_replace('/[^a-zA-Z0-9-]/', '', (string) ($_SERVER['HTTP_X_GITHUB_DELIVERY'] ?? '')) ?: 'unknown';
+$escapedBranch = escapeshellarg($branch);
+$php = escapeshellarg(PHP_BINARY);
+
+try {
+    deployWriteLog($logFile, "Starting delivery {$delivery} for ".DEPLOY_GITHUB_REPOSITORY."@{$branch}");
+    deployRun("git fetch --prune origin {$escapedBranch}", $appPath, $logFile);
+    deployRun('git reset --hard '.escapeshellarg('origin/'.$branch), $appPath, $logFile);
+    deployRun(deployComposerCommand($appPath).' install --no-dev --no-scripts --no-interaction --prefer-dist --optimize-autoloader', $appPath, $logFile);
+    deployRun("{$php} artisan optimize:clear", $appPath, $logFile);
+    deployRun("{$php} artisan package:discover --ansi", $appPath, $logFile);
+    deployRun("{$php} artisan migrate --force", $appPath, $logFile);
+    deployRun("{$php} artisan storage:link", $appPath, $logFile);
+    deployRun("{$php} artisan optimize", $appPath, $logFile);
+    deployRun("{$php} artisan app:production-check", $appPath, $logFile);
+    deployWriteLog($logFile, "Delivery {$delivery} completed successfully.");
 } catch (Throwable $exception) {
-    file_put_contents(
-        $logFile,
-        sprintf("[%s] ERROR: %s\n\n", date(DATE_ATOM), $exception->getMessage()),
-        FILE_APPEND | LOCK_EX,
-    );
-
-    respond(500, $exception->getMessage());
+    deployWriteLog($logFile, "Delivery {$delivery} failed: {$exception->getMessage()}");
 } finally {
     flock($lock, LOCK_UN);
     fclose($lock);

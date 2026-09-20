@@ -111,24 +111,28 @@ edit live Site Settings or explicitly transfer the intended settings/uploads.
 Finally check `/up`, login, uploaded images, videos and a test checkout on the
 real HTTPS domain. A passing local test is not a live-server verification.
 
-The webhook endpoint validates GitHub's `X-Hub-Signature-256` signature using the
-secret embedded in `deploy.php`; it does not require server `.env` configuration.
-It accepts only pushes from `Shobahan758/s` to `master`. The web server user must
-have the required permissions for project files, the `storage` directory, and the
-Git SSH key.
+The webhook endpoint validates GitHub's `X-Hub-Signature-256` signature. It
+accepts only pushes from `Shobahan758/rakib` to `master`. Put the webhook secret
+in an untracked `.deploy-secret` file in the project root (with no surrounding
+quotes or extra content), or configure the `DEPLOY_WEBHOOK_SECRET` server
+environment variable. The web server user must be able to read that secret and
+must have the required permissions for the project files, `storage/`,
+`bootstrap/cache/`, and the Git SSH key.
 
 In the GitHub repository's **Settings → Webhooks → Add webhook** form:
 
 - Payload URL: `https://your-domain.com/deploy.php`
 - Content type: `application/json`
-- Secret: use the exact `DEPLOY_WEBHOOK_SECRET` value from `deploy.php`
+- Secret: use the exact value stored in the server's `.deploy-secret` file
 - SSL verification: enabled
 - Event: just the push event
 
 On every push to `master`, the endpoint fetches and resets the checkout to
-`origin/master`, then runs a production
-Composer install, database migrations, the public storage link, and Laravel optimization. Results are
-written to `storage/logs/deploy.log`.
+`origin/master`, then runs a production Composer install, database migrations,
+the public storage link, Laravel optimization, and the production configuration
+check. Results are written to `storage/logs/deploy.log`. Because `.deploy-secret`
+is intentionally ignored by Git, copy it to the server during the initial setup;
+later Git deployments preserve it.
 
 ---
 
