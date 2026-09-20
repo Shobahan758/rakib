@@ -820,7 +820,7 @@ a {
 .order-result-label{display:inline-block;margin-bottom:6px;color:var(--orange-dark,#d95800);font-weight:700}
 .order-result-product h2{margin:0 0 10px;font-size:1.3rem;font-weight:700;line-height:1.35}
 .order-result-product p{margin:4px 0;color:#514a45}
-.order-result-summary{padding:18px;border-radius:15px;background:#fff0e4;color:var(--orange-dark,#d95800)}
+.order-result-summary{width:min(100%,520px);margin:0 auto 18px;padding:18px;border-radius:15px;background:#fff0e4;color:var(--orange-dark,#d95800)}
 .order-result-summary p{margin:0 0 6px;line-height:1.55}
 .order-result-summary strong{display:block;font-size:clamp(2rem,5vw,2.8rem);font-weight:700;line-height:1.2}
 .order-result-reminder{margin:20px 0 0;color:#675e58;font-weight:600}

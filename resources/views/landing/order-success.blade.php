@@ -44,6 +44,12 @@
                 <div class="order-result-icon" aria-hidden="true"><i class="bi bi-check-lg"></i></div>
             @endif
             <h1 id="orderResultTitle">{{ $orderContent['modal_title'] }}</h1>
+
+            <div class="order-result-summary">
+                <strong>{{ $orderContent['modal_total_label'] }}
+                    {{ $siteContent['currency_symbol'] }}{{ number_format($deliveryTotal) }}</strong>
+            </div>
+
             <p class="order-result-description">{{ $orderContent['modal_description'] }}</p>
 
             <article class="order-result-product">
@@ -56,11 +62,6 @@
                     <p>{{ $orderContent['modal_price_label'] }}: <strong>{{ $siteContent['currency_symbol'] }}{{ number_format($addon->total) }}</strong></p>
                 </div>
             </article>
-
-            <div class="order-result-summary">
-                <strong>{{ $orderContent['modal_total_label'] }}
-                    {{ $siteContent['currency_symbol'] }}{{ number_format($deliveryTotal) }}</strong>
-            </div>
 
             @if ($orderContent['modal_reminder'])
                 <p class="order-result-reminder">{{ $orderContent['modal_reminder'] }}</p>
