@@ -2637,6 +2637,43 @@ footer {
   }
 }
 
+/* Draw old-price strikes diagonally instead of through the middle. */
+.price-old,
+.hero-price-cell--regular del,
+.product-regular-price del,
+.order-regular-price-badge del {
+  position: relative;
+  display: inline-block;
+  text-decoration: none;
+}
+
+.price-old::after,
+.hero-price-cell--regular del::after,
+.product-regular-price del::after,
+.order-regular-price-badge del::after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  left: -4%;
+  top: 50%;
+  width: 108%;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--orange-dark, #d95800);
+  pointer-events: none;
+  transform: rotate(-12deg);
+  transform-origin: center;
+}
+
+.product-regular-price del::after {
+  height: 2px;
+  background: var(--red);
+}
+
+.order-regular-price-badge del::after {
+  background: currentColor;
+}
+
 @media (max-width: 767.98px) {
   .top-announcement-bar {
     padding: 6px 0;
