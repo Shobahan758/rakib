@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\AdminOrderController;
+use App\Http\Controllers\AdminOrderNotificationController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LandingSectionController;
@@ -75,6 +76,7 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/admin/dashboard', [DashboardController::class, 'index'])->middleware('permission:dashboard')->name('dashboard');
+    Route::get('/admin/order-notifications', AdminOrderNotificationController::class)->middleware('permission:orders')->name('admin.order-notifications');
     Route::get('/admin/order/create', [AdminOrderController::class, 'create'])->middleware('permission:orders')->name('admin.orders.create');
     Route::post('/admin/order', [AdminOrderController::class, 'store'])->middleware('permission:orders')->name('admin.orders.store');
     Route::get('/admin/orders/{filter?}', [AdminOrderController::class, 'index'])->middleware('permission:orders')->name('admin.orders.index');
