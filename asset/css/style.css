@@ -2275,8 +2275,10 @@ footer {
   display: inline-block;
   margin-left: .28em;
   color: var(--orange-dark, #d95800);
+  font-size: 1.35em;
   font-weight: 900;
   line-height: 1;
+  vertical-align: -.08em;
   pointer-events: none;
 }
 
