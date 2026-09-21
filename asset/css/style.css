@@ -2256,7 +2256,7 @@ footer {
   }
 }
 
-/* Show a cross beside old prices instead of drawing through the text. */
+/* Draw a red line through old prices. */
 .price-old,
 .hero-price-cell--regular del,
 .product-regular-price del,
@@ -2270,22 +2270,22 @@ footer {
 .hero-price-cell--regular del::after,
 .product-regular-price del::after,
 .order-regular-price-badge del::after {
-  content: '\00d7';
-  position: static;
-  display: inline-block;
-  margin-left: .28em;
-  color: var(--orange-dark, #d95800);
-  font-size: 1.35em;
-  font-weight: 900;
-  line-height: 1;
-  vertical-align: -.08em;
+  content: '';
+  position: absolute;
+  z-index: 1;
+  left: -3%;
+  top: 50%;
+  width: 106%;
+  height: 3px;
+  border-radius: 999px;
+  background: #ef1010;
   pointer-events: none;
 }
 
 .product-regular-price del::after {
-  color: var(--red);
+  height: 2px;
 }
 
 .order-regular-price-badge del::after {
-  color: currentColor;
+  background: currentColor;
 }
