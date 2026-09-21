@@ -8,6 +8,7 @@ use App\Models\Product;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AdminOrderController extends Controller
 {
@@ -41,7 +42,7 @@ class AdminOrderController extends Controller
         return $this->redirectToOrderList($destination, 'Order created successfully.');
     }
 
-    public function index(string $filter = 'all'): View
+    public function index(Request $request, string $filter = 'all'): View
     {
         abort_unless(in_array($filter, ['all', 'today', 'shipping', 'delivered', 'cancelled', 'refunded'], true), 404);
 
@@ -54,15 +55,18 @@ class AdminOrderController extends Controller
         };
 
         $labels = ['all' => 'All Orders', 'today' => "Today's Orders", 'shipping' => 'Shipping Orders', 'delivered' => 'Delivered Orders', 'cancelled' => 'Cancelled Orders', 'refunded' => 'Refunded Orders'];
+        $viewAll = $request->boolean('view_all');
 
         return view('dasgboard.pages.orders.index', [
-            'orders' => $orders->paginate(10)->withQueryString(),
+            'orders' => $orders->paginate($viewAll ? max(1, (clone $orders)->count()) : 10)->withQueryString(),
             'filter' => $filter,
             'pageTitle' => $labels[$filter],
+            'viewAll' => $viewAll,
+            'exportFilter' => $filter,
         ]);
     }
 
-    public function fakeIndex(string $filter = 'all'): View
+    public function fakeIndex(Request $request, string $filter = 'all'): View
     {
         abort_unless(in_array($filter, ['all', 'today'], true), 404);
 
@@ -71,11 +75,74 @@ class AdminOrderController extends Controller
             $orders->whereDate('created_at', today());
         }
 
+        $viewAll = $request->boolean('view_all');
+
         return view('dasgboard.pages.orders.index', [
-            'orders' => $orders->paginate(10)->withQueryString(),
+            'orders' => $orders->paginate($viewAll ? max(1, (clone $orders)->count()) : 10)->withQueryString(),
             'filter' => $filter,
             'pageTitle' => $filter === 'today' ? "Today's Fake Orders" : 'All Fake Orders',
             'isFakeList' => true,
+            'viewAll' => $viewAll,
+            'exportFilter' => 'fake_'.$filter,
+        ]);
+    }
+
+    public function export(string $filter): StreamedResponse
+    {
+        abort_unless(in_array($filter, ['all', 'today', 'shipping', 'delivered', 'cancelled', 'refunded', 'fake_all', 'fake_today'], true), 404);
+
+        $orders = Order::query()->orderBy('id');
+        match ($filter) {
+            'all' => $orders->where('status', 'pending'),
+            'today' => $orders->where('status', 'pending')->whereDate('created_at', today()),
+            'shipping', 'delivered', 'cancelled', 'refunded' => $orders->where('status', $filter),
+            'fake_all' => $orders->where('status', 'fake'),
+            'fake_today' => $orders->where('status', 'fake')->whereDate('created_at', today()),
+        };
+
+        $safeCell = static function (mixed $value): mixed {
+            if (! is_string($value)) {
+                return $value;
+            }
+
+            return preg_match('/^[=+\-@]/u', $value) === 1 ? "'".$value : $value;
+        };
+
+        return response()->streamDownload(function () use ($orders, $safeCell): void {
+            $output = fopen('php://output', 'wb');
+            fwrite($output, "\xEF\xBB\xBF");
+            fputcsv($output, [
+                'Order ID', 'Parent Order ID', 'Order Date', 'Customer Name', 'Phone', 'Email',
+                'Address', 'Product', 'Quantity', 'Unit Price', 'Delivery Area', 'Delivery Charge',
+                'Total', 'Status', 'IP Address',
+            ], ',', '"', '');
+
+            $orders->chunkById(500, function ($chunk) use ($output, $safeCell): void {
+                foreach ($chunk as $order) {
+                    fputcsv($output, array_map($safeCell, [
+                        $order->id,
+                        $order->parent_order_id,
+                        $order->created_at?->format('Y-m-d H:i:s'),
+                        $order->name,
+                        $order->phone,
+                        $order->email,
+                        $order->address,
+                        $order->burger_type,
+                        $order->quantity,
+                        $order->unit_price,
+                        $order->delivery_area,
+                        $order->delivery_charge,
+                        $order->total,
+                        $order->status,
+                        $order->ip_address,
+                    ]), ',', '"', '');
+                }
+            });
+
+            fclose($output);
+        }, 'orders-'.$filter.'-'.now()->format('Y-m-d-His').'.csv', [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Cache-Control' => 'no-store, no-cache',
         ]);
     }
 

@@ -79,6 +79,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/order-notifications', AdminOrderNotificationController::class)->middleware('permission:orders')->name('admin.order-notifications');
     Route::get('/admin/order/create', [AdminOrderController::class, 'create'])->middleware('permission:orders')->name('admin.orders.create');
     Route::post('/admin/order', [AdminOrderController::class, 'store'])->middleware('permission:orders')->name('admin.orders.store');
+    Route::get('/admin/orders/{filter}/export', [AdminOrderController::class, 'export'])->middleware('permission:orders')->name('admin.orders.export');
     Route::get('/admin/orders/{filter?}', [AdminOrderController::class, 'index'])->middleware('permission:orders')->name('admin.orders.index');
     Route::get('/admin/fake-orders/{filter?}', [AdminOrderController::class, 'fakeIndex'])->middleware('permission:fake_orders')->name('admin.fake-orders.index');
     Route::get('/admin/order/{order}/edit', [AdminOrderController::class, 'edit'])->middleware('permission:orders')->name('admin.orders.edit');
