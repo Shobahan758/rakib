@@ -53,7 +53,7 @@ class AdminUserManagementTest extends TestCase
             'role' => 'manager', 'permissions' => ['products'],
         ])->assertSessionHasErrors(['email'], null, 'updateUser'.$user->id);
         $this->get(route('admin.users.index'))->assertOk()->assertSee('Keep This Edit')
-            ->assertViewHas('users', fn ($users) => $users instanceof \Illuminate\Pagination\LengthAwarePaginator && $users->perPage() === 15)
+            ->assertViewHas('users', fn ($users) => $users instanceof \Illuminate\Pagination\LengthAwarePaginator && $users->perPage() === 10)
             ->assertSee('class="role-tab active" role="tab" aria-selected="true" data-role="manager"', false)
             ->assertDontSee('class="modal-shell show"', false);
     }

@@ -19,7 +19,7 @@ class AdminUserController extends Controller
         $activeRole = in_array($requestedRole, ['super_admin', 'admin', 'manager'], true) ? $requestedRole : 'super_admin';
 
         return view('dasgboard.pages.admin-users', [
-            'users' => User::where('role', $activeRole)->latest()->paginate(15)->withQueryString(),
+            'users' => User::where('role', $activeRole)->latest()->paginate(10)->withQueryString(),
             'activeRole' => $activeRole,
             'roleCounts' => User::query()->selectRaw('role, COUNT(*) as total')->groupBy('role')->pluck('total', 'role'),
         ]);

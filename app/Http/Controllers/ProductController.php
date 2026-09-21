@@ -15,8 +15,8 @@ class ProductController extends Controller
     public function index(): View
     {
         $products = Schema::hasTable('products')
-            ? Product::where('is_modal_product', $this->isModal())->orderBy('sort_order')->orderBy('id')->paginate(15)->withQueryString()
-            : new LengthAwarePaginator([], 0, 15, 1, ['path' => request()->url()]);
+            ? Product::where('is_modal_product', $this->isModal())->orderBy('sort_order')->orderBy('id')->paginate(10)->withQueryString()
+            : new LengthAwarePaginator([], 0, 10, 1, ['path' => request()->url()]);
 
         return view('dasgboard.pages.products.index', ['products' => $products, 'modalMode' => $this->isModal(), 'routePrefix' => $this->routePrefix()]);
     }

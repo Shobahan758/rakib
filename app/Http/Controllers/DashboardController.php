@@ -11,7 +11,7 @@ class DashboardController extends Controller
     public function index(): View
     {
         return view('dasgboard.pages.index', [
-            'orders' => Order::where('status', '!=', 'fake')->latest()->paginate(15),
+            'orders' => Order::where('status', '!=', 'fake')->latest()->paginate(10),
             'orderCount' => Order::where('status', '!=', 'fake')->count(),
             'pendingCount' => Order::where('status', 'pending')->count(),
             'totalSales' => Order::whereNotIn('status', ['fake', 'refunded'])->sum('total'),

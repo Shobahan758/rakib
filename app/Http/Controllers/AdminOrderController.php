@@ -56,7 +56,7 @@ class AdminOrderController extends Controller
         $labels = ['all' => 'All Orders', 'today' => "Today's Orders", 'shipping' => 'Shipping Orders', 'delivered' => 'Delivered Orders', 'cancelled' => 'Cancelled Orders', 'refunded' => 'Refunded Orders'];
 
         return view('dasgboard.pages.orders.index', [
-            'orders' => $orders->paginate(15)->withQueryString(),
+            'orders' => $orders->paginate(10)->withQueryString(),
             'filter' => $filter,
             'pageTitle' => $labels[$filter],
         ]);
@@ -72,7 +72,7 @@ class AdminOrderController extends Controller
         }
 
         return view('dasgboard.pages.orders.index', [
-            'orders' => $orders->paginate(15)->withQueryString(),
+            'orders' => $orders->paginate(10)->withQueryString(),
             'filter' => $filter,
             'pageTitle' => $filter === 'today' ? "Today's Fake Orders" : 'All Fake Orders',
             'isFakeList' => true,
@@ -119,7 +119,7 @@ class AdminOrderController extends Controller
         }
 
         return view('dasgboard.pages.orders.incomplete', [
-            'orders' => $orders->paginate(15)->withQueryString(),
+            'orders' => $orders->paginate(10)->withQueryString(),
             'filter' => $filter,
             'pageTitle' => $filter === 'today' ? "Today's Incomplete Orders" : 'All Incomplete Orders',
         ]);

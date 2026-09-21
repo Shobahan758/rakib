@@ -26,7 +26,7 @@ class ModalProductTest extends TestCase
         $this->assertTrue($product->is_modal_product);
         Storage::disk('public')->assertExists($product->image_path);
         $this->get(route('admin.modal-products.index'))->assertOk()
-            ->assertViewHas('products', fn ($products) => $products instanceof \Illuminate\Pagination\LengthAwarePaginator && $products->perPage() === 15)
+            ->assertViewHas('products', fn ($products) => $products instanceof \Illuminate\Pagination\LengthAwarePaginator && $products->perPage() === 10)
             ->assertSee($data['name']);
         $this->get(route('admin.products.index'))->assertOk()->assertDontSee($data['name']);
         $this->get(route('admin.modal-products.edit', $product))->assertOk();

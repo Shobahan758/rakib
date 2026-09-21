@@ -38,7 +38,7 @@ class OrderCheckoutTest extends TestCase
         foreach (['all', 'today'] as $filter) {
             $this->get(route('admin.orders.index', $filter))->assertOk()
                 ->assertViewHas('orders', fn ($orders) => $orders instanceof \Illuminate\Pagination\LengthAwarePaginator
-                    && $orders->perPage() === 15
+                    && $orders->perPage() === 10
                     && collect($ids)->diff($orders->pluck('id'))->isEmpty())
                 ->assertSee('<th>Product</th>', false)
                 ->assertDontSee('<th>Burger</th>', false)
@@ -48,7 +48,7 @@ class OrderCheckoutTest extends TestCase
 
         $this->get(route('admin.incomplete-orders.index', 'all'))->assertOk()
             ->assertViewHas('orders', fn ($orders) => $orders instanceof \Illuminate\Pagination\LengthAwarePaginator
-                && $orders->perPage() === 15);
+                && $orders->perPage() === 10);
     }
 
     public function test_inactive_product_cannot_create_an_order(): void
