@@ -14,7 +14,7 @@ class DashboardController extends Controller
             'orders' => Order::where('status', '!=', 'fake')->latest()->paginate(15),
             'orderCount' => Order::where('status', '!=', 'fake')->count(),
             'pendingCount' => Order::where('status', 'pending')->count(),
-            'totalSales' => Order::where('status', '!=', 'fake')->sum('total'),
+            'totalSales' => Order::whereNotIn('status', ['fake', 'refunded'])->sum('total'),
             'visitorCount' => SiteVisit::query()->distinct()->count('visitor_hash'),
             'todayVisitorCount' => SiteVisit::whereDate('visited_on', today())->count(),
         ]);

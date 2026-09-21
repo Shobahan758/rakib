@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Order;
 use App\Models\IncompleteOrder;
+use App\Models\Order;
+use App\Models\Product;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -13,7 +14,7 @@ class AdminOrderController extends Controller
     public function create(Request $request): View
     {
         $returnTo = $this->validOrderReturnTo($request->query('return_to'));
-        $unitPrice = \App\Models\Product::where('is_active', true)->where('is_modal_product', false)->orderBy('sort_order')->value('price') ?? 0;
+        $unitPrice = Product::where('is_active', true)->where('is_modal_product', false)->orderBy('sort_order')->value('price') ?? 0;
 
         return view('dasgboard.pages.orders.create', compact('returnTo', 'unitPrice'));
     }
@@ -32,6 +33,7 @@ class AdminOrderController extends Controller
             'shipping' => 'shipping',
             'delivered' => 'delivered',
             'cancelled' => 'cancelled',
+            'refunded' => 'refunded',
             'fake' => 'fake_all',
             default => in_array($returnTo, ['all', 'today'], true) ? $returnTo : 'all',
         };
@@ -41,17 +43,17 @@ class AdminOrderController extends Controller
 
     public function index(string $filter = 'all'): View
     {
-        abort_unless(in_array($filter, ['all', 'today', 'shipping', 'delivered', 'cancelled'], true), 404);
+        abort_unless(in_array($filter, ['all', 'today', 'shipping', 'delivered', 'cancelled', 'refunded'], true), 404);
 
         $orders = Order::query()->with('deliveryAddons')->where('status', '!=', 'fake')->latest();
         match ($filter) {
             'all' => $orders->where('status', 'pending'),
             'today' => $orders->where('status', 'pending')->whereDate('created_at', today()),
-            'shipping', 'delivered', 'cancelled' => $orders->where('status', $filter),
+            'shipping', 'delivered', 'cancelled', 'refunded' => $orders->where('status', $filter),
             default => null,
         };
 
-        $labels = ['all' => 'All Orders', 'today' => "Today's Orders", 'shipping' => 'Shipping Orders', 'delivered' => 'Delivered Orders', 'cancelled' => 'Cancelled Orders'];
+        $labels = ['all' => 'All Orders', 'today' => "Today's Orders", 'shipping' => 'Shipping Orders', 'delivered' => 'Delivered Orders', 'cancelled' => 'Cancelled Orders', 'refunded' => 'Refunded Orders'];
 
         return view('dasgboard.pages.orders.index', [
             'orders' => $orders->paginate(15)->withQueryString(),
@@ -99,7 +101,7 @@ class AdminOrderController extends Controller
     public function destroy(Request $request, Order $order): RedirectResponse
     {
         $validated = $request->validate([
-            'return_to' => ['required', 'in:all,today,shipping,delivered,cancelled,fake_all,fake_today'],
+            'return_to' => ['required', 'in:all,today,shipping,delivered,cancelled,refunded,fake_all,fake_today'],
         ]);
         abort_if($order->deliveryAddons()->exists(), 422, 'এই অর্ডারের সঙ্গে অতিরিক্ত পণ্য যুক্ত আছে। আগে সেগুলো সরান।');
         $order->delete();
@@ -175,7 +177,7 @@ class AdminOrderController extends Controller
 
     public function updateStatus(Request $request, Order $order): RedirectResponse
     {
-        $validated = $request->validate(['status' => ['required', 'in:pending,shipping,delivered,cancelled,fake']]);
+        $validated = $request->validate(['status' => ['required', 'in:pending,shipping,delivered,cancelled,refunded,fake']]);
         $order->update($validated);
 
         if ($validated['status'] === 'fake') {
@@ -188,6 +190,7 @@ class AdminOrderController extends Controller
             'shipping' => 'shipping',
             'delivered' => 'delivered',
             'cancelled' => 'cancelled',
+            'refunded' => 'refunded',
             default => 'all',
         };
 
@@ -198,7 +201,7 @@ class AdminOrderController extends Controller
 
     private function validOrderReturnTo(mixed $returnTo): string
     {
-        $allowed = ['all', 'today', 'shipping', 'delivered', 'cancelled', 'fake_all', 'fake_today'];
+        $allowed = ['all', 'today', 'shipping', 'delivered', 'cancelled', 'refunded', 'fake_all', 'fake_today'];
 
         return in_array($returnTo, $allowed, true) ? $returnTo : 'all';
     }
@@ -224,8 +227,8 @@ class AdminOrderController extends Controller
             'burger_type' => ['nullable', 'string', 'max:100'],
             'quantity' => ['required', 'integer', 'min:1', 'max:9999'],
             'unit_price' => ['required', 'integer', 'min:0', 'max:99999999'],
-            'status' => ['required', 'in:pending,shipping,delivered,cancelled,fake'],
-            'return_to' => ['required', 'in:all,today,shipping,delivered,cancelled,fake_all,fake_today'],
+            'status' => ['required', 'in:pending,shipping,delivered,cancelled,refunded,fake'],
+            'return_to' => ['required', 'in:all,today,shipping,delivered,cancelled,refunded,fake_all,fake_today'],
         ]);
     }
 

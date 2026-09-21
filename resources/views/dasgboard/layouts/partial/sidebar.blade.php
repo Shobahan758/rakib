@@ -32,6 +32,7 @@
                 <a class="submenu-link {{ request()->route('filter') === 'shipping' ? 'active' : '' }}" href="{{ route('admin.orders.index', 'shipping') }}">Shipping</a>
                 <a class="submenu-link {{ request()->route('filter') === 'delivered' ? 'active' : '' }}" href="{{ route('admin.orders.index', 'delivered') }}">Delivered</a>
                 <a class="submenu-link {{ request()->route('filter') === 'cancelled' ? 'active' : '' }}" href="{{ route('admin.orders.index', 'cancelled') }}">Cancel</a>
+                <a class="submenu-link {{ request()->route('filter') === 'refunded' ? 'active' : '' }}" href="{{ route('admin.orders.index', 'refunded') }}">Refund</a>
             </div>
         </details>
         @endif
