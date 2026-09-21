@@ -18,8 +18,7 @@ class OrderSubmissionLimitTest extends TestCase
         parent::setUp();
         config([
             'order_risk.max_orders_per_identity' => 5,
-            'order_risk.order_limit_window_days' => 28,
-            'order_risk.failed_delivery_block_days' => 28,
+            'order_risk.order_limit_window_hours' => 28,
         ]);
         $this->product = Product::create(['name' => 'Limit test product', 'price' => 990, 'is_active' => true]);
     }
@@ -42,33 +41,41 @@ class OrderSubmissionLimitTest extends TestCase
         ]);
     }
 
-    public function test_sixth_order_from_the_same_phone_is_rejected(): void
+    public function test_sixth_order_from_the_same_phone_and_ip_is_rejected(): void
     {
-        for ($i = 0; $i < 5; $i++) $this->previous('01712345678', "192.0.2.{$i}");
+        for ($i = 0; $i < 5; $i++) {
+            $this->previous('01712345678', '192.0.2.80');
+        }
 
-        $this->checkout('01712345678', '192.0.2.99')
+        $this->checkout('01712345678', '192.0.2.80')
             ->assertUnprocessable()
-            ->assertJsonPath('errors.phone.0', 'একটি মোবাইল নম্বর থেকে 28 দিনে সর্বোচ্চ 5টি অর্ডার করা যাবে।');
+            ->assertJsonPath('errors.phone.0', 'একই মোবাইল নম্বর ও ডিভাইস/IP থেকে 28 ঘণ্টায় সর্বোচ্চ 5টি অর্ডার করা যাবে। 28 ঘণ্টা পর আবার অর্ডার করুন।');
 
         $this->assertSame(5, Order::where('phone', '01712345678')->count());
     }
 
-    public function test_sixth_order_from_the_same_ip_is_rejected(): void
+    public function test_phone_or_ip_alone_does_not_share_the_order_limit(): void
     {
-        for ($i = 0; $i < 5; $i++) $this->previous('0181234567'.$i, '192.0.2.80');
+        for ($i = 0; $i < 5; $i++) {
+            $this->previous('01812345678', '192.0.2.'.$i);
+        }
+        $this->checkout('01812345678', '192.0.2.90')->assertCreated();
 
-        $this->checkout('01912345678', '192.0.2.80')
-            ->assertUnprocessable()
-            ->assertJsonPath('errors.phone.0', 'একটি নেটওয়ার্ক/IP থেকে 28 দিনে সর্বোচ্চ 5টি অর্ডার করা যাবে।');
+        for ($i = 0; $i < 5; $i++) {
+            $this->previous('0191234567'.$i, '192.0.2.91');
+        }
+        $this->checkout('01312345678', '192.0.2.91')->assertCreated();
     }
 
-    public function test_recent_fake_delivery_history_blocks_the_phone(): void
+    public function test_orders_are_allowed_again_after_twenty_eight_hours(): void
     {
-        $this->previous('01612345678', '192.0.2.70', ['status' => 'fake']);
+        for ($i = 0; $i < 5; $i++) {
+            $this->previous('01612345678', '192.0.2.70');
+        }
 
-        $this->checkout('01612345678', '192.0.2.71')
-            ->assertUnprocessable()
-            ->assertJsonPath('errors.phone.0', 'এই নম্বরের আগের অর্ডারের ডেলিভারি গ্রহণ করা হয়নি। 28 দিন পর আবার চেষ্টা করুন অথবা আমাদের ফোন করুন।');
+        $this->travel(28)->hours()->travel(1)->minute();
+
+        $this->checkout('01612345678', '192.0.2.70')->assertCreated();
     }
 
     public function test_add_on_products_do_not_consume_the_five_order_limit(): void

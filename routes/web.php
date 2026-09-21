@@ -53,9 +53,7 @@ Route::get('/sitemap.xml', function () {
     return response($xml, 200)->header('Content-Type', 'application/xml; charset=UTF-8');
 })->name('sitemap');
 
-Route::post('/orders', [OrderController::class, 'store'])
-    ->middleware('throttle:10,1')
-    ->name('orders.store');
+Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
 Route::post('/orders/{order}/modal-products', [ModalOrderController::class, 'store'])
     ->middleware(['signed:relative', 'throttle:10,1'])->name('orders.modal-products.store');
 Route::get('/orders/{order}/success/{addon}', [ModalOrderController::class, 'success'])
