@@ -2492,7 +2492,7 @@ footer {
 .hero-offer-copy__primary {
   position: relative;
   display: block;
-  padding: 10px 24px 16px;
+  padding: 10px 24px 0;
   color: #292d29;
   font-size: clamp(1.2rem, 2vw, 1.65rem);
   font-weight: 800;
@@ -2584,7 +2584,7 @@ footer {
   }
 
   .hero-offer-copy__primary {
-    padding: 9px 10px 13px;
+    padding: 9px 10px 0;
     font-size: clamp(1.06rem, 4.8vw, 1.22rem);
   }
 
