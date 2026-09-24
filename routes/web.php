@@ -86,9 +86,10 @@ Route::middleware('auth')->group(function () {
     Route::put('/admin/order/{order}', [AdminOrderController::class, 'update'])->middleware('permission:orders')->name('admin.orders.update');
     Route::delete('/admin/order/{order}', [AdminOrderController::class, 'destroy'])->middleware('permission:orders')->name('admin.orders.destroy');
     Route::get('/admin/incomplete-orders/{order}/edit', [AdminOrderController::class, 'editIncomplete'])->middleware('permission:incomplete_orders')->name('admin.incomplete-orders.edit');
+    Route::get('/admin/incomplete-orders/{order}', [AdminOrderController::class, 'editIncomplete'])->whereNumber('order')->middleware('permission:incomplete_orders')->name('admin.incomplete-orders.legacy-edit');
     Route::put('/admin/incomplete-orders/{order}', [AdminOrderController::class, 'updateIncomplete'])->middleware('permission:incomplete_orders')->name('admin.incomplete-orders.update');
     Route::delete('/admin/incomplete-orders/{order}', [AdminOrderController::class, 'destroyIncomplete'])->middleware('permission:incomplete_orders')->name('admin.incomplete-orders.destroy');
-    Route::get('/admin/incomplete-orders/{filter?}', [AdminOrderController::class, 'incompleteIndex'])->middleware('permission:incomplete_orders')->name('admin.incomplete-orders.index');
+    Route::get('/admin/incomplete-orders/{filter?}', [AdminOrderController::class, 'incompleteIndex'])->whereIn('filter', ['all', 'today'])->middleware('permission:incomplete_orders')->name('admin.incomplete-orders.index');
     Route::patch('/admin/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->middleware('permission:orders')->name('admin.orders.status');
 
     Route::middleware('permission:products,site_settings')->group(function () {

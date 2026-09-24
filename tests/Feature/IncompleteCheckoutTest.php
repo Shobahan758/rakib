@@ -33,6 +33,13 @@ class IncompleteCheckoutTest extends TestCase
             $this->get(route('admin.incomplete-orders.index', $filter))->assertOk()
                 ->assertViewHas('orders', fn ($orders) => $orders->contains('id', $draft->id));
         }
+
+        $this->get(route('admin.incomplete-orders.edit', ['order' => $draft, 'filter' => 'all']))
+            ->assertOk()
+            ->assertViewHas('order', fn (IncompleteOrder $order) => $order->is($draft));
+        $this->get(route('admin.incomplete-orders.legacy-edit', $draft))
+            ->assertOk()
+            ->assertViewHas('order', fn (IncompleteOrder $order) => $order->is($draft));
     }
 
     public function test_completed_checkout_removes_draft_and_ignores_late_autosave(): void
