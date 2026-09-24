@@ -19,8 +19,8 @@
 
     # Keep one clean HTTPS host for users and search engines.
     RewriteCond %{HTTPS} !=on [OR]
-    RewriteCond %{HTTP_HOST} !^furniturepolish\.solutionmart\.com$ [NC]
-    RewriteRule ^ https://furniturepolish.solutionmart.com%{REQUEST_URI} [R=301,L]
+    RewriteCond %{HTTP_HOST} !^furniturepolish\.solutionmartbd\.com$ [NC]
+    RewriteRule ^ https://furniturepolish.solutionmartbd.com%{REQUEST_URI} [R=301,L]
 
     # Redirect direct front-controller requests while allowing internal rewrites.
     RewriteCond %{THE_REQUEST} \s/+index\.php(?:[?\s]) [NC]
