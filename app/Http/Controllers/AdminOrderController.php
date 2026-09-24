@@ -234,7 +234,6 @@ class AdminOrderController extends Controller
     public function destroyIncomplete(Request $request, IncompleteOrder $order): RedirectResponse
     {
         $validated = $request->validate(['list_filter' => ['required', 'in:all,today']]);
-        abort_if($order->deliveryAddons()->exists(), 422, 'এই অর্ডারের সঙ্গে অতিরিক্ত পণ্য যুক্ত আছে। আগে সেগুলো সরান।');
         $order->delete();
 
         return redirect()

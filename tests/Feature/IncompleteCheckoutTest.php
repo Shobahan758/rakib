@@ -66,4 +66,15 @@ class IncompleteCheckoutTest extends TestCase
         $this->postJson(route('orders.store'), [...$data, 'incomplete_token' => $data['token']])->assertUnprocessable();
         $this->assertDatabaseHas('incomplete_orders', ['token' => $data['token']]);
     }
+
+    public function test_admin_can_delete_an_incomplete_order(): void
+    {
+        $draft = IncompleteOrder::create([...$this->draft(), 'quantity' => 1]);
+
+        $this->actingAs(User::factory()->create(['role' => 'super_admin']))
+            ->delete(route('admin.incomplete-orders.destroy', $draft), ['list_filter' => 'all'])
+            ->assertRedirect(route('admin.incomplete-orders.index', 'all'));
+
+        $this->assertDatabaseMissing('incomplete_orders', ['id' => $draft->id]);
+    }
 }
