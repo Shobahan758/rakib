@@ -34,7 +34,7 @@ class LandingCopyTest extends TestCase
 
         $this->assertSame('Furniture Polish Combo | কাঠের ফার্নিচার পলিশ | Solution Mart', $seo['meta_title']);
         $this->assertStringContainsString('Furniture Polish Bangladesh', $seo['meta_keywords']);
-        $this->assertSame('https://ss.smarteasyshop.com/', $seo['canonical_url']);
+        $this->assertSame('https://furniturepolish.solutionmart.net/', $seo['canonical_url']);
         $this->assertSame('Furniture Polish', $seo['schema_category']);
         $this->assertSame('0', $seo['schema_rating_enabled']);
         $this->assertSame(0, $seo['schema_review_count']);

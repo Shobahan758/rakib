@@ -27,6 +27,10 @@ DirectoryIndex public/index.php
     # GitHub's signed webhook endpoint lives at the project root.
     RewriteRule ^deploy\.php$ - [L,NC]
 
+    # Keep Laravel's front controller out of browser-visible URLs.
+    RewriteCond %{THE_REQUEST} \s/+public(?:/index\.php)?(?:[?\s]) [NC]
+    RewriteRule ^public(?:/index\.php)?$ / [R=301,L]
+
     # Requests already prefixed with public are handled by public/.htaccess.
     RewriteRule ^public/ - [L]
 

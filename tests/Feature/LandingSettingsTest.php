@@ -111,7 +111,7 @@ class LandingSettingsTest extends TestCase
     {
         $html = $this->get(route('home'))
             ->assertOk()
-            ->assertSee('<link rel="canonical" href="https://ss.smarteasyshop.com/">', false)
+            ->assertSee('<link rel="canonical" href="https://furniturepolish.solutionmart.net/">', false)
             ->assertSee('"@type":"Product"', false)
             ->assertSee('"priceCurrency":"BDT"', false)
             ->assertDontSee('"aggregateRating"', false)

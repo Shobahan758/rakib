@@ -21,7 +21,7 @@ class LandingSection extends Model
                 'meta_title' => 'Furniture Polish Combo | কাঠের ফার্নিচার পলিশ | Solution Mart',
                 'meta_description' => 'পুরনো কাঠের ফার্নিচার পরিষ্কার ও চকচকে করতে Furniture Polish Combo। Polish, cleaner, putty ও প্রয়োজনীয় tools সহ complete package। সারা বাংলাদেশে Cash on Delivery।',
                 'meta_keywords' => 'Furniture Polish, Furniture Polish Bangladesh, কাঠের ফার্নিচার পলিশ, Furniture Polish Combo, ফার্নিচার ক্লিনার ও পলিশ, পুরনো ফার্নিচার নতুন করার পলিশ, Wood Furniture Polish',
-                'meta_author' => 'Solution Mart', 'canonical_url' => 'https://ss.smarteasyshop.com/', 'robots' => 'index, follow',
+                'meta_author' => 'Solution Mart', 'canonical_url' => 'https://furniturepolish.solutionmart.net/', 'robots' => 'index, follow',
                 'og_title' => 'Furniture Polish Combo | কাঠের ফার্নিচার পলিশ | Solution Mart',
                 'og_description' => 'পুরনো কাঠের ফার্নিচার পরিষ্কার ও চকচকে করতে Furniture Polish Combo। Cleaner, polish, putty ও প্রয়োজনীয় tools সহ complete package।',
                 'og_site_name' => 'Solution Mart',

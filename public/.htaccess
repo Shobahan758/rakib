@@ -19,8 +19,12 @@
 
     # Keep one clean HTTPS host for users and search engines.
     RewriteCond %{HTTPS} !=on [OR]
-    RewriteCond %{HTTP_HOST} !^ss\.smarteasyshop\.com$ [NC]
-    RewriteRule ^ https://ss.smarteasyshop.com%{REQUEST_URI} [R=301,L]
+    RewriteCond %{HTTP_HOST} !^furniturepolish\.solutionmart\.net$ [NC]
+    RewriteRule ^ https://furniturepolish.solutionmart.net%{REQUEST_URI} [R=301,L]
+
+    # Redirect direct front-controller requests while allowing internal rewrites.
+    RewriteCond %{THE_REQUEST} \s/+index\.php(?:[?\s]) [NC]
+    RewriteRule ^index\.php$ / [R=301,L]
 
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
