@@ -147,12 +147,24 @@ successModal?.querySelectorAll('[data-close-success]').forEach(button => {
   button.addEventListener('click', () => successModal.close());
 });
 successModal?.addEventListener('close', () => successReturnFocus?.focus({ preventScroll: true }));
+const updateModalProductPrice = quantity => {
+  const price = quantity?.closest('[data-recommendation-id]')?.querySelector('[data-modal-product-price]');
+  if (!price) return;
+  const unitPrice = Number(price.dataset.unitPrice) || 0;
+  const count = Math.min(9999, Math.max(1, Number.parseInt(quantity.value, 10) || 1));
+  price.textContent = `${currencySymbol}${(unitPrice * count).toLocaleString('en-US')}`;
+};
 successModal?.querySelectorAll('.modal-quantity-control').forEach(control => {
   const quantity = control.querySelector('.modal-product-quantity');
   const clampQuantity = value => Math.min(9999, Math.max(1, Number.parseInt(value, 10) || 1));
-  control.querySelector('.modal-qty-minus')?.addEventListener('click', () => { quantity.value = clampQuantity(Number(quantity.value) - 1); });
-  control.querySelector('.modal-qty-plus')?.addEventListener('click', () => { quantity.value = clampQuantity(Number(quantity.value) + 1); });
-  quantity?.addEventListener('change', () => { quantity.value = clampQuantity(quantity.value); });
+  const setQuantity = value => {
+    quantity.value = clampQuantity(value);
+    updateModalProductPrice(quantity);
+  };
+  control.querySelector('.modal-qty-minus')?.addEventListener('click', () => setQuantity(Number(quantity.value) - 1));
+  control.querySelector('.modal-qty-plus')?.addEventListener('click', () => setQuantity(Number(quantity.value) + 1));
+  quantity?.addEventListener('input', () => updateModalProductPrice(quantity));
+  quantity?.addEventListener('change', () => setQuantity(quantity.value));
 });
 successModal?.querySelectorAll('[data-buy-product]').forEach(button => {
   button.dataset.originalLabel = button.innerHTML;
@@ -270,7 +282,11 @@ form?.addEventListener('submit', async (event) => {
         button.disabled = false;
         button.innerHTML = button.dataset.originalLabel || button.innerHTML;
       });
-      successModal.querySelectorAll('.modal-product-quantity').forEach(input => { input.disabled = false; input.value = '1'; });
+      successModal.querySelectorAll('.modal-product-quantity').forEach(input => {
+        input.disabled = false;
+        input.value = '1';
+        updateModalProductPrice(input);
+      });
       document.getElementById('modalOrderStatus').hidden = true;
     }
     showOrderSuccess(productIdInput.value);

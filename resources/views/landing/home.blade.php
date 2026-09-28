@@ -1090,7 +1090,7 @@
                             height="180" loading="lazy">
                         <div class="success-product-details">
                             <h4>{{ $product->name }}</h4>
-                            <strong>{{ $content('site', 'currency_symbol') }}{{ number_format($product->price) }}</strong>
+                            <strong data-modal-product-price data-unit-price="{{ $product->price }}">{{ $content('site', 'currency_symbol') }}{{ number_format($product->price) }}</strong>
                             <label class="modal-quantity-wrap">
                                 <span>{{ $content('order', 'modal_quantity_label') }}</span>
                                 <span class="modal-quantity-control">

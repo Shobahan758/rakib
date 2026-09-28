@@ -4,6 +4,44 @@ const vm = require('node:vm');
 const { readFileSync } = require('node:fs');
 const source = readFileSync('public/asset/js/script.js', 'utf8');
 const handlers = source.slice(source.indexOf("successModal?.querySelectorAll('[data-buy-product]')"), source.indexOf("if (successModal?.dataset.openOnLoad"));
+
+test('modal quantity buttons update the displayed product total', () => {
+  const listeners = {};
+  const price = { dataset: { unitPrice: '950' }, textContent: '৳950' };
+  const card = { querySelector: selector => selector === '[data-modal-product-price]' ? price : null };
+  const quantity = {
+    value: '1',
+    closest: () => card,
+    addEventListener: (event, callback) => { listeners[`quantity:${event}`] = callback; },
+  };
+  const minus = { addEventListener: (event, callback) => { listeners[`minus:${event}`] = callback; } };
+  const plus = { addEventListener: (event, callback) => { listeners[`plus:${event}`] = callback; } };
+  const control = { querySelector: selector => ({
+    '.modal-product-quantity': quantity,
+    '.modal-qty-minus': minus,
+    '.modal-qty-plus': plus,
+  })[selector] };
+  const quantityHandlers = source.slice(
+    source.indexOf('const updateModalProductPrice'),
+    source.indexOf("successModal?.querySelectorAll('[data-buy-product]')"),
+  );
+
+  vm.runInNewContext(quantityHandlers, {
+    currencySymbol: '৳',
+    successModal: { querySelectorAll: selector => selector === '.modal-quantity-control' ? [control] : [] },
+  });
+
+  listeners['plus:click']();
+  assert.equal(quantity.value, 2);
+  assert.equal(price.textContent, '৳1,900');
+  listeners['minus:click']();
+  assert.equal(quantity.value, 1);
+  assert.equal(price.textContent, '৳950');
+  quantity.value = '3';
+  listeners['quantity:input']();
+  assert.equal(price.textContent, '৳2,850');
+});
+
 async function buy(ok) {
   let handler; let request;
   const quantity = { value: '2', reportValidity: () => true };
