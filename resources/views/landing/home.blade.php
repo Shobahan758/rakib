@@ -696,13 +696,12 @@
         <!-- Customer reviews -->
         <section class="section-pad" data-section="reviews">
             <div class="container">
-                @php($showReviewRatingSummary = (string) $content('reviews', 'rating_summary_visible') === '1')
                 <div class="row align-items-end mb-5">
-                    <div class="{{ $showReviewRatingSummary ? 'col-lg-8' : 'col-12 text-center' }}"><span
+                    <div class="{{ (string) $content('reviews', 'rating_summary_visible') === '1' ? 'col-lg-8' : 'col-12 text-center' }}"><span
                             class="section-kicker mb-3">{{ $content('reviews', 'kicker') }}</span>
                         <h2 class="section-title">{{ $content('reviews', 'title') }}</h2>
                     </div>
-                    @if ($showReviewRatingSummary)
+                    @if ((string) $content('reviews', 'rating_summary_visible') === '1')
                         <div class="col-lg-4 mt-3 mt-lg-0">
                             <div class="rating-summary d-flex align-items-center justify-content-between">
                                 <div><strong>{{ $content('reviews', 'rating') }}</strong>
