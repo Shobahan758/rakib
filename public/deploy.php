@@ -5,10 +5,12 @@ declare(strict_types=1);
 const DEPLOY_GITHUB_REPOSITORY = 'Shobahan758/rakib';
 const DEPLOY_DEFAULT_BRANCH = 'master';
 const DEPLOY_MAX_PAYLOAD_BYTES = 2 * 1024 * 1024;
+const DEPLOY_ENDPOINT_VERSION = '2026-09-28-1';
 
 header('Content-Type: application/json; charset=utf-8');
 header('X-Content-Type-Options: nosniff');
 header('Cache-Control: no-store');
+header('X-Deploy-Endpoint-Version: '.DEPLOY_ENDPOINT_VERSION);
 
 function deployRespond(int $status, string $message): never
 {
