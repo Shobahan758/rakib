@@ -63,6 +63,12 @@ class LandingSectionController extends Controller
             }
             $imageFields = array_values(array_unique($imageFields));
         }
+        if ($section === 'video_reviews') {
+            foreach (array_keys($request->all()) as $key) {
+                if (preg_match('/^(?:remove_)?(video_poster_(?:[1-9]|1[0-9]|20))$/D', $key, $match)) $imageFields[] = $match[1];
+            }
+            $imageFields = array_values(array_unique($imageFields));
+        }
         if (in_array($section, ['gallery', 'hero'], true)) {
             foreach (array_keys($request->all()) as $key) {
                 if (preg_match('/^(?:remove_)?(image_[1-9][0-9]*)(?:_alt)?$/D', $key, $match)) {

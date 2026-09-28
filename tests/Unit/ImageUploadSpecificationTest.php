@@ -18,6 +18,7 @@ class ImageUploadSpecificationTest extends TestCase
             'hero slide' => ['hero', 'image_1', 1358, 798],
             'feature image' => ['features', 'image_1', 800, 600],
             'review screenshot' => ['reviews', 'review_image_1', 900, 1200],
+            'video review poster' => ['video_reviews', 'video_poster_1', 900, 1600],
             'customer avatar' => ['reviews', 'image_1', 400, 400],
             'comparison image' => ['package_comparison', 'image', 1200, 1200],
             'product image' => ['product', 'image', 1200, 1200],

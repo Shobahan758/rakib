@@ -32,7 +32,7 @@
                                 @include('landing.video-player', [
                                     'source' => $source,
                                     'title' => $content('video_reviews', 'video_label') . ' ' . $loop->iteration,
-                                    'poster' => null,
+                                    'poster' => $sectionImage('video_reviews', '', 'video_poster_' . $loop->iteration),
                                     'playLabel' => $content('video_reviews', 'play_button_label'),
                                     'fallbackText' => $content('video_reviews', 'video_fallback_text'),
                                     'soundLabel' => $content('video_reviews', 'sound_button_label'),

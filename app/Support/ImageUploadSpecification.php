@@ -12,6 +12,7 @@ final class ImageUploadSpecification
             $imageKey === 'mobile_background_image' => [750, 1334, 'Mobile background-এর গুরুত্বপূর্ণ অংশ ছবির মাঝখানে রাখুন।'],
             $imageKey === 'favicon' => [512, 512, 'বর্গাকার icon দিন; চারপাশে অল্প ফাঁকা জায়গা রাখুন।'],
             $imageKey === 'modal_image' => [800, 400, 'Order confirmation popup-এ সম্পূর্ণ ছবিটি দেখাবে।'],
+            str_starts_with($imageKey, 'video_poster_') => [900, 1600, 'ভিডিও কার্ডের জন্য 9:16 ratio রাখুন; গুরুত্বপূর্ণ লেখা ও বিষয় ছবির মাঝখানে রাখুন।'],
             str_starts_with($imageKey, 'review_image_') => [900, 1200, 'Review screenshot-এর লেখা পরিষ্কার রাখুন; সম্পূর্ণ ছবিটি frontend-এ দেখা যাবে।'],
             $slug === 'site' => [400, 160, 'Logo-এর চারপাশে অতিরিক্ত ফাঁকা জায়গা রাখবেন না।'],
             $slug === 'seo' => [1200, 630, 'Facebook ও অন্যান্য social share preview-এর standard ratio।'],

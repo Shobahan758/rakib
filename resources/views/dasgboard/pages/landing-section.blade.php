@@ -7,6 +7,7 @@
 .edit-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,320px);gap:22px}.field{margin-bottom:18px}.field label{display:block;margin-bottom:7px;font-weight:600}.field input:not([type="checkbox"]),.field textarea{width:100%;padding:12px;border:1px solid var(--line);border-radius:9px;font:inherit}.field textarea{min-height:120px}.field select{width:100%;padding:12px;border:1px solid var(--line);border-radius:9px;font:inherit}.save,.add-review,.remove-review{padding:12px 20px;border:0;border-radius:9px;font:inherit;font-weight:600;cursor:pointer}.save,.add-review{background:var(--primary);color:#fff}.review-heading{display:flex;align-items:center;justify-content:space-between;margin:28px 0 14px}.review-heading h2{margin:0}.review-item{position:relative;margin-bottom:16px;padding:20px;border:1px solid var(--line);border-radius:12px;background:#f9fcfb}.review-item h3{margin:0 0 16px}.review-grid{display:grid;grid-template-columns:1fr 1fr 120px;gap:14px}.review-grid .review-text{grid-column:1/-1}.remove-review{position:absolute;right:16px;top:14px;padding:7px 11px;background:#fff0f0;color:var(--danger)}.alert{margin-bottom:18px;padding:12px;border-radius:9px;background:#fff0e3;color:var(--primary-dark)}.preview{max-width:100%;border-radius:10px}@media(max-width:850px){.edit-grid,.review-grid{grid-template-columns:1fr}.review-grid .review-text{grid-column:auto}}
 .review-upload-card[hidden]{display:none}.review-upload-panel{margin-bottom:24px}.review-upload-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.review-upload-card{min-width:0;padding:16px;border:1px solid var(--line);border-radius:12px}.review-upload-card .preview{display:block;width:100%;height:210px;object-fit:contain;margin-bottom:12px;background:#fff7ef}.review-upload-card .preview[hidden]{display:none}.review-upload-card small{display:block;margin-top:8px;color:var(--muted)}.review-upload-card .review-remove{margin-top:12px}.review-text-settings{margin-bottom:20px;padding:14px;border:1px solid var(--line);border-radius:10px}.review-text-settings summary{cursor:pointer;font-weight:600;margin-bottom:14px}@media(max-width:1200px){.review-upload-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:600px){.review-upload-grid{grid-template-columns:minmax(0,1fr)}.review-upload-panel .save{width:100%}}
 .hero-upload-card .preview{height:auto;max-height:none;aspect-ratio:1358/798;object-fit:contain}
+.video-poster-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.video-poster-card{min-width:0;padding:16px;border:1px solid var(--line);border-radius:12px}.video-poster-card .preview{display:block;width:100%;aspect-ratio:9/16;object-fit:cover;margin-bottom:12px;background:#17120e}.video-poster-card .preview[hidden]{display:none}.video-poster-card small{display:block;margin-top:8px}@media(max-width:1200px){.video-poster-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:600px){.video-poster-grid{grid-template-columns:1fr}}
 </style>
 @endpush
 @section('content')
@@ -50,6 +51,40 @@
 @endif
 @if($slug === 'hero')
     @include('dasgboard.pages.hero-image-upload')
+@endif
+@if($slug === 'video_reviews')
+    @php
+        $savedVideoLinks = preg_split('/\R/u', trim((string) data_get($section->content, 'video_links')), -1, PREG_SPLIT_NO_EMPTY);
+        $posterNumbers = collect(array_keys($section->content ?? []))
+            ->filter(fn ($key) => preg_match('/^video_poster_([1-9]|1[0-9]|20)$/D', $key))
+            ->map(fn ($key) => (int) str_replace('video_poster_', '', $key));
+        $videoPosterCount = max(count($savedVideoLinks), $posterNumbers->max() ?? 0);
+    @endphp
+    @if($videoPosterCount > 0)
+        <section class="panel review-upload-panel">
+            <h2>ভিডিও ব্যানার / Poster</h2>
+            <p>প্রতিটি ভিডিওর জন্য আলাদা ব্যানার দিন। ব্যানার নম্বর ভিডিও লিংকের লাইনের নম্বরের সঙ্গে মিলবে। নতুন ভিডিও লিংক যোগ করলে আগে একবার সেভ করুন, তারপর তার ব্যানার আপলোড করুন।</p>
+            <div class="video-poster-grid">
+                @for($i = 1; $i <= $videoPosterCount; $i++)
+                    @php($imageKey = 'video_poster_'.$i)
+                    <div class="video-poster-card field">
+                        <label for="{{ $imageKey }}">ভিডিও {{ $i }}-এর ব্যানার</label>
+                        <img id="preview-{{ $imageKey }}" class="preview"
+                            @if(data_get($section->content, $imageKey)) src="{{ route('media.show', ['path' => data_get($section->content, $imageKey)]) }}" @else hidden @endif
+                            alt="ভিডিও {{ $i }}-এর ব্যানার">
+                        <input id="{{ $imageKey }}" type="file" name="{{ $imageKey }}"
+                            accept="image/jpeg,image/png,image/webp" data-image-preview="preview-{{ $imageKey }}"
+                            aria-describedby="help-{{ $imageKey }}">
+                        @include('dasgboard.pages.image-upload-help')
+                        @if(data_get($section->content, $imageKey))
+                            <label><input type="checkbox" name="remove_{{ $imageKey }}" value="1" @checked(old('remove_'.$imageKey))> এই ব্যানার সরান</label>
+                        @endif
+                        @error($imageKey)<small role="alert" style="color:#dc3545">{{ $message }}</small>@enderror
+                    </div>
+                @endfor
+            </div>
+        </section>
+    @endif
 @endif
 <div class="edit-grid"><section class="panel">
 @foreach($definition['fields'] as $key => [$label, $type])
