@@ -1,6 +1,7 @@
 @php
     $shouldAutoplay = (bool) ($autoplay ?? false);
     $playerUrl = $source['url'];
+    $poster = ! empty($poster) ? $poster : ($source['poster'] ?? null);
     if ($source['type'] === 'embed' && $shouldAutoplay) {
         $playerUrl .= (str_contains($playerUrl, '?') ? '&' : '?').'autoplay=1&mute=1&playsinline=1&enablejsapi=1';
     }

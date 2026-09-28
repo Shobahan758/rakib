@@ -38,14 +38,35 @@ class VideoPlayerViewTest extends TestCase
     public function test_review_video_does_not_autoplay_by_default(): void
     {
         $html = view('landing.video-player', [
-            'source' => ['type' => 'embed', 'url' => 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?rel=0'],
+            'source' => [
+                'type' => 'embed',
+                'url' => 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?rel=0',
+                'poster' => 'https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg',
+            ],
             'title' => 'Review video',
         ])->render();
 
         $this->assertStringNotContainsString('<iframe src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?rel=0&amp;autoplay=1', $html);
         $this->assertStringContainsString('loading="lazy"', $html);
         $this->assertStringContainsString('data-video-facade', $html);
+        $this->assertStringContainsString('https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg', $html);
         $this->assertStringContainsString('<noscript><iframe src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?rel=0"', $html);
         $this->assertStringNotContainsString('data-video-sound', $html);
+    }
+
+    public function test_custom_poster_overrides_the_youtube_thumbnail(): void
+    {
+        $html = view('landing.video-player', [
+            'source' => [
+                'type' => 'embed',
+                'url' => 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?rel=0',
+                'poster' => 'https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg',
+            ],
+            'title' => 'Review video',
+            'poster' => '/media/custom-poster.webp',
+        ])->render();
+
+        $this->assertStringContainsString('/media/custom-poster.webp', $html);
+        $this->assertStringNotContainsString('https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg', $html);
     }
 }

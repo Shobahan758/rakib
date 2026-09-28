@@ -21,7 +21,11 @@ class VideoSource
             elseif ($path === '/watch') $id = $query['v'] ?? null;
         }
         if (is_string($id) && preg_match('/^[a-zA-Z0-9_-]{11}$/D', $id)) {
-            return ['type' => 'embed', 'url' => 'https://www.youtube-nocookie.com/embed/'.$id.'?rel=0'];
+            return [
+                'type' => 'embed',
+                'url' => 'https://www.youtube-nocookie.com/embed/'.$id.'?rel=0',
+                'poster' => 'https://i.ytimg.com/vi/'.$id.'/hqdefault.jpg',
+            ];
         }
         if (preg_match('/\.(mp4|webm|mov)$/i', $path)) return ['type' => 'file', 'url' => $url];
 

@@ -23,6 +23,8 @@ class VideoReviewsTest extends TestCase
         $this->assertSame($links, LandingSection::where('slug', 'video_reviews')->first()->content['video_links']);
         $html = $this->get(route('home'))->assertOk()->assertSee('Customer video reviews')->getContent();
         $this->assertSame(2, substr_count($html, 'class="video-review-card"'));
+        $this->assertStringContainsString('https://i.ytimg.com/vi/1kvRiZnBQqA/hqdefault.jpg', $html);
+        $this->assertStringContainsString('https://i.ytimg.com/vi/rBF18mklgaE/hqdefault.jpg', $html);
         $this->assertLessThan(strpos($html, 'data-section="video_reviews"'), strpos($html, 'data-section="reviews"'));
         $this->get(route('admin.landing.edit', 'video_reviews'))->assertOk()->assertSee('1kvRiZnBQqA');
         $this->put(route('admin.landing.update', 'video_reviews'), ['video_links' => 'https://example.com/page'])->assertSessionHasErrors('video_links');
