@@ -192,3 +192,48 @@
     max-width: 100%;
   }
 }
+
+/* Keep the post-order recommendations in rows of three on tablets and phones. */
+@media (max-width:900px) {
+  .success-recommendations { padding-inline:10px; }
+  .success-product-grid {
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:8px;
+  }
+  .success-product-card { border-radius:12px; }
+  .success-product-card > img {
+    height:auto;
+    max-height:none;
+    aspect-ratio:1;
+    padding:4px;
+  }
+  .success-product-details { gap:6px; padding:8px 6px; }
+  .success-product-details h4 { font-size:.82rem; line-height:1.3; }
+  .success-product-details > strong { font-size:.9rem; }
+  .modal-quantity-wrap {
+    align-items:stretch;
+    flex-direction:column;
+    gap:4px;
+    font-size:.75rem;
+  }
+  .modal-quantity-control {
+    grid-template-columns:26px 32px 26px;
+    width:84px;
+    max-width:100%;
+    margin-inline:auto;
+  }
+  .modal-quantity-control button { min-height:32px; font-size:1rem; }
+  .modal-product-quantity {
+    width:32px;
+    min-height:32px;
+    padding:2px;
+    font-size:.82rem;
+  }
+  .success-product-details .btn {
+    min-height:40px;
+    padding:6px 4px;
+    font-size:.72rem;
+    line-height:1.3;
+  }
+  .success-product-details .btn i { display:none; }
+}
