@@ -50,7 +50,9 @@
     <div class="table-wrap"><table>
         <thead><tr><th>Date</th><th>Day</th><th>Unique Visitors</th><th>Activity</th></tr></thead>
         <tbody id="dailyVisitorRows">
-        @php($maxVisitors = max(1, (int) $dailyVisitors->max('visitors')))
+        @php
+            $maxVisitors = max(1, (int) $dailyVisitors->max('visitors'));
+        @endphp
         @forelse($dailyVisitors as $day)
             <tr><td><strong>{{ $day->visited_on->format('d M, Y') }}</strong></td><td>{{ $day->visited_on->format('l') }}</td><td>{{ number_format($day->visitors) }}</td><td><div class="visitor-bar-wrap"><div class="visitor-bar"><span style="width:{{ max(4, ($day->visitors / $maxVisitors) * 100) }}%"></span></div></div></td></tr>
         @empty

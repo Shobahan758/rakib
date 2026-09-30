@@ -18,8 +18,10 @@
         <div class="toolbar"><strong>{{ count($definitions) }} settings & sections total</strong><div class="bulk-buttons"><button id="enableAll" type="button">Enable All Sections</button><button id="disableAll" type="button">Disable All Sections</button></div></div>
         <div class="section-list">
             @foreach($definitions as $slug => $definition)
-                @php($canToggle = !in_array($slug, ['site', 'social', 'seo'], true))
-                @php($isVisible = $sections->get($slug)?->is_visible ?? true)
+                @php
+                    $canToggle = !in_array($slug, ['site', 'social', 'seo'], true);
+                    $isVisible = $sections->get($slug)?->is_visible ?? true;
+                @endphp
                 <div class="section-toggle">
                     <span class="section-copy"><strong>{{ $definition['label'] }}</strong><small class="status-text">{{ $canToggle ? ($isVisible ? 'Enabled' : 'Disabled') : 'Always active settings' }}</small></span>
                     <a href="{{ route('admin.landing.edit', $slug) }}" style="color:var(--primary);white-space:nowrap">Edit all content</a>

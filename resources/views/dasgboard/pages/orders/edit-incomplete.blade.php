@@ -13,11 +13,13 @@
             @csrf
             @method('PUT')
             <input type="hidden" name="list_filter" value="{{ $filter }}">
-            @php($fields = [
-                ['name', 'Name', 'text', true],
-                ['phone', 'Phone Number', 'tel', true],
-                ['email', 'Email', 'email', false],
-            ])
+            @php
+                $fields = [
+                    ['name', 'Name', 'text', true],
+                    ['phone', 'Phone Number', 'tel', true],
+                    ['email', 'Email', 'email', false],
+                ];
+            @endphp
             @foreach($fields as [$name, $label, $type, $required])
                 <label for="{{ $name }}" style="display:block;margin:0 0 6px;font-weight:600">{{ $label }} @if($required)<span style="color:#dc3545">*</span>@endif</label>
                 <input id="{{ $name }}" name="{{ $name }}" type="{{ $type }}" value="{{ old($name, $order->$name) }}" @required($required) style="width:100%;margin-bottom:4px;padding:11px 12px;border:1px solid #ebded4;border-radius:9px;font:inherit">

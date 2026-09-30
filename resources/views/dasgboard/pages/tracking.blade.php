@@ -35,7 +35,9 @@
 @if(session('success'))<div class="alert">{{ session('success') }}</div>@endif
 <div class="provider-cards" aria-label="Tracking platforms">
     @foreach($config as $providerKey => [$providerTitle, $providerIcon, $providerFields])
-        @php($isConfigured = collect(array_keys($providerFields))->contains(fn($field) => filled($settings[$field] ?? null)))
+        @php
+            $isConfigured = collect(array_keys($providerFields))->contains(fn($field) => filled($settings[$field] ?? null));
+        @endphp
         <a class="provider-card {{ $providerKey }} {{ $provider === $providerKey ? 'active' : '' }}" href="{{ route('admin.tracking.edit', $providerKey) }}">
             <span class="provider-card-icon"><i class="{{ $providerIcon }}"></i></span>
             <strong>{{ $providerTitle }}</strong><small>{{ $providerDescriptions[$providerKey] }}</small>

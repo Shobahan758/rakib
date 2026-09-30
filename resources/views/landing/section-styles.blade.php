@@ -2,7 +2,11 @@
     @foreach (\App\Models\LandingSection::definitions() as $sectionSlug => $definition)
         @continue(in_array($sectionSlug, ['site', 'social', 'seo'], true))
 
-        @php($settings = $sections->get($sectionSlug)?->content ?? []) @php($validColor = fn($key) => preg_match('/^#[a-fA-F0-9]{6}$/', $settings[$key] ?? '')) [data-section="{{ $sectionSlug }}"] {
+        @php
+            $settings = $sections->get($sectionSlug)?->content ?? [];
+            $validColor = fn($key) => preg_match('/^#[a-fA-F0-9]{6}$/', $settings[$key] ?? '');
+        @endphp
+        [data-section="{{ $sectionSlug }}"] {
             @if ($sections->get($sectionSlug)?->is_visible === false)
                 display: none !important;
             @endif
