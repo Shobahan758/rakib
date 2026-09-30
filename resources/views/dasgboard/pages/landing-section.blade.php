@@ -66,7 +66,9 @@
             <p>প্রতিটি ভিডিওর জন্য আলাদা ব্যানার দিন। ব্যানার নম্বর ভিডিও লিংকের লাইনের নম্বরের সঙ্গে মিলবে। নতুন ভিডিও লিংক যোগ করলে আগে একবার সেভ করুন, তারপর তার ব্যানার আপলোড করুন।</p>
             <div class="video-poster-grid">
                 @for($i = 1; $i <= $videoPosterCount; $i++)
-                    @php($imageKey = 'video_poster_'.$i)
+                    @php
+                        $imageKey = 'video_poster_'.$i;
+                    @endphp
                     <div class="video-poster-card field">
                         <label for="{{ $imageKey }}">ভিডিও {{ $i }}-এর ব্যানার</label>
                         <img id="preview-{{ $imageKey }}" class="preview"
