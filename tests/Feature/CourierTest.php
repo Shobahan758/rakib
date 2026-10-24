@@ -46,6 +46,51 @@ class CourierTest extends TestCase
         $this->assertSame('secret-api-key', CourierSetting::where('provider', 'steadfast')->first()->credentials['api_key']);
     }
 
+    public function test_single_provider_save_and_test_uses_new_credentials(): void
+    {
+        Http::fake(['*' => Http::response(['status' => 200, 'current_balance' => 0])]);
+        $this->actingAs($this->admin())->put(route('admin.couriers.save'), [
+            'provider' => 'steadfast', 'action' => 'test',
+            'steadfast' => ['api_key' => 'demo-api', 'secret_key' => 'demo-secret'],
+        ])->assertSessionHasNoErrors()->assertSessionHas('success');
+        Http::assertSent(fn ($request) => $request->method() === 'GET' && $request->hasHeader('Api-Key', 'demo-api') && $request->hasHeader('Secret-Key', 'demo-secret'));
+        $this->assertDatabaseCount('courier_settings', 1);
+        $this->get(route('admin.couriers.settings'))->assertOk()->assertSee('Save & Test Connection', false)->assertDontSee('demo-secret');
+    }
+
+    public function test_pathao_and_redx_save_then_test_with_demo_api_responses(): void
+    {
+        $this->actingAs($this->admin());
+        foreach (['pathao', 'redx'] as $provider) {
+            $credentials = $this->setting($provider)->credentials;
+            Http::fake([
+                '*/issue-token' => Http::response(['access_token' => 'demo-token']),
+                '*/stores' => Http::response(['code' => 200, 'data' => ['data' => []], 'pickup_stores' => []]),
+            ]);
+            $this->put(route('admin.couriers.save'), ['provider' => $provider, 'action' => 'test', $provider => $credentials])
+                ->assertSessionHasNoErrors()->assertSessionHas('success');
+            Http::assertSent(fn ($request) => $request->method() === 'GET' && $request->hasHeader('Authorization', $provider === 'pathao' ? 'Bearer demo-token' : 'Bearer redx-secret'));
+        }
+    }
+
+    public function test_incomplete_credentials_explain_missing_fields_without_calling_api(): void
+    {
+        Http::fake();
+        $this->actingAs($this->admin())->put(route('admin.couriers.save'), [
+            'provider' => 'steadfast', 'action' => 'test', 'steadfast' => ['api_key' => 'demo-api'],
+        ])->assertSessionHas('error', fn ($message) => str_contains($message, 'Secret Key'));
+        Http::assertNothingSent();
+    }
+
+    public function test_invalid_credentials_are_not_flashed_into_session(): void
+    {
+        $this->actingAs($this->admin())->put(route('admin.couriers.save'), [
+            'provider' => 'pathao', 'action' => 'test',
+            'pathao' => ['environment' => 'live', 'username' => 'invalid-email', 'password' => 'demo-private-password'],
+        ])->assertSessionHasErrors('pathao.username')->assertSessionMissing('_old_input');
+        $this->assertDatabaseCount('courier_settings', 0);
+    }
+
     public function test_settings_require_super_admin_and_booking_requires_orders_permission(): void
     {
         $order = $this->order();

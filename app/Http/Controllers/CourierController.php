@@ -19,10 +19,13 @@ class CourierController extends Controller
         return view('dasgboard.pages.couriers.settings', ['settings' => CourierSetting::all()->keyBy('provider')]);
     }
 
-    public function save(Request $request)
+    public function save(Request $request, CourierService $service)
     {
-        $rules = [];
-        foreach (CourierSetting::FIELDS as $provider => $fields) {
+        $selected = $request->input('provider');
+        $providers = is_string($selected) && isset(CourierSetting::FIELDS[$selected])
+            ? [$selected => CourierSetting::FIELDS[$selected]] : CourierSetting::FIELDS;
+        $rules = ['provider' => ['nullable', 'in:steadfast,pathao,redx'], 'action' => ['nullable', 'in:save,test']];
+        foreach ($providers as $provider => $fields) {
             foreach ($fields as $field => $label) {
                 $rules["$provider.$field"] = ['nullable', 'string', 'max:2000'];
                 if ($field === 'store_id') {
@@ -41,23 +44,37 @@ class CourierController extends Controller
         if ($validator->fails()) {
             return back()->withErrors($validator);
         }
-        DB::transaction(function () use ($validator) {
-            foreach ($validator->validated() as $provider => $input) {
+        DB::transaction(function () use ($validator, $providers) {
+            $data = $validator->validated();
+            foreach ($providers as $provider => $fields) {
+                $input = $data[$provider] ?? [];
+                if ($input === []) {
+                    continue;
+                }
                 $setting = CourierSetting::firstOrNew(['provider' => $provider]);
                 $setting->credentials = array_replace($setting->credentials ?? [], array_filter($input, fn ($value) => filled($value)));
                 $setting->save();
             }
         });
 
-        return back()->with('success', 'Courier settings saved. Use Test Connection to verify access.');
+        if ($request->input('action') === 'test' && is_string($selected)) {
+            return $this->check($selected, $service);
+        }
+
+        return back()->with('success', 'Courier settings saved. Use Save & Test Connection to verify access.');
     }
 
     public function check(string $provider, CourierService $service)
     {
         abort_unless(array_key_exists($provider, CourierSetting::FIELDS), 404);
         $setting = CourierSetting::where('provider', $provider)->first();
+        if (! $setting || ! $setting->configured()) {
+            $missing = array_filter(CourierSetting::FIELDS[$provider], fn ($label, $field) => blank($setting?->credentials[$field] ?? null), ARRAY_FILTER_USE_BOTH);
+
+            return back()->with('error', ucfirst($provider).': Please enter '.implode(', ', $missing).', then Save & Test Connection.');
+        }
         try {
-            $ok = $setting && $service->check($setting);
+            $ok = $service->check($setting);
         } catch (Throwable) {
             $ok = false;
         }

@@ -84,7 +84,7 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::middleware('role:super_admin')->group(function () {
         Route::get('/admin/couriers', [\App\Http\Controllers\CourierController::class, 'settings'])->name('admin.couriers.settings');
-        Route::put('/admin/couriers', [\App\Http\Controllers\CourierController::class, 'save'])->name('admin.couriers.save');
+        Route::put('/admin/couriers', [\App\Http\Controllers\CourierController::class, 'save'])->middleware('throttle:10,1')->name('admin.couriers.save');
         Route::post('/admin/couriers/{provider}/test', [\App\Http\Controllers\CourierController::class, 'check'])->middleware('throttle:10,1')->name('admin.couriers.test');
     });
     Route::middleware('permission:orders')->group(function () {

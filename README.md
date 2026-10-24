@@ -232,7 +232,9 @@ Deploy the code and run `php artisan migrate --force` to create the courier
 settings and booking tables. The existing deploy script runs migrations.
 Super Admin can open **Courier Settings** (`/admin/couriers`) and save credentials
 for Steadfast, Pathao or RedX. Blank credential fields preserve saved values.
-Credentials are encrypted using the application key; keep `APP_KEY` backed up
+Each courier has its own Save and Save & Test Connection buttons; the latter
+saves newly entered credentials before testing them. Missing required fields are
+shown without attempting a connection. Credentials are encrypted using the application key; keep `APP_KEY` backed up
 and unchanged. Configured means saved, not verified: use **Test Connection**.
 Pathao and RedX support separate live/sandbox environments and require a pickup
 store ID belonging to that environment.
