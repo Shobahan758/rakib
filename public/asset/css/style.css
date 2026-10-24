@@ -2694,17 +2694,20 @@ footer {
   .hero-subtitle {
     max-width: 34ch;
     color: #000;
+    font-weight: 400;
     font-size: 1rem;
     line-height: 1.7;
   }
 
   .hero-offer-copy__primary {
     color: #000;
+    font-weight: 400;
     font-size: 1rem;
   }
 
   .hero-offer-copy__accent {
     color: #000;
+    font-weight: 400;
     font-size: 1.125rem;
   }
 
