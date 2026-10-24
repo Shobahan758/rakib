@@ -19,8 +19,10 @@
                 allowfullscreen></iframe>
         @else
             <button class="video-embed-facade" type="button" data-video-facade
-                data-src="{{ $clickToPlayUrl }}" aria-label="{{ $title }} — {{ $playLabel ?? $title }}"
-                @if (!empty($poster)) style="background-image:linear-gradient(rgba(18,10,6,.2),rgba(18,10,6,.35)),url('{{ $poster }}')" @endif>
+                data-src="{{ $clickToPlayUrl }}" aria-label="{{ $title }} — {{ $playLabel ?? $title }}">
+                @if (!empty($poster))
+                    <img class="video-facade-poster" src="{{ $poster }}" alt="" loading="lazy" decoding="async" width="480" height="360">
+                @endif
                 <span class="video-play" aria-hidden="true"><i class="bi bi-play-fill"></i></span>
                 <span>{{ $playLabel ?? $title }}</span>
             </button>
@@ -29,7 +31,7 @@
                 allowfullscreen></iframe></noscript>
         @endif
     @else
-        <video controls playsinline preload="{{ $shouldAutoplay ? 'auto' : 'metadata' }}" data-video-player
+        <video controls playsinline preload="{{ $shouldAutoplay ? 'auto' : 'none' }}" data-video-player
             @if($shouldAutoplay) autoplay muted @endif @if (!empty($poster)) poster="{{ $poster }}" @endif
             aria-label="{{ $title }}">
             <source src="{{ $source['url'] }}">

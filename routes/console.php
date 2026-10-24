@@ -48,6 +48,7 @@ Artisan::command('app:warm-landing', function () {
         $path = $hero[$key] ?? null;
         if (is_string($path) && \Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
             \App\Support\LandingImage::url($path);
+            \App\Support\LandingImage::url($path, 640);
         }
     }
     foreach ($data['products'] as $product) {

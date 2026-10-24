@@ -6,15 +6,16 @@ use Illuminate\Support\Facades\Storage;
 
 class LandingImage
 {
-    public static function url(string $path): string
+    public static function url(string $path, int $maxWidth = 1360): string
     {
         $fallback = route('media.show', ['path' => $path]);
         if (! function_exists('imagewebp') || ! in_array(strtolower(pathinfo($path, PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png', 'webp'], true)) {
             return $fallback;
         }
 
+        $maxWidth = max(320, min(1360, $maxWidth));
         $source = Storage::disk('public')->path($path);
-        $relative = 'asset/optimized/'.hash('sha256', $path.'|'.filemtime($source).'|'.filesize($source).'|v2').'.webp';
+        $relative = 'asset/optimized/'.hash('sha256', $path.'|'.filemtime($source).'|'.filesize($source).'|v3|'.$maxWidth).'.webp';
         $target = public_path($relative);
         if (is_file($target)) {
             return asset($relative);
@@ -34,7 +35,7 @@ class LandingImage
         if (! $image) {
             return $fallback;
         }
-        $width = min(1360, imagesx($image));
+        $width = min($maxWidth, imagesx($image));
         $height = max(1, (int) round(imagesy($image) * $width / imagesx($image)));
         $output = imagecreatetruecolor($width, $height);
         imagealphablending($output, false);

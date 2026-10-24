@@ -9,12 +9,12 @@
         $storedMediaExists = fn(mixed $path): bool => is_string($path)
             && $path !== ''
             && \Illuminate\Support\Facades\Storage::disk('public')->exists($path);
-        $sectionImage = function (string $section, string $fallback, string $key = 'image') use ($sections, $storedMediaExists): string {
+        $sectionImage = function (string $section, string $fallback, string $key = 'image', int $width = 1360) use ($sections, $storedMediaExists): string {
             $path = data_get($sections->get($section)?->content, $key);
 
             if ($storedMediaExists($path)) {
                 return in_array($section, ['hero', 'order', 'features', 'package_comparison', 'gallery'], true)
-                    ? \App\Support\LandingImage::url($path)
+                    ? \App\Support\LandingImage::url($path, $width)
                     : route('media.show', ['path' => $path]);
             }
 
@@ -85,7 +85,8 @@
     <meta name="twitter:title" content="{{ $content('seo', 'og_title') }}">
     <meta name="twitter:description" content="{{ $content('seo', 'og_description') }}">
     <meta name="twitter:image" content="{{ $sectionImage('seo', 'asset/images/furniture-polish-combo.png') }}">
-    <link rel="preload" as="image" href="{{ $sectionImage('hero', 'asset/images/furniture-polish-before-after.webp') }}" fetchpriority="high">
+    <link rel="preload" as="image" media="(min-width: 768px)" href="{{ $sectionImage('hero', 'asset/images/furniture-polish-before-after.webp') }}" fetchpriority="high">
+    <link rel="preload" as="image" media="(max-width: 767px)" href="{{ $sectionImage('hero', 'asset/images/furniture-polish-before-after.webp', 'image', 640) }}" fetchpriority="high">
     <link rel="stylesheet" href="{{ asset('asset/vendor/hind-siliguri.css') }}">
     <link href="{{ asset('asset/vendor/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('asset/vendor/bootstrap-icons.min.css') }}" rel="stylesheet">
@@ -256,6 +257,7 @@
                     $heroContent = $sections->get('hero')?->content ?? [];
                     $heroSlides = [[
                         'url' => $sectionImage('hero', 'asset/images/furniture-polish-before-after.webp'),
+                        'mobile_url' => $sectionImage('hero', 'asset/images/furniture-polish-before-after.webp', 'image', 640),
                         'alt' => $content('hero', 'image_alt'),
                     ]];
                     foreach (\App\Models\LandingSection::heroImageKeys($heroContent) as $heroImageKey) {
@@ -272,6 +274,7 @@
                         if (!$heroImageExists && !$fallback) continue;
                         $heroSlides[] = [
                             'url' => $heroImageExists ? \App\Support\LandingImage::url($heroPath) : asset($fallback),
+                            'mobile_url' => $heroImageExists ? \App\Support\LandingImage::url($heroPath, 640) : asset($fallback),
                             'alt' => data_get($heroContent, $heroImageKey.'_alt') ?: $content('hero', $heroImageKey.'_alt') ?: 'Hero slider image '.($heroIndex + 1),
                         ];
                     }
@@ -283,10 +286,13 @@
                     <div class="hero-slider-track">
                         @foreach ($heroSlides as $heroSlide)
                             <div class="hero-slide" @if(!$loop->first) aria-hidden="true" @endif>
-                                <img class="hero-product-image hero-product" src="{{ $heroSlide['url'] }}"
-                                    alt="{{ $heroSlide['alt'] }}" loading="{{ $loop->first ? 'eager' : 'lazy' }}"
-                                    width="1358" height="798"
-                                    @if($loop->first) fetchpriority="high" @endif>
+                                <picture style="display:block;height:100%">
+                                    <source media="(max-width: 767px)" srcset="{{ $heroSlide['mobile_url'] }}">
+                                    <img class="hero-product-image hero-product" src="{{ $heroSlide['url'] }}"
+                                        alt="{{ $heroSlide['alt'] }}" loading="{{ $loop->first ? 'eager' : 'lazy' }}"
+                                        width="1358" height="798"
+                                        @if($loop->first) fetchpriority="high" @endif>
+                                </picture>
                             </div>
                         @endforeach
                     </div>
@@ -1146,23 +1152,20 @@
         </div>
     @endif
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script defer src="{{ asset('asset/vendor/bootstrap.bundle.min.js') }}"></script>
     <script id="trackingConfig" type="application/json">@json(array_diff_key($tracking, array_flip(['custom_head_script', 'custom_body_script'])))</script>
-    <script src="{{ asset('asset/js/tracking.js') }}?v={{ filemtime(public_path('asset/js/tracking.js')) }}"></script>
-    <script
-        src="{{ asset('asset/js/visitor-events.js') }}?v={{ filemtime(public_path('asset/js/visitor-events.js')) }}">
+    <script defer src="{{ asset('asset/js/tracking.js') }}?v={{ filemtime(public_path('asset/js/tracking.js')) }}"></script>
+    <script defer src="{{ asset('asset/js/visitor-events.js') }}?v={{ filemtime(public_path('asset/js/visitor-events.js')) }}">
     </script>
-    <script
-        src="{{ asset('asset/js/incomplete-checkout.js') }}?v={{ filemtime(public_path('asset/js/incomplete-checkout.js')) }}">
+    <script defer src="{{ asset('asset/js/incomplete-checkout.js') }}?v={{ filemtime(public_path('asset/js/incomplete-checkout.js')) }}">
     </script>
-    <script
-        src="{{ asset('asset/js/script.js') }}?v={{ file_exists(public_path('asset/js/script.js')) ? filemtime(public_path('asset/js/script.js')) : time() }}">
+    <script defer src="{{ asset('asset/js/script.js') }}?v={{ file_exists(public_path('asset/js/script.js')) ? filemtime(public_path('asset/js/script.js')) : time() }}">
     </script>
     <script src="{{ asset('asset/js/mobile-checkout-bar.js') }}?v={{ filemtime(public_path('asset/js/mobile-checkout-bar.js')) }}"
         defer></script>
     <script src="{{ asset('asset/js/hero-slider.js') }}?v={{ filemtime(public_path('asset/js/hero-slider.js')) }}"
         defer></script>
-    <script src="{{ asset('asset/js/delivery-area.js') }}?v={{ filemtime(public_path('asset/js/delivery-area.js')) }}">
+    <script defer src="{{ asset('asset/js/delivery-area.js') }}?v={{ filemtime(public_path('asset/js/delivery-area.js')) }}">
     </script>
     <noscript>
         <style>

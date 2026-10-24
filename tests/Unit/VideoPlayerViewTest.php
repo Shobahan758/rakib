@@ -49,6 +49,8 @@ class VideoPlayerViewTest extends TestCase
         $this->assertStringNotContainsString('<iframe src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?rel=0&amp;autoplay=1', $html);
         $this->assertStringContainsString('loading="lazy"', $html);
         $this->assertStringContainsString('data-video-facade', $html);
+        $this->assertStringContainsString('class="video-facade-poster"', $html);
+        $this->assertStringNotContainsString('background-image:', $html);
         $this->assertStringContainsString('https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg', $html);
         $this->assertStringContainsString('<noscript><iframe src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?rel=0"', $html);
         $this->assertStringNotContainsString('data-video-sound', $html);

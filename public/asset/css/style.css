@@ -2794,3 +2794,11 @@ footer {
     animation: none
   }
 }
+
+/* Only fetch below-the-fold video posters when their lazy images approach view. */
+.video-embed-facade { position: relative; overflow: hidden; isolation: isolate; }
+.video-embed-facade > .video-facade-poster {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; filter: brightness(.7); z-index: 0;
+}
+.video-embed-facade > span { position: relative; z-index: 1; }
