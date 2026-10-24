@@ -39,3 +39,16 @@ Artisan::command('app:production-check', function () {
 
     return in_array(false, $checks, true) ? 1 : 0;
 })->purpose('Check live hosting configuration without changing data');
+
+Artisan::command('app:warm-landing', function () {
+    \App\Support\LandingPageData::forget();
+    $data = \App\Support\LandingPageData::get();
+    $hero = $data['sections']->get('hero')?->content ?? [];
+    foreach (['image', ...\App\Models\LandingSection::heroImageKeys($hero)] as $key) {
+        $path = $hero[$key] ?? null;
+        if (is_string($path) && \Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
+            \App\Support\LandingImage::url($path);
+        }
+    }
+    $this->info('Landing data and hero images cached.');
+})->purpose('Warm landing data and static hero images before visitors arrive');

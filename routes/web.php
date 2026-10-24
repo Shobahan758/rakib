@@ -32,16 +32,23 @@ Route::get('/media/{path}', function (string $path) {
 })->where('path', '.*')->name('media.show');
 
 Route::get('/', function () {
-    SiteVisit::whereDate('visited_on', today())->firstOrCreate([
-        'visitor_hash' => hash('sha256', request()->ip().'|'.request()->userAgent()),
-    ], ['visited_on' => today(), 'path' => request()->path()]);
-    $sections = LandingSection::all()->keyBy('slug');
-    $products = Schema::hasTable('products')
-        ? Product::query()->where('is_active', true)->orderBy('sort_order')->orderBy('id')->get()
-        : collect();
-    $modalProducts = $products->where('is_modal_product', true)->values();
-    $products = $products->where('is_modal_product', false)->values();
-    $tracking = TrackingSetting::activeValues();
+    $visitorHash = hash('sha256', request()->ip().'|'.request()->userAgent());
+    $visitedOn = today();
+    $path = request()->path();
+    $recordVisit = fn () => SiteVisit::whereDate('visited_on', $visitedOn)->firstOrCreate([
+        'visitor_hash' => $visitorHash,
+    ], ['visited_on' => $visitedOn, 'path' => $path]);
+    if (app()->environment('production')) {
+        // Send the page before analytics touches the database.
+        \Illuminate\Support\defer($recordVisit);
+    } else {
+        $recordVisit();
+    }
+    $data = \App\Support\LandingPageData::get();
+    $sections = $data['sections'];
+    $tracking = $data['tracking'];
+    $modalProducts = $data['products']->where('is_modal_product', true)->values();
+    $products = $data['products']->where('is_modal_product', false)->values();
     return view('landing.home', compact('sections', 'products', 'modalProducts', 'tracking'));
 })->name('home');
 

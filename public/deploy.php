@@ -225,6 +225,7 @@ try {
     deployRun("{$php} artisan migrate --force", $appPath, $logFile);
     deployRun("{$php} artisan storage:link", $appPath, $logFile);
     deployRun("{$php} artisan optimize", $appPath, $logFile);
+    deployRun("{$php} artisan app:warm-landing", $appPath, $logFile);
     deployRun("{$php} artisan app:production-check", $appPath, $logFile);
     deployWriteLog($logFile, "Delivery {$delivery} completed successfully.");
 } catch (Throwable $exception) {

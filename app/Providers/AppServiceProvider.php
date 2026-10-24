@@ -19,6 +19,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        foreach ([\App\Models\LandingSection::class, \App\Models\Product::class, \App\Models\TrackingSetting::class] as $model) {
+            $model::saved(fn () => \App\Support\LandingPageData::forget());
+            $model::deleted(fn () => \App\Support\LandingPageData::forget());
+        }
+
         \Illuminate\Pagination\Paginator::defaultView('dasgboard.partials.pagination');
 
         // TLS may terminate at the hosting proxy while PHP receives HTTP.

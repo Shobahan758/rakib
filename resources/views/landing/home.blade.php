@@ -86,11 +86,7 @@
     <meta name="twitter:description" content="{{ $content('seo', 'og_description') }}">
     <meta name="twitter:image" content="{{ $sectionImage('seo', 'asset/images/furniture-polish-combo.png') }}">
     <link rel="preload" as="image" href="{{ $sectionImage('hero', 'asset/images/furniture-polish-before-after.webp') }}" fetchpriority="high">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap"
-        rel="stylesheet" media="print" onload="this.media='all'">
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&amp;display=swap"></noscript>
+    <link rel="stylesheet" href="{{ asset('asset/vendor/hind-siliguri.css') }}">
     <link href="{{ asset('asset/vendor/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('asset/vendor/bootstrap-icons.min.css') }}" rel="stylesheet">
     <link rel="stylesheet"
