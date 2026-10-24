@@ -225,3 +225,31 @@ Test Events/Realtime tools after saving real IDs and deploying.
 Event references: [GA4 ecommerce](https://developers.google.com/analytics/devguides/collection/ga4/ecommerce),
 [TikTok standard events](https://ads.tiktok.com/help/article/standard-events-parameters?lang=en),
 [Meta's official event mapping](https://github.com/facebook/GoogleTagManager-WebTemplate-For-FacebookPixel/blob/main/template.tpl).
+
+## Courier booking
+
+Deploy the code and run `php artisan migrate --force` to create the courier
+settings and booking tables. The existing deploy script runs migrations.
+Super Admin can open **Courier Settings** (`/admin/couriers`) and save credentials
+for Steadfast, Pathao or RedX. Blank credential fields preserve saved values.
+Credentials are encrypted using the application key; keep `APP_KEY` backed up
+and unchanged. Configured means saved, not verified: use **Test Connection**.
+Pathao and RedX support separate live/sandbox environments and require a pickup
+store ID belonging to that environment.
+
+In Orders, open **Courier Booking** on the parent order. Confirm the customer
+address, COD total (including active delivery add-ons), parcel weight and delivery
+location. Pathao/RedX locations can be loaded from the merchant API; IDs may also
+be entered manually. A successful booking saves the consignment ID and moves the
+order to Shipping. Delivery status is not automatically synchronized.
+
+Booking POSTs are never automatically retried. If a timeout or ambiguous response
+occurs, the booking is blocked pending verification in the merchant portal.
+Do not reset an uncertain booking without first confirming whether a parcel was
+created. Bookings prevent deletion of the associated order. Live courier access
+and actual delivery creation require merchant credentials and have not been
+verified by the automated tests, which use mocked API responses.
+
+API references: [Steadfast's package](https://github.com/steadfast-it/SteadFast-Courier-Laravel-Package),
+[Pathao merchant developer portal](https://merchant.pathao.com/courier/developer-api),
+[RedX developer portal](https://developer.redx.com.bd/).

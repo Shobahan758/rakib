@@ -82,6 +82,17 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
+    Route::middleware('role:super_admin')->group(function () {
+        Route::get('/admin/couriers', [\App\Http\Controllers\CourierController::class, 'settings'])->name('admin.couriers.settings');
+        Route::put('/admin/couriers', [\App\Http\Controllers\CourierController::class, 'save'])->name('admin.couriers.save');
+        Route::post('/admin/couriers/{provider}/test', [\App\Http\Controllers\CourierController::class, 'check'])->middleware('throttle:10,1')->name('admin.couriers.test');
+    });
+    Route::middleware('permission:orders')->group(function () {
+        Route::get('/admin/courier-locations', [\App\Http\Controllers\CourierController::class, 'locations'])->middleware('throttle:30,1')->name('admin.couriers.locations');
+        Route::get('/admin/order/{order}/courier', [\App\Http\Controllers\CourierController::class, 'create'])->name('admin.couriers.book');
+        Route::post('/admin/order/{order}/courier', [\App\Http\Controllers\CourierController::class, 'book'])->middleware('throttle:10,1')->name('admin.couriers.store');
+    });
+
     Route::get('/admin/dashboard', [DashboardController::class, 'index'])->middleware('permission:dashboard')->name('dashboard');
     Route::get('/admin/order-notifications', AdminOrderNotificationController::class)->middleware('permission:orders')->name('admin.order-notifications');
     Route::get('/admin/order/create', [AdminOrderController::class, 'create'])->middleware('permission:orders')->name('admin.orders.create');

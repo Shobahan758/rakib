@@ -76,6 +76,11 @@ class Order extends Model
         return $this->hasMany(self::class, 'parent_order_id');
     }
 
+    public function courierBooking(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(CourierBooking::class);
+    }
+
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);

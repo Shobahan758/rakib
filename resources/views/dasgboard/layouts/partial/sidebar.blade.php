@@ -2,6 +2,9 @@
     <div class="brand">@if($siteBrandLogo)<img class="admin-brand-logo" src="{{ $siteBrandLogo }}" alt="{{ $siteBrandName }}">@else<span class="brand-icon"><i class="fa-solid fa-store"></i></span>@endif<span>{{ $siteBrandName }}</span></div>
     <div class="nav-label">Management</div>
     <nav>
+        @if(auth()->user()->isSuperAdmin())
+        <a class="nav-link {{ request()->routeIs('admin.couriers.settings') ? 'active' : '' }}" href="{{ route('admin.couriers.settings') }}"><i class="fa-solid fa-truck"></i><span>Courier Settings</span></a>
+        @endif
         @if(auth()->user()->isSuperAdmin() || auth()->user()->hasPermission('dashboard'))
         <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}"><i class="fa-solid fa-chart-pie"></i><span>Dashboard</span></a>
         @endif

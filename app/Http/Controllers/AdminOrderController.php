@@ -171,6 +171,7 @@ class AdminOrderController extends Controller
             'return_to' => ['required', 'in:all,today,shipping,delivered,cancelled,refunded,fake_all,fake_today'],
         ]);
         abort_if($order->deliveryAddons()->exists(), 422, 'এই অর্ডারের সঙ্গে অতিরিক্ত পণ্য যুক্ত আছে। আগে সেগুলো সরান।');
+        abort_if($order->courierBooking()->exists(), 422, 'কুরিয়ার বুকিং থাকা অর্ডার মুছে ফেলা যাবে না।');
         $order->delete();
 
         return $this->redirectToOrderList($validated['return_to'], 'Order deleted successfully.');
