@@ -25,6 +25,7 @@ class LandingImageTest extends TestCase
             $this->assertSame([1360, 680], array_slice(getimagesize($target), 0, 2));
             $this->assertSame($url, LandingImage::url('hero.png'));
             $this->assertFileExists($path);
+            $this->assertSame(0644, fileperms($target) & 0777);
         } finally {
             @unlink($target);
         }

@@ -14,7 +14,7 @@ class LandingImage
         }
 
         $source = Storage::disk('public')->path($path);
-        $relative = 'asset/optimized/'.hash('sha256', $path.'|'.filemtime($source).'|'.filesize($source).'|v1').'.webp';
+        $relative = 'asset/optimized/'.hash('sha256', $path.'|'.filemtime($source).'|'.filesize($source).'|v2').'.webp';
         $target = public_path($relative);
         if (is_file($target)) {
             return asset($relative);
@@ -44,7 +44,7 @@ class LandingImage
             @mkdir(dirname($target), 0755, true);
         }
         $temp = @tempnam(dirname($target), 'image-');
-        $saved = $temp && @imagewebp($output, $temp, 78) && @rename($temp, $target);
+        $saved = $temp && @imagewebp($output, $temp, 78) && @chmod($temp, 0644) && @rename($temp, $target);
         if ($temp && is_file($temp)) {
             @unlink($temp);
         }
