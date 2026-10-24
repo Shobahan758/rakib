@@ -228,6 +228,15 @@
                 src="https://www.facebook.com/tr?id={{ urlencode($tracking['meta_pixel_id']) }}&ev=PageView&noscript=1"
                 alt=""></noscript>
     @endif
+    <!-- Top Announcement Bar -->
+    @if(filled($content('hero', 'top_bar_text')))
+        <div class="top-announcement-bar">
+            <div class="container">
+                <span>{{ $content('hero', 'top_bar_text') }}</span>
+            </div>
+        </div>
+    @endif
+
     <main>
         <!-- Hero -->
         <section class="hero" id="home" data-section="hero">
