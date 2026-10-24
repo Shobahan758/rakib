@@ -21,7 +21,7 @@
   .mobile-order-bar .btn { line-height: 1.4; }
   .floating-actions { right: max(12px, env(safe-area-inset-right)); bottom: calc(94px + env(safe-area-inset-bottom)); }
   .deal-box .d-flex { flex-wrap: wrap; }
-  .section-pad { padding-block: 56px; }
+  .section-pad { padding-block: 28px; }
   .success-product-details .btn { min-height: 44px; }
   .product-option {
     grid-template-columns: 20px 58px minmax(0, 1fr) auto;

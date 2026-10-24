@@ -37,7 +37,7 @@ a {
 }
 
 .section-pad {
-  padding: 72px 0
+  padding: 40px 0
 }
 
 .section-kicker {
@@ -1839,7 +1839,7 @@ footer {
   }
 
   .section-pad {
-    padding: 96px 0
+    padding: 48px 0
   }
 
   .order-form {
@@ -1962,7 +1962,7 @@ footer {
   .selected-product-summary > b { font-size: 1.05rem }
 
   .section-pad {
-    padding: 66px 0
+    padding: 28px 0
   }
 
   .feature-list {
