@@ -2494,7 +2494,7 @@ footer {
   display: block;
   padding: 10px 24px 0;
   color: #686868;
-  font-size: .875rem;
+  font-size: 1rem;
   font-weight: 400;
   line-height: 1.35;
 }
@@ -2520,7 +2520,7 @@ footer {
   display: block;
   padding: 0 20px 16px;
   color: #686868;
-  font-size: .875rem;
+  font-size: 1rem;
   font-weight: 400;
   line-height: 1.4;
 }
@@ -2585,12 +2585,12 @@ footer {
 
   .hero-offer-copy__primary {
     padding: 9px 10px 0;
-    font-size: .875rem;
+    font-size: 1rem;
   }
 
   .hero-offer-copy__accent {
     padding: 0 10px 12px;
-    font-size: .875rem;
+    font-size: 1rem;
   }
 
   .hero-price-cell {
