@@ -50,5 +50,8 @@ Artisan::command('app:warm-landing', function () {
             \App\Support\LandingImage::url($path);
         }
     }
+    foreach ($data['products'] as $product) {
+        $product->imageUrl();
+    }
     $this->info('Landing data and hero images cached.');
 })->purpose('Warm landing data and static hero images before visitors arrive');

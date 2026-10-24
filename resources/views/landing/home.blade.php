@@ -13,7 +13,7 @@
             $path = data_get($sections->get($section)?->content, $key);
 
             if ($storedMediaExists($path)) {
-                return $section === 'hero'
+                return in_array($section, ['hero', 'order', 'features', 'package_comparison', 'gallery'], true)
                     ? \App\Support\LandingImage::url($path)
                     : route('media.show', ['path' => $path]);
             }
@@ -835,7 +835,7 @@
                                     data-regular-price="{{ $product->displayRegularPrice() ?: $product->price }}"
                                     data-name="{{ $product->name }}" data-image="{{ $product->imageUrl() }}"
                                     {{ $index === 0 ? 'checked' : '' }}>
-                                <img src="{{ $product->imageUrl() }}" width="74" height="74"
+                                <img loading="lazy" decoding="async" src="{{ $product->imageUrl() }}" width="74" height="74"
                                     alt="{{ $product->name }}">
                                 @if (filled($product->pickerPackageDetails()))
                                     <span class="product-name">{{ $product->pickerPackageDetails() }}</span>
@@ -903,7 +903,7 @@
                                     <div class="selected-product-summary" aria-live="polite"
                                         data-currency="{{ $content('site', 'currency_symbol') }}"
                                         data-quantity-prefix="{{ $content('order', 'quantity_prefix') }}">
-                                        <img id="selectedProductImage" src="{{ $products->first()->imageUrl() }}"
+                                        <img loading="lazy" decoding="async" id="selectedProductImage" src="{{ $products->first()->imageUrl() }}"
                                             width="76" height="76" alt="{{ $products->first()->name }}">
                                         <span><small>{{ $content('order', 'selected_product_label') }}</small><strong
                                                 id="selectedProductName">{{ $products->first()->name }}</strong><em
