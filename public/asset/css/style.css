@@ -1202,15 +1202,14 @@ main > [data-section],
 
 .review-image-card {
   overflow: hidden;
-  aspect-ratio: 3/4;
+  align-self: flex-start;
   background: #fff8f1;
 }
 
 .review-image-card img {
   display: block;
   width: 100%;
-  height: 100%;
-  object-fit: contain;
+  height: auto;
 }
 
 .stars {

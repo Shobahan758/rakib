@@ -701,7 +701,7 @@
         <!-- Customer reviews -->
         <section class="section-pad" data-section="reviews">
             <div class="container">
-                <div class="row align-items-end mb-5">
+                <div class="row align-items-end mb-3">
                     <div class="{{ (string) $content('reviews', 'rating_summary_visible') === '1' ? 'col-lg-8' : 'col-12 text-center' }}"><span
                             class="section-kicker mb-3">{{ $content('reviews', 'kicker') }}</span>
                         <h2 class="section-title">{{ $content('reviews', 'title') }}</h2>
