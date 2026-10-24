@@ -29,6 +29,19 @@ class LandingPageDataTest extends TestCase
         DB::disableQueryLog();
     }
 
+    public function test_production_home_renders_with_file_cache(): void
+    {
+        $this->app->detectEnvironment(fn () => 'production');
+        LandingPageData::forget();
+        try {
+            $this->get('/')->assertOk();
+            $this->get('/')->assertOk();
+        } finally {
+            LandingPageData::forget();
+            $this->app->detectEnvironment(fn () => 'testing');
+        }
+    }
+
     public function test_product_and_tracking_edits_clear_cached_data(): void
     {
         LandingPageData::get();
